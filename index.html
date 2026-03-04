@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geist Cruceros — Portal B2B</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:      #0d1f3c;
+    --navy2:     #162d52;
+    --blue:      #1e5eff;
+    --blue-h:    #1448d4;
+    --cyan:      #00b4d8;
+    --promo:     #e85d2a;
+    --promo-bg:  #fff3ee;
+    --green:     #0ab47a;
+    --white:     #ffffff;
+    --bg:        #f4f6fb;
+    --bg2:       #eef1f8;
+    --border:    #dde3ef;
+    --border2:   #c8d0e4;
+    --text:      #0d1f3c;
+    --text2:     #3d5074;
+    --muted:     #7a8baa;
+    --shadow:    0 2px 12px rgba(13,31,60,0.08);
+    --shadow-md: 0 6px 28px rgba(13,31,60,0.13);
+    --shadow-lg: 0 16px 56px rgba(13,31,60,0.18);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─────────── NAV ─────────── */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:200;
+    height: 58px;
+    background: var(--navy);
+    display: flex; align-items: center; padding: 0 32px;
+    gap: 0;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+  }
+  .n-logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; margin-right: 32px;
+  }
+  .n-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 800; color: #fff;
+  }
+  .n-name { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: 0.03em; }
+  .n-name em { color: var(--cyan); font-style: normal; }
+  .n-links { display: flex; flex: 1; }
+  .n-links a {
+    color: rgba(255,255,255,0.55); text-decoration: none;
+    font-size: 13.5px; font-weight: 500;
+    padding: 6px 14px; border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .n-links a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+  .n-links a.on { color: #fff; background: rgba(30,94,255,0.28); }
+  .n-user {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 100px; padding: 4px 14px 4px 6px; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .n-user:hover { background: rgba(255,255,255,0.14); }
+  .n-av {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+  .n-uname { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.88); }
+
+  /* ─────────── HERO / SEARCH ─────────── */
+  .hero {
+    padding-top: 58px;
+    background: var(--navy);
+    position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: url('https://images.unsplash.com/photo-1548574505-5e239809ee19?w=1600&q=80') center/cover no-repeat;
+    opacity: 0.1; pointer-events: none;
+  }
+  .hero-inner {
+    position: relative; z-index: 2;
+    max-width: 1280px; margin: 0 auto;
+    padding: 32px 32px 0;
+    display: flex; align-items: flex-end; gap: 40px;
+  }
+  .hero-title-block { flex-shrink: 0; padding-bottom: 28px; min-width: 200px; }
+  .hero-eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--cyan); margin-bottom: 8px;
+  }
+  .hero-title {
+    font-size: 28px; font-weight: 700; color: #fff;
+    line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 20px;
+  }
+  .hero-stats { display: flex; align-items: center; gap: 12px; }
+  .hs { display: flex; flex-direction: column; gap: 2px; }
+  .hs-n { font-size: 15px; font-weight: 700; color: #fff; }
+  .hs-l { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.08em; }
+  .hs-div { width: 1px; height: 28px; background: rgba(255,255,255,0.15); }
+
+  /* ─────────── SEARCH PANEL ─────────── */
+  .search-panel {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-bottom: none;
+    border-radius: 16px 16px 0 0;
+    padding: 20px 20px 22px;
+    backdrop-filter: blur(10px);
+  }
+  .search-bar {
+    display: flex; align-items: stretch;
+    background: #fff; border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    margin-bottom: 14px; height: 58px;
+  }
+  .sb-field {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 18px; flex: 1;
+    cursor: pointer; transition: background 0.15s;
+    border-right: 1px solid var(--border);
+    min-width: 0;
+  }
+  .sb-field:hover { background: #f5f8ff; }
+  .sb-field.sb-destination { flex: 1.4; }
+  .sb-icon { font-size: 18px; flex-shrink: 0; }
+  .sb-content { min-width: 0; }
+  .sb-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 1px; }
+  .sb-value { font-size: 13.5px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sb-btn {
+    background: var(--blue); color: #fff;
+    border: none; font-family: inherit;
+    font-size: 14px; font-weight: 700;
+    padding: 0 26px;
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
+    transition: background 0.15s; flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .sb-btn:hover { background: var(--blue-h); }
+  .search-advanced {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .sa-label {
+    font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.35);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    flex-shrink: 0;
+  }
+  .sa-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: 100px; padding: 5px 13px;
+    font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.65);
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .sa-chip:hover { background: rgba(255,255,255,0.13); color: #fff; border-color: rgba(255,255,255,0.3); }
+  .sa-chip.active { background: rgba(30,94,255,0.3); border-color: rgba(30,94,255,0.55); color: #a8c4ff; }
+  .sa-chip-tag { background: rgba(0,180,216,0.18); border-color: rgba(0,180,216,0.38); color: #7de8f8; }
+  .sa-chip-icon { font-size: 12px; }
+  .sa-remove { margin-left: 3px; opacity: 0.6; font-size: 10px; cursor: pointer; }
+  .sa-remove:hover { opacity: 1; }
+  .sa-clear { margin-left: auto; background: none; border: none; color: rgba(255,255,255,0.3); font-size: 12px; font-family: inherit; cursor: pointer; transition: color 0.15s; }
+  .sa-clear:hover { color: rgba(255,255,255,0.65); }
+
+  /* ─────────── MAIN LAYOUT ─────────── */
+  .main {
+    max-width: 1280px; margin: 0 auto;
+    padding: 24px 32px 48px;
+    display: grid;
+    grid-template-columns: 214px 1fr;
+    gap: 22px;
+    align-items: start;
+  }
+
+  /* ─────────── SIDEBAR ─────────── */
+  .sidebar { display: flex; flex-direction: column; gap: 8px; position: sticky; top: 70px; }
+
+  .fc {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .fc-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 15px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.09em;
+    text-transform: uppercase; color: var(--text);
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    cursor: pointer; user-select: none;
+  }
+  .fc-head .ic { color: var(--muted); font-size: 10px; transition: transform 0.2s; }
+  .fc-body { padding: 13px 15px; display: flex; flex-direction: column; gap: 9px; }
+
+  .tog-row { display: flex; align-items: center; justify-content: space-between; }
+  .tog-lbl { font-size: 13px; font-weight: 500; color: var(--text); }
+  .tog {
+    width: 36px; height: 20px; border-radius: 10px; background: var(--blue);
+    position: relative; cursor: pointer; flex-shrink: 0;
+  }
+  .tog::after {
+    content:''; position: absolute; width: 15px; height: 15px;
+    border-radius: 50%; background: #fff;
+    top: 2.5px; right: 2.5px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.18); transition: right 0.2s;
+  }
+
+  .rad-row { display: flex; gap: 5px; }
+  .rad {
+    flex: 1; text-align: center; padding: 7px 4px;
+    border: 1.5px solid var(--border); border-radius: 7px;
+    font-size: 12.5px; font-weight: 500; color: var(--text2);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .rad.on { border-color: var(--blue); color: var(--blue); background: #eef2ff; }
+
+  .cb { display: flex; align-items: center; gap: 9px; cursor: pointer; padding: 3px 0; }
+  .cb-sq {
+    width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0;
+    border: 1.5px solid var(--border2); background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: #fff; transition: all 0.15s;
+  }
+  .cb-sq.on { background: var(--blue); border-color: var(--blue); }
+  .cb-lbl { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
+  .cb-val { font-size: 11px; color: var(--muted); }
+
+  .pr-row { display: flex; gap: 7px; align-items: center; }
+  .pr-in {
+    flex: 1; border: 1.5px solid var(--border); border-radius: 7px;
+    padding: 7px 9px; font-size: 13px; font-family: inherit;
+    color: var(--text); background: #fff; outline: none; width: 100%;
+  }
+  .pr-in:focus { border-color: var(--blue); }
+  .pr-sep { color: var(--muted); font-size: 13px; }
+
+  .fa { display: flex; justify-content: space-between; margin-top: 2px; }
+  .fa-c { background: none; border: none; color: var(--muted); font-size: 12px; font-family: inherit; cursor: pointer; }
+  .fa-a { background: none; border: none; color: var(--blue); font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; }
+
+  /* ─────────── RESULTS AREA ─────────── */
+  .results-area { display: flex; flex-direction: column; gap: 16px; }
+
+  .r-header {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .r-count { font-size: 14px; color: var(--text2); }
+  .r-count strong { color: var(--text); font-weight: 700; }
+  .r-controls { display: flex; gap: 8px; align-items: center; }
+  .r-sel {
+    background: #fff; border: 1.5px solid var(--border);
+    color: var(--text); font-family: inherit; font-size: 12.5px; font-weight: 500;
+    padding: 7px 12px; border-radius: 8px; cursor: pointer; outline: none;
+  }
+
+  /* ─────────── TABLE ─────────── */
+  .results-table {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .rt-head {
+    display: grid;
+    grid-template-columns: 2.4fr 1.6fr 1fr 0.85fr 0.85fr 0.85fr 0.85fr 90px;
+    background: var(--bg2);
+    border-bottom: 2px solid var(--border);
+  }
+  .rth {
+    padding: 11px 14px;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 4px;
+    cursor: pointer; user-select: none;
+    transition: color 0.15s;
+  }
+  .rth:hover { color: var(--text); }
+  .rth.sort-asc::after { content: ' ↑'; color: var(--blue); }
+  .rth.sort-desc::after { content: ' ↓'; color: var(--blue); }
+  .rth-price { border-left: 1px solid var(--border); justify-content: center; text-align: center; }
+
+  .rt-row {
+    display: grid;
+    grid-template-columns: 2.4fr 1.6fr 1fr 0.85fr 0.85fr 0.85fr 0.85fr 90px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .rt-row:last-child { border-bottom: none; }
+  .rt-row:hover { background: #f5f8ff; }
+  .rt-row:hover .rta-btn { opacity: 1; }
+
+  .rta { padding: 13px 14px; }
+
+  /* itinerario cell */
+  .rta-itin {}
+  .rta-route { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 3px; display: flex; align-items: center; gap: 6px; }
+  .rta-arr { color: var(--blue); font-size: 11px; }
+  .rta-stops { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+
+  /* naviera cell */
+  .rta-line {}
+  .line-chip {
+    display: inline-flex; align-items: center;
+    background: var(--navy); color: #fff;
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.07em;
+    padding: 3px 9px; border-radius: 4px; margin-bottom: 4px;
+  }
+  .rta-ship { font-size: 12px; color: var(--text2); }
+  .rta-nights { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  /* fecha cell */
+  .rta-date { font-size: 13px; font-weight: 500; color: var(--text); }
+
+  /* precio cells */
+  .rta-price {
+    border-left: 1px solid var(--border);
+    padding: 13px 10px;
+    text-align: center;
+  }
+  .price-val { font-size: 14px; font-weight: 700; color: var(--text); display: block; }
+  .price-promo { color: var(--promo); }
+  .price-badge {
+    display: inline-block; background: var(--promo-bg);
+    color: var(--promo); font-size: 8px; font-weight: 800;
+    letter-spacing: 0.08em; padding: 2px 5px; border-radius: 3px; margin-top: 3px;
+  }
+
+  /* accion cell */
+  .rta-action { padding: 13px 12px; display: flex; justify-content: flex-end; }
+  .rta-btn {
+    background: var(--blue); color: #fff;
+    border: none; border-radius: 8px;
+    font-family: inherit; font-size: 12.5px; font-weight: 600;
+    padding: 9px 16px; cursor: pointer;
+    transition: background 0.15s, transform 0.12s;
+    box-shadow: 0 2px 10px rgba(30,94,255,0.25);
+    opacity: 0.85;
+    white-space: nowrap;
+  }
+  .rta-btn:hover { background: var(--blue-h); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(30,94,255,0.35); }
+
+  /* pagination */
+  .pagination {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 16px 0 4px;
+  }
+  .pg-btn {
+    width: 34px; height: 34px; border-radius: 8px;
+    border: 1.5px solid var(--border); background: #fff;
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    color: var(--text2); cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pg-btn:hover { border-color: var(--blue); color: var(--blue); }
+  .pg-btn.on { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 700; }
+  .pg-btn.arr { font-size: 11px; }
+
+  /* ─────────── MODAL ─────────── */
+  .overlay {
+    display: none; position: fixed; inset: 0; z-index: 500;
+    background: rgba(8,16,32,0.65); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  .overlay.open { display: flex; }
+
+  .modal {
+    background: #fff; border-radius: 18px;
+    width: 960px; max-width: 100%;
+    max-height: 90vh; overflow: hidden;
+    display: flex; box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    position: relative;
+    animation: modalIn 0.22s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.97) translateY(8px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .m-sidebar {
+    width: 196px; flex-shrink: 0;
+    background: var(--bg2); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+  }
+  .m-cruise-info {
+    padding: 20px 16px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .m-cruise-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .m-cruise-sub { font-size: 12px; color: var(--muted); }
+  .m-nav { flex: 1; padding: 8px 0; }
+  .mni {
+    display: flex; align-items: center; gap: 9px;
+    padding: 10px 16px; font-size: 13px; font-weight: 500;
+    color: var(--text2); cursor: pointer;
+    transition: all 0.15s; border-left: 2px solid transparent;
+  }
+  .mni:hover { color: var(--text); background: rgba(30,94,255,0.05); }
+  .mni.on { color: var(--blue); background: #eef2ff; border-left-color: var(--blue); font-weight: 600; }
+  .mni-ic { width: 18px; text-align: center; font-size: 15px; }
+
+  .m-actions {
+    padding: 14px;
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .m-btn-pdf {
+    width: 100%; background: var(--navy); color: #fff;
+    border: none; border-radius: 8px; font-family: inherit;
+    font-size: 13px; font-weight: 600; padding: 11px;
+    cursor: pointer; transition: background 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .m-btn-pdf:hover { background: var(--navy2); }
+  .m-btn-book {
+    width: 100%; background: var(--blue); color: #fff;
+    border: none; border-radius: 8px; font-family: inherit;
+    font-size: 13px; font-weight: 600; padding: 11px;
+    cursor: pointer; transition: background 0.15s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    box-shadow: 0 3px 12px rgba(30,94,255,0.3);
+  }
+  .m-btn-book:hover { background: var(--blue-h); }
+
+  .m-body { flex: 1; overflow-y: auto; padding: 28px 30px; }
+  .m-close {
+    position: absolute; top: 14px; right: 14px; z-index: 10;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--bg2); border: 1px solid var(--border);
+    color: var(--text2); font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .m-close:hover { background: var(--border); }
+
+  /* modal content */
+  .ship-banner {
+    border-radius: 12px; overflow: hidden;
+    height: 200px; position: relative; margin-bottom: 18px;
+  }
+  .ship-banner img { width: 100%; height: 100%; object-fit: cover; }
+  .ship-banner-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 24px 18px 14px;
+    background: linear-gradient(0deg, rgba(8,18,40,0.88) 0%, transparent 100%);
+    font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.3px;
+  }
+
+  .ship-stats {
+    display: grid; grid-template-columns: repeat(7,1fr);
+    border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden; margin-bottom: 18px;
+  }
+  .sc {
+    padding: 11px 6px; text-align: center;
+    border-right: 1px solid var(--border); background: var(--bg2);
+  }
+  .sc:last-child { border-right: none; }
+  .sc-v { display: block; font-size: 14px; font-weight: 700; color: var(--navy); }
+  .sc-l { font-size: 9.5px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.07em; }
+
+  .m-desc { font-size: 13.5px; color: var(--text2); line-height: 1.75; }
+  .m-section-title { font-size: 19px; font-weight: 700; color: var(--navy); margin-bottom: 18px; }
+
+  .itin-list { display: flex; flex-direction: column; }
+  .iday { display: grid; grid-template-columns: 50px 1fr; }
+  .iday-left { display: flex; flex-direction: column; align-items: center; padding-bottom: 24px; }
+  .iday-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px;
+    background: var(--blue); border: 2px solid #fff;
+    box-shadow: 0 0 0 2px var(--blue);
+  }
+  .iday-dot.sea { background: var(--muted); box-shadow: 0 0 0 2px var(--muted); }
+  .iday-line { width: 1px; flex:1; background: var(--border); margin-top: 4px; }
+  .iday-right { padding-bottom: 24px; }
+  .iday-n { font-size: 10.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .iday-p { font-size: 14.5px; font-weight: 600; color: var(--text); margin: 3px 0 4px; }
+  .iday-d { font-size: 12.5px; color: var(--text2); line-height: 1.55; }
+
+  /* price summary in modal */
+  .price-summary {
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 10px;
+    margin-bottom: 20px;
+  }
+  .ps-card {
+    border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 14px; text-align: center; background: var(--bg2);
+    transition: border-color 0.15s;
+  }
+  .ps-card.promo { border-color: var(--promo); background: var(--promo-bg); }
+  .ps-type { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .ps-price { font-size: 20px; font-weight: 700; color: var(--navy); }
+  .ps-card.promo .ps-price { color: var(--promo); }
+  .ps-per { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+  .ps-badge { display: inline-block; background: var(--promo); color: #fff; font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 3px; margin-top: 5px; letter-spacing: 0.06em; }
+
+  /* footer */
+  footer {
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .ft-left { font-size: 12.5px; color: var(--muted); }
+  .ft-left strong { color: var(--text); }
+  .ft-links { display: flex; gap: 20px; }
+  .ft-links a { font-size: 12px; color: var(--muted); text-decoration: none; }
+  .ft-links a:hover { color: var(--blue); }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="n-logo">
+    <div class="n-mark">G</div>
+    <span class="n-name">GEIST <em>Cruceros</em></span>
+  </a>
+  <div class="n-links">
+    <a href="#" class="on">🚢 Cruceros</a>
+    <a href="#">Mis reservas</a>
+    <a href="#">Mis presupuestos</a>
+    <a href="#">Mis grupos</a>
+  </div>
+  <div class="n-user">
+    <div class="n-av">AG</div>
+    <span class="n-uname">Agencia Demo &nbsp;▾</span>
+  </div>
+</nav>
+
+<!-- HERO + SEARCH -->
+<div class="hero">
+  <div class="hero-inner">
+
+    <!-- Título izquierda -->
+    <div class="hero-title-block">
+      <div class="hero-eyebrow">⚓ Portal mayorista</div>
+      <div class="hero-title">Buscador<br>de Cruceros</div>
+      <div class="hero-stats">
+        <div class="hs"><span class="hs-n">60+</span><span class="hs-l">Navieras</span></div>
+        <div class="hs-div"></div>
+        <div class="hs"><span class="hs-n">1.000+</span><span class="hs-l">Barcos</span></div>
+        <div class="hs-div"></div>
+        <div class="hs"><span class="hs-n">Real time</span><span class="hs-l">Disponibilidad</span></div>
+      </div>
+    </div>
+
+    <!-- Buscador derecha -->
+    <div class="search-panel">
+
+      <!-- Fila principal: los campos más importantes en una barra unificada -->
+      <div class="search-bar">
+        <div class="sb-field sb-destination">
+          <div class="sb-icon">🌍</div>
+          <div class="sb-content">
+            <div class="sb-label">Destino</div>
+            <div class="sb-value">Mediterráneo</div>
+          </div>
+        </div>
+        <div class="sb-sep"></div>
+        <div class="sb-field">
+          <div class="sb-icon">📅</div>
+          <div class="sb-content">
+            <div class="sb-label">Fecha de salida</div>
+            <div class="sb-value">10 may 2026</div>
+          </div>
+        </div>
+        <div class="sb-sep"></div>
+        <div class="sb-field">
+          <div class="sb-icon">🌙</div>
+          <div class="sb-content">
+            <div class="sb-label">Duración</div>
+            <div class="sb-value">Cualquier duración</div>
+          </div>
+        </div>
+        <div class="sb-sep"></div>
+        <div class="sb-field">
+          <div class="sb-icon">👥</div>
+          <div class="sb-content">
+            <div class="sb-label">Pasajeros</div>
+            <div class="sb-value">2 adultos</div>
+          </div>
+        </div>
+        <button class="sb-btn" onclick="searchCruises()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Buscar
+        </button>
+      </div>
+
+      <!-- Fila secundaria: filtros avanzados como chips clicables -->
+      <div class="search-advanced">
+        <span class="sa-label">Más filtros:</span>
+        <div class="sa-chip active">
+          <span class="sa-chip-icon">⚓</span> Naviera / Barco
+        </div>
+        <div class="sa-chip">
+          <span class="sa-chip-icon">↗</span> Puerto salida
+        </div>
+        <div class="sa-chip">
+          <span class="sa-chip-icon">↙</span> Puerto llegada
+        </div>
+        <div class="sa-chip sa-chip-tag">
+          <span class="sa-chip-icon">📍</span> Pasar por: <strong>Mykonos</strong>
+          <span class="sa-remove">✕</span>
+        </div>
+        <button class="sa-clear">Limpiar todo</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="fc">
+      <div class="fc-head">Tasas <span class="ic">▾</span></div>
+      <div class="fc-body">
+        <div class="tog-row">
+          <span class="tog-lbl">Incluir tasas</span>
+          <div class="tog"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc">
+      <div class="fc-head">Precio por <span class="ic">▾</span></div>
+      <div class="fc-body">
+        <div class="rad-row">
+          <div class="rad on" onclick="radClick(this)">Huésped</div>
+          <div class="rad" onclick="radClick(this)">Cabina</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc">
+      <div class="fc-head">Tipo de cabina <span class="ic">▾</span></div>
+      <div class="fc-body">
+        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq"></div><span class="cb-lbl">Interior</span><span class="cb-val">US$ 890</span></div>
+        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq on">✓</div><span class="cb-lbl">Exterior</span><span class="cb-val">US$ 1.221</span></div>
+        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq"></div><span class="cb-lbl">Balcón</span><span class="cb-val">US$ 2.890</span></div>
+        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq"></div><span class="cb-lbl">Suite</span><span class="cb-val">US$ 4.100</span></div>
+        <div class="fa"><button class="fa-c">Limpiar</button><button class="fa-a">Aplicar</button></div>
+      </div>
+    </div>
+
+    <div class="fc">
+      <div class="fc-head">Navieras <span class="ic">▾</span></div>
+      <div class="fc-body">
+        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq on">✓</div><span class="cb-lbl">Norwegian</span><span class="cb-val">3</span></div>
+        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq on">✓</div><span class="cb-lbl">MSC</span><span class="cb-val">4</span></div>
+        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq on">✓</div><span class="cb-lbl">Royal Caribbean</span><span class="cb-val">2</span></div>
+        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq"></div><span class="cb-lbl">Costa</span><span class="cb-val">2</span></div>
+        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq"></div><span class="cb-lbl">Celebrity</span><span class="cb-val">1</span></div>
+        <div class="fa"><button class="fa-c">Limpiar</button><button class="fa-a">Aplicar</button></div>
+      </div>
+    </div>
+
+    <div class="fc">
+      <div class="fc-head">Promociones <span class="ic">▾</span></div>
+      <div class="fc-body">
+        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq on">✓</div><span class="cb-lbl" style="font-size:12px;">NCL 50% + Free At Sea</span></div>
+        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq"></div><span class="cb-lbl" style="font-size:12px;">MSC Early Booking</span></div>
+        <div class="fa"><button class="fa-c">Limpiar</button><button class="fa-a">Aplicar</button></div>
+      </div>
+    </div>
+
+    <div class="fc">
+      <div class="fc-head">Precio <span class="ic">▾</span></div>
+      <div class="fc-body">
+        <div class="pr-row">
+          <input class="pr-in" placeholder="Desde US$" type="number">
+          <span class="pr-sep">—</span>
+          <input class="pr-in" placeholder="Hasta US$" type="number">
+        </div>
+        <div class="fa"><button class="fa-c">Limpiar</button><button class="fa-a">Aplicar</button></div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- RESULTS -->
+  <div class="results-area">
+
+    <div class="r-header">
+      <div class="r-count" id="resultsCount"><strong>12 cruceros</strong> encontrados</div>
+      <div class="r-controls">
+        <select class="r-sel">
+          <option>⭐ Recomendado</option>
+          <option>↑ Menor precio</option>
+          <option>↓ Mayor precio</option>
+          <option>📅 Fecha más próxima</option>
+          <option>🌙 Duración</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="results-table">
+      <!-- HEAD -->
+      <div class="rt-head">
+        <div class="rth">Itinerario</div>
+        <div class="rth">Naviera / Barco</div>
+        <div class="rth rth-price" style="border-left:none;">Salida</div>
+        <div class="rth rth-price">Interior</div>
+        <div class="rth rth-price">Exterior</div>
+        <div class="rth rth-price">Balcón</div>
+        <div class="rth rth-price">Suite</div>
+        <div class="rth"></div>
+      </div>
+
+      <!-- ROWS dinámicos -->
+      <div id="resultsBody">
+        <!-- se carga con JS al buscar -->
+      </div>
+
+        <!-- PAGINATION -->
+    <div class="pagination">
+      <button class="pg-btn arr">‹</button>
+      <button class="pg-btn on">1</button>
+      <button class="pg-btn">2</button>
+      <button class="pg-btn arr">›</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-left"><strong>Geist Turismo</strong> · Operador Mayorista · Legajo 12599 · IATA 55503943</div>
+  <div class="ft-links">
+    <a href="#">Sobre Nosotros</a>
+    <a href="#">Info Administrativa</a>
+    <a href="#">Contacto</a>
+    <a href="#">Política de Privacidad</a>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="overlay" id="ov" onclick="handleOv(event)">
+  <div class="modal">
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <div class="m-sidebar">
+      <div class="m-cruise-info">
+        <div class="m-cruise-name">Norwegian Pearl</div>
+        <div class="m-cruise-sub">10 may 2026 · 7 noches</div>
+      </div>
+      <div class="m-nav">
+        <div class="mni" onclick="setTab('itin',this)"><span class="mni-ic">🗓</span> Itinerario</div>
+        <div class="mni on" onclick="setTab('barco',this)"><span class="mni-ic">🚢</span> El Barco</div>
+        <div class="mni" onclick="setTab('precios',this)"><span class="mni-ic">💰</span> Precios</div>
+        <div class="mni" onclick="setTab('entret',this)"><span class="mni-ic">🎭</span> Entretenimiento</div>
+        <div class="mni" onclick="setTab('cabinas',this)"><span class="mni-ic">🛏</span> Cabinas</div>
+        <div class="mni" onclick="setTab('fotos',this)"><span class="mni-ic">📷</span> Fotos</div>
+        <div class="mni" onclick="setTab('specs',this)"><span class="mni-ic">📋</span> Especificaciones</div>
+      </div>
+      <div class="m-actions">
+        <button class="m-btn-pdf">📄 &nbsp;Presupuesto PDF</button>
+        <button class="m-btn-book">✅ &nbsp;Reservar ahora</button>
+      </div>
+    </div>
+    <div class="m-body">
+
+      <div id="tab-barco">
+        <div class="ship-banner">
+          <img src="https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80" alt="Norwegian Pearl">
+          <div class="ship-banner-overlay">Norwegian Pearl</div>
+        </div>
+        <div class="ship-stats">
+          <div class="sc"><span class="sc-v">Medio</span><span class="sc-l">Tamaño</span></div>
+          <div class="sc"><span class="sc-v">2006</span><span class="sc-l">Inauguración</span></div>
+          <div class="sc"><span class="sc-v">2021</span><span class="sc-l">Última reforma</span></div>
+          <div class="sc"><span class="sc-v">15</span><span class="sc-l">Decks</span></div>
+          <div class="sc"><span class="sc-v">2.394</span><span class="sc-l">Pasajeros</span></div>
+          <div class="sc"><span class="sc-v">1.197</span><span class="sc-l">Cabinas</span></div>
+          <div class="sc"><span class="sc-v">1.072</span><span class="sc-l">Tripulantes</span></div>
+        </div>
+        <p class="m-desc">El Norwegian Pearl es un barco de tamaño medio de Norwegian Cruise Line, reconocido por su diseño con obras de arte en el casco. Ofrece Freestyle Cruising con libertad total de horarios, más de 15 restaurantes y una amplia propuesta de entretenimiento nocturno.</p>
+      </div>
+
+      <div id="tab-itin" style="display:none">
+        <div class="m-section-title">Itinerario — 7 noches · Mediterráneo</div>
+        <div class="itin-list">
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 1 · 10 may</div><div class="iday-p">Atenas (Pireo), Grecia — Embarque</div><div class="iday-d">Embarque 14:00 · Salida 20:00.</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 2 · 11 may</div><div class="iday-p">Mykonos, Grecia</div><div class="iday-d">Llegada 08:00 · Salida 20:00. Molinos de viento y playas.</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 3 · 12 may</div><div class="iday-p">Katakolo, Grecia</div><div class="iday-d">Llegada 08:00 · Salida 16:00. Excursiones a Olimpia.</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 4 · 13 may</div><div class="iday-p">Corfú, Grecia</div><div class="iday-d">Llegada 08:00 · Salida 18:00. Casco histórico UNESCO.</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 5 · 14 may</div><div class="iday-p">Kotor, Montenegro</div><div class="iday-d">Llegada 08:00 · Salida 19:00. Ciudad medieval amurallada UNESCO.</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 6 · 15 may</div><div class="iday-p">Split, Croacia</div><div class="iday-d">Llegada 08:00 · Salida 19:00. Palacio de Diocleciano.</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 7 · 16 may</div><div class="iday-p">Koper, Eslovenia</div><div class="iday-d">Llegada 08:00 · Salida 18:00. Acceso a Venecia.</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div></div><div class="iday-right"><div class="iday-n">Día 8 · 17 may</div><div class="iday-p">Ravena, Italia — Desembarque</div><div class="iday-d">Llegada 06:00 · Desembarque desde las 08:00.</div></div></div>
+        </div>
+      </div>
+
+      <div id="tab-precios" style="display:none">
+        <div class="m-section-title">Precios por cabina — 2 adultos</div>
+        <div class="price-summary">
+          <div class="ps-card promo">
+            <div class="ps-type">Interior</div>
+            <div class="ps-price">US$ 1.221</div>
+            <div class="ps-per">por huésped</div>
+            <span class="ps-badge">PROMO</span>
+          </div>
+          <div class="ps-card promo">
+            <div class="ps-type">Exterior</div>
+            <div class="ps-price">US$ 1.661</div>
+            <div class="ps-per">por huésped</div>
+            <span class="ps-badge">PROMO</span>
+          </div>
+          <div class="ps-card">
+            <div class="ps-type">Balcón</div>
+            <div class="ps-price">US$ 3.073</div>
+            <div class="ps-per">por huésped</div>
+          </div>
+          <div class="ps-card promo">
+            <div class="ps-type">Suite</div>
+            <div class="ps-price">US$ 3.136</div>
+            <div class="ps-per">por huésped</div>
+            <span class="ps-badge">PROMO</span>
+          </div>
+        </div>
+        <p class="m-desc">Precios en USD por persona, base doble, impuestos incluidos. Sujeto a disponibilidad.</p>
+      </div>
+
+      <div id="tab-entret" style="display:none">
+        <div class="m-section-title">Entretenimiento a bordo</div>
+        <p class="m-desc">Shows en vivo, casino, spa Mandara, piscinas, restaurantes temáticos, club nocturno y actividades deportivas en cubierta. Más de 15 opciones gastronómicas y entretenimiento cada noche.</p>
+      </div>
+      <div id="tab-cabinas" style="display:none">
+        <div class="m-section-title">Selección de Cabinas</div>
+        <p class="m-desc">El deck plan interactivo estará disponible al conectar con la API de Widgety — permitirá seleccionar cabinas individuales con visualización en el plano del buque.</p>
+      </div>
+      <div id="tab-fotos" style="display:none">
+        <div class="m-section-title">Galería de fotos</div>
+        <p class="m-desc">Galería disponible al integrar con la API de contenido.</p>
+      </div>
+      <div id="tab-specs" style="display:none">
+        <div class="m-section-title">Especificaciones técnicas</div>
+        <p class="m-desc">Eslora: 294m &nbsp;·&nbsp; Manga: 32m &nbsp;·&nbsp; Arqueo: 93.530 GT &nbsp;·&nbsp; Velocidad: 25 nudos &nbsp;·&nbsp; Bandera: Bahamas</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ── LOGIN ── */
+  .login-screen {
+    position: fixed; inset: 0; z-index: 1000;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .login-screen.hidden { display: none; }
+  .login-box {
+    background: #fff; border-radius: 18px;
+    padding: 40px; width: 380px;
+    box-shadow: var(--shadow-lg);
+  }
+  .login-logo {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 28px;
+  }
+  .login-logo .lm {
+    width: 38px; height: 38px; border-radius: 9px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; font-weight: 800; color: #fff;
+  }
+  .login-logo-text { font-size: 20px; font-weight: 700; color: var(--navy); }
+  .login-logo-text em { color: var(--blue); font-style: normal; }
+  .login-title { font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .login-sub { font-size: 13.5px; color: var(--muted); margin-bottom: 26px; }
+  .login-field { margin-bottom: 14px; }
+  .login-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .login-field input {
+    width: 100%; border: 1.5px solid var(--border); border-radius: 9px;
+    padding: 11px 14px; font-size: 14px; font-family: inherit;
+    color: var(--text); outline: none; transition: border-color 0.15s;
+  }
+  .login-field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,94,255,0.1); }
+  .login-error { background: #fff0f0; border: 1px solid #ffc0c0; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #c0392b; margin-bottom: 14px; display: none; }
+  .login-error.show { display: block; }
+  .btn-login {
+    width: 100%; background: var(--blue); color: #fff;
+    border: none; border-radius: 9px; font-family: inherit;
+    font-size: 14px; font-weight: 700; padding: 13px;
+    cursor: pointer; transition: background 0.15s;
+    box-shadow: 0 4px 14px rgba(30,94,255,0.35);
+    margin-top: 4px;
+  }
+  .btn-login:hover { background: var(--blue-h); }
+  .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+  .login-footer { text-align: center; margin-top: 18px; font-size: 12px; color: var(--muted); }
+
+  /* ── LOADING ── */
+  .loading-row {
+    grid-column: 1/-1;
+    padding: 60px 20px; text-align: center;
+    color: var(--muted); font-size: 14px;
+  }
+  .spinner {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 3px solid var(--border);
+    border-top-color: var(--blue);
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty-state {
+    padding: 60px 20px; text-align: center; color: var(--muted);
+  }
+  .empty-state .ei { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+</style>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="lm">G</div>
+      <span class="login-logo-text">GEIST <em>Cruceros</em></span>
+    </div>
+    <div class="login-title">Bienvenido</div>
+    <p class="login-sub">Ingresá con tu cuenta de agencia para acceder al portal B2B.</p>
+    <div class="login-error" id="loginError">Email o contraseña incorrectos.</div>
+    <div class="login-field">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="agencia@ejemplo.com" autocomplete="email">
+    </div>
+    <div class="login-field">
+      <label>Contraseña</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-login" id="btnLogin" onclick="doLogin()">Ingresar al portal</button>
+    <div class="login-footer">Portal exclusivo para agencias · Geist Turismo</div>
+  </div>
+</div>
+
+<script>
+  // ─────────────────────────────────────────
+  // CONFIG
+  // ─────────────────────────────────────────
+  const API = 'https://geist-cruises-backend-production.up.railway.app/api';
+  let TOKEN = localStorage.getItem('geist_token') || null;
+  let currentCruise = null;
+
+  // ─────────────────────────────────────────
+  // INIT
+  // ─────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    // PREVIEW MODE: mostrar app directamente sin login
+    showApp();
+    document.getElementById('resultsBody').innerHTML = getExampleRows();
+    // if (TOKEN) {
+    //   showApp();
+    //   loadFilters();
+    // }
+    // Enter en login
+    document.getElementById('loginPass').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+  });
+
+  // ─────────────────────────────────────────
+  // AUTH
+  // ─────────────────────────────────────────
+  async function doLogin() {
+    // PREVIEW: login directo sin backend
+    showApp();
+    document.getElementById('resultsBody').innerHTML = getExampleRows();
+    return;
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPass').value;
+    const btn   = document.getElementById('btnLogin');
+    const err   = document.getElementById('loginError');
+
+    if (!email || !pass) {
+      err.textContent = 'Completá email y contraseña.';
+      err.classList.add('show'); return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Ingresando...';
+    err.classList.remove('show');
+
+    try {
+      const res = await fetch(`${API}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass }),
+      });
+      const data = await res.json();
+
+      if (!data.success) throw new Error(data.error);
+
+      TOKEN = data.token;
+      localStorage.setItem('geist_token', TOKEN);
+
+      // Actualizar nombre de agencia en nav
+      if (data.agency?.name) {
+        document.querySelector('.n-uname').textContent = `${data.agency.name} ▾`;
+      }
+
+      showApp();
+      loadFilters();
+    } catch (e) {
+      err.textContent = e.message || 'Error al ingresar. Intentá de nuevo.';
+      err.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Ingresar al portal';
+    }
+  }
+
+  function showApp() {
+    document.getElementById('loginScreen').classList.add('hidden');
+  }
+
+  function logout() {
+    localStorage.removeItem('geist_token');
+    TOKEN = null;
+    location.reload();
+  }
+
+  // ─────────────────────────────────────────
+  // API HELPER
+  // ─────────────────────────────────────────
+  async function apiFetch(path, opts = {}) {
+    const res = await fetch(`${API}${path}`, {
+      ...opts,
+      headers: {
+        'Authorization': `Bearer ${TOKEN}`,
+        'Content-Type': 'application/json',
+        ...opts.headers,
+      },
+    });
+    if (res.status === 401 || res.status === 403) { logout(); return; }
+    return res.json();
+  }
+
+  // ─────────────────────────────────────────
+  // CARGAR FILTROS (navieras, puertos)
+  // ─────────────────────────────────────────
+  async function loadFilters() {
+    try {
+      const data = await apiFetch('/cruises/filters');
+      if (!data?.success) return;
+
+      // Poblar dropdown de navieras si la API devuelve datos
+      if (data.data?.operators?.length) {
+        console.log('Navieras disponibles:', data.data.operators.length);
+      }
+    } catch(e) {
+      console.log('Filtros: usando datos de ejemplo');
+    }
+  }
+
+  // ─────────────────────────────────────────
+  // BUSCAR CRUCEROS
+  // ─────────────────────────────────────────
+  async function searchCruises() {
+    const tbody = document.getElementById('resultsBody');
+    const countEl = document.getElementById('resultsCount');
+
+    // Mostrar loading
+    tbody.innerHTML = `<div class="loading-row"><div class="spinner"></div>Buscando cruceros...</div>`;
+
+    try {
+      // Recoger filtros del formulario
+      const params = new URLSearchParams({
+        guests: 2,
+        page: 1,
+        per_page: 20,
+      });
+
+      const data = await apiFetch(`/cruises?${params}`);
+
+      if (!data?.success) throw new Error('Error en la búsqueda');
+
+      const cruises = data.data?.cruises || data.data || [];
+
+      if (!cruises.length) {
+        tbody.innerHTML = `<div class="empty-state"><div class="ei">🔍</div><p>No se encontraron cruceros con esos filtros.<br>Probá con otros criterios.</p></div>`;
+        countEl.innerHTML = '<strong>0 cruceros</strong> encontrados';
+        return;
+      }
+
+      countEl.innerHTML = `<strong>${cruises.length} cruceros</strong> encontrados`;
+      renderCruises(cruises);
+
+    } catch(e) {
+      console.error('Search error:', e);
+      // Si Widgety aún no está configurado, mostrar datos de ejemplo
+      countEl.innerHTML = '<strong>Datos de ejemplo</strong> · Widgety pendiente';
+      tbody.innerHTML = getExampleRows();
+    }
+  }
+
+  // ─────────────────────────────────────────
+  // RENDERIZAR RESULTADOS REALES
+  // ─────────────────────────────────────────
+  function renderCruises(cruises) {
+    const tbody = document.getElementById('resultsBody');
+    tbody.innerHTML = cruises.map(c => {
+      const prices = c.prices || c.cabin_prices || {};
+      return `
+        <div class="rt-row" onclick="openCruiseDetail('${c.ref || c.id}')">
+          <div class="rta rta-itin">
+            <div class="rta-route">${c.departure_port_name || '—'} <span class="rta-arr">→</span> ${c.arrival_port_name || '—'}</div>
+            <div class="rta-stops">${(c.ports_of_call || []).join(' · ') || '—'}</div>
+          </td>
+          <div class="rta rta-line">
+            <div class="line-chip">${c.operator_name || c.operator || '—'}</div>
+            <div class="rta-ship">${c.ship_name || '—'}</div>
+            <div class="rta-nights">${c.duration || '—'} noches</div>
+          </td>
+          <div class="rta rta-date">${formatDate(c.departure_date)}</td>
+          <div class="rta rta-price">${priceCell(prices.interior, prices.interior_promo)}</td>
+          <div class="rta rta-price">${priceCell(prices.exterior, prices.exterior_promo)}</td>
+          <div class="rta rta-price">${priceCell(prices.balcony, prices.balcony_promo)}</td>
+          <div class="rta rta-price">${priceCell(prices.suite, prices.suite_promo)}</td>
+          <div class="rta rta-action"><button class="rta-btn">Ver →</button></td>
+        </div>`;
+    }).join('');
+  }
+
+  function priceCell(price, isPromo) {
+    if (!price) return '<span style="color:var(--muted);font-size:12px;">—</span>';
+    return `
+      <span class="price-val ${isPromo ? 'price-promo' : ''}">$${Number(price).toLocaleString('es-AR')}</span>
+      ${isPromo ? '<span class="price-badge">PROMO</span>' : ''}`;
+  }
+
+  function formatDate(d) {
+    if (!d) return '—';
+    return new Date(d).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  // ─────────────────────────────────────────
+  // DETALLE DE CRUCERO
+  // ─────────────────────────────────────────
+  async function openCruiseDetail(ref) {
+    document.getElementById('ov').classList.add('open');
+    document.getElementById('tab-barco').innerHTML = `
+      <div class="loading-row"><div class="spinner"></div>Cargando información...</div>`;
+
+    try {
+      const data = await apiFetch(`/cruises/${ref}`);
+      if (!data?.success) throw new Error();
+      currentCruise = data.data;
+      renderCruiseModal(data.data);
+    } catch(e) {
+      // Mostrar datos de ejemplo si Widgety no está listo
+      renderExampleModal();
+    }
+  }
+
+  function renderCruiseModal(c) {
+    const ship = c.ship || {};
+    document.querySelector('.m-cruise-name').textContent = ship.name || c.ship_name || 'Crucero';
+    document.querySelector('.m-cruise-sub').textContent =
+      `${formatDate(c.departure_date)} · ${c.duration} noches`;
+
+    document.getElementById('tab-barco').innerHTML = `
+      <div class="ship-banner">
+        <img src="${ship.image_url || 'https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80'}" alt="${ship.name}">
+        <div class="ship-banner-overlay">${ship.name || '—'}</div>
+      </div>
+      <div class="ship-stats">
+        <div class="sc"><span class="sc-v">${ship.size || '—'}</span><span class="sc-l">Tamaño</span></div>
+        <div class="sc"><span class="sc-v">${ship.year_built || '—'}</span><span class="sc-l">Inauguración</span></div>
+        <div class="sc"><span class="sc-v">${ship.last_refurbished || '—'}</span><span class="sc-l">Última reforma</span></div>
+        <div class="sc"><span class="sc-v">${ship.decks || '—'}</span><span class="sc-l">Decks</span></div>
+        <div class="sc"><span class="sc-v">${ship.passengers || '—'}</span><span class="sc-l">Pasajeros</span></div>
+        <div class="sc"><span class="sc-v">${ship.cabins || '—'}</span><span class="sc-l">Cabinas</span></div>
+        <div class="sc"><span class="sc-v">${ship.crew || '—'}</span><span class="sc-l">Tripulantes</span></div>
+      </div>
+      <p class="m-desc">${ship.description || 'Información del barco disponible próximamente.'}</p>`;
+  }
+
+  function renderExampleModal() {
+    document.getElementById('tab-barco').innerHTML = `
+      <div class="ship-banner">
+        <img src="https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80" alt="Norwegian Pearl">
+        <div class="ship-banner-overlay">Norwegian Pearl</div>
+      </div>
+      <div class="ship-stats">
+        <div class="sc"><span class="sc-v">Medio</span><span class="sc-l">Tamaño</span></div>
+        <div class="sc"><span class="sc-v">2006</span><span class="sc-l">Inauguración</span></div>
+        <div class="sc"><span class="sc-v">2021</span><span class="sc-l">Última reforma</span></div>
+        <div class="sc"><span class="sc-v">15</span><span class="sc-l">Decks</span></div>
+        <div class="sc"><span class="sc-v">2.394</span><span class="sc-l">Pasajeros</span></div>
+        <div class="sc"><span class="sc-v">1.197</span><span class="sc-l">Cabinas</span></div>
+        <div class="sc"><span class="sc-v">1.072</span><span class="sc-l">Tripulantes</span></div>
+      </div>
+      <p class="m-desc">Datos de ejemplo — se reemplazarán con datos reales de Widgety cuando lleguen las keys.</p>`;
+  }
+
+  // ─────────────────────────────────────────
+  // DATOS DE EJEMPLO (mientras llega Widgety)
+  // ─────────────────────────────────────────
+  function getExampleRows() {
+    const rows = [
+      { from:'Atenas', to:'Ravena', stops:'Mykonos · Corfú · Kotor · Split', line:'NORWEGIAN', ship:'Norwegian Pearl', nights:7, date:'10 may 2026', int:'1.221', ext:'1.661', bal:'3.073', sui:'3.136', pi:true, pe:true, ps:true },
+      { from:'Barcelona', to:'Pireo', stops:'Marsella · Génova · Nápoles · Mykonos', line:'MSC', ship:'MSC Bellissima', nights:10, date:'18 jun 2026', int:'1.480', ext:'1.890', bal:'3.450', sui:'5.200', pe:true },
+      { from:'Miami', to:'Miami', stops:'Nassau · St. Thomas · San Juan', line:'ROYAL C.', ship:'Wonder of the Seas', nights:7, date:'5 jul 2026', int:'989', ext:'1.340', bal:'2.780', sui:'6.100', pi:true },
+      { from:'Roma', to:'Barcelona', stops:'Nápoles · Palermo · Ibiza · Mykonos', line:'COSTA', ship:'Costa Smeralda', nights:7, date:'22 ago 2026', int:'1.100', ext:'1.420', bal:'2.600', sui:'4.800', pb:true },
+      { from:'Venecia', to:'Atenas', stops:'Dubrovnik · Mykonos · Santorini', line:'MSC', ship:'MSC Musica', nights:8, date:'15 sep 2026', int:'1.320', ext:'1.750', bal:'3.200', sui:'5.600', pi:true },
+    ];
+    return rows.map(r => `
+      <div class="rt-row" onclick="openModal()">
+        <div class="rta rta-itin">
+          <div class="rta-route">${r.from} <span class="rta-arr">→</span> ${r.to}</div>
+          <div class="rta-stops">${r.stops}</div>
+        </div>
+        <div class="rta rta-line">
+          <div class="line-chip">${r.line}</div>
+          <div class="rta-ship">${r.ship}</div>
+          <div class="rta-nights">${r.nights} noches</div>
+        </div>
+        <div class="rta rta-date">${r.date}</div>
+        <div class="rta rta-price"><span class="price-val ${r.pi?'price-promo':''}">$${r.int}</span>${r.pi?'<span class="price-badge">PROMO</span>':''}</div>
+        <div class="rta rta-price"><span class="price-val ${r.pe?'price-promo':''}">$${r.ext}</span>${r.pe?'<span class="price-badge">PROMO</span>':''}</div>
+        <div class="rta rta-price"><span class="price-val ${r.pb?'price-promo':''}">$${r.bal}</span>${r.pb?'<span class="price-badge">PROMO</span>':''}</div>
+        <div class="rta rta-price"><span class="price-val ${r.ps?'price-promo':''}">$${r.sui}</span>${r.ps?'<span class="price-badge">PROMO</span>':''}</div>
+        <div class="rta rta-action"><button class="rta-btn">Ver →</button></div>
+      </div>`).join('');
+  }
+
+  // ─────────────────────────────────────────
+  // UI HELPERS
+  // ─────────────────────────────────────────
+  function openModal() {
+    document.getElementById('ov').classList.add('open');
+    renderExampleModal();
+  }
+  function closeModal() { document.getElementById('ov').classList.remove('open'); }
+  function handleOv(e) { if(e.target.id==='ov') closeModal(); }
+
+  function setTab(t, el) {
+    ['barco','itin','precios','entret','cabinas','fotos','specs'].forEach(x => {
+      document.getElementById('tab-'+x).style.display = x===t ? 'block' : 'none';
+    });
+    document.querySelectorAll('.mni').forEach(n => n.classList.remove('on'));
+    el.classList.add('on');
+  }
+
+  function radClick(el) {
+    el.closest('.rad-row').querySelectorAll('.rad').forEach(r => r.classList.remove('on'));
+    el.classList.add('on');
+  }
+
+  function cbToggle(el) {
+    const sq = el.querySelector('.cb-sq');
+    if(sq.classList.contains('on')) { sq.classList.remove('on'); sq.textContent=''; }
+    else { sq.classList.add('on'); sq.textContent='✓'; }
+  }
+</script>
+</body>
+</html>

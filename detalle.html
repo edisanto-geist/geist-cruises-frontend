@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norwegian Pearl — Geist Cruceros</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:      #0d1f3c;
+  --navy2:     #162d52;
+  --blue:      #1e5eff;
+  --blue-h:    #1448d4;
+  --blue-soft: #eef2ff;
+  --cyan:      #00b4d8;
+  --promo:     #e85d2a;
+  --promo-bg:  #fff3ee;
+  --green:     #0ab47a;
+  --green-bg:  #edfaf4;
+  --bg:        #f4f6fb;
+  --bg2:       #eef1f8;
+  --border:    #dde3ef;
+  --border2:   #c8d0e4;
+  --text:      #0d1f3c;
+  --text2:     #3d5074;
+  --muted:     #7a8baa;
+  --white:     #ffffff;
+  --shadow:    0 2px 12px rgba(13,31,60,0.07);
+  --shadow-md: 0 6px 28px rgba(13,31,60,0.12);
+  --shadow-lg: 0 16px 56px rgba(13,31,60,0.18);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* ── NAV (idéntico a resultados) ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:300;
+  height:58px; background:var(--navy);
+  display:flex; align-items:center; padding:0 32px;
+  box-shadow:0 2px 16px rgba(0,0,0,0.25);
+}
+.n-logo { display:flex; align-items:center; gap:10px; text-decoration:none; margin-right:28px; }
+.n-mark { width:32px; height:32px; border-radius:8px; background:linear-gradient(135deg,var(--blue),var(--cyan)); display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:800; color:#fff; }
+.n-name { font-size:17px; font-weight:700; color:#fff; }
+.n-name em { color:var(--cyan); font-style:normal; }
+.n-user { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.14); border-radius:100px; padding:4px 14px 4px 6px; cursor:pointer; }
+.n-av { width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--cyan)); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; }
+.n-uname { font-size:13px; font-weight:500; color:rgba(255,255,255,0.88); }
+
+/* ── NAV LINKS ── */
+.n-links { display:flex; flex:1; }
+.n-links a { color:rgba(255,255,255,0.55); text-decoration:none; font-size:13.5px; font-weight:500; padding:6px 14px; border-radius:6px; transition:all 0.15s; }
+.n-links a:hover { color:#fff; background:rgba(255,255,255,0.08); }
+.n-links a.on { color:#fff; background:rgba(30,94,255,0.28); }
+
+/* ── LAYOUT ── */
+.wrap {
+  max-width:1280px; margin:0 auto;
+  padding:80px 32px 60px;
+  display:grid;
+  grid-template-columns:1fr 310px;
+  gap:24px; align-items:start;
+}
+
+/* ── CARD base ── */
+.card {
+  background:var(--white); border:1px solid var(--border);
+  border-radius:14px; overflow:hidden;
+  box-shadow:var(--shadow); margin-bottom:14px;
+}
+.card:last-child { margin-bottom:0; }
+.card-head {
+  padding:14px 20px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.card-title {
+  font-size:13px; font-weight:700; color:var(--text);
+  text-transform:uppercase; letter-spacing:0.08em;
+  display:flex; align-items:center; gap:8px;
+}
+.step-badge {
+  width:22px; height:22px; border-radius:50%;
+  background:var(--navy); color:#fff;
+  font-size:10.5px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.card-body { padding:18px 20px; }
+
+/* ── TIPO CABINA — fila horizontal de selección ── */
+.type-row {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:8px;
+}
+.tcard {
+  border:2px solid var(--border); border-radius:11px;
+  overflow:hidden; cursor:pointer; transition:all 0.18s;
+  position:relative;
+}
+.tcard:hover { border-color:var(--border2); transform:translateY(-1px); box-shadow:var(--shadow); }
+.tcard.on { border-color:var(--blue); box-shadow:0 0 0 3px rgba(30,94,255,0.1); }
+.tcard.promo.on { border-color:var(--promo); box-shadow:0 0 0 3px rgba(232,93,42,0.1); }
+.tc-img { height:80px; overflow:hidden; }
+.tc-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.3s; }
+.tcard:hover .tc-img img { transform:scale(1.05); }
+.tc-foot { padding:8px 10px 10px; }
+.tc-type { font-size:12px; font-weight:700; color:var(--text); margin-bottom:1px; }
+.tc-price { font-size:11px; color:var(--muted); }
+.tc-price strong { color:var(--navy); }
+.tcard.promo .tc-price strong { color:var(--promo); }
+.tc-promo-tag {
+  position:absolute; top:6px; left:6px;
+  background:var(--promo); color:#fff;
+  font-size:8px; font-weight:800; padding:2px 6px;
+  border-radius:3px; letter-spacing:0.07em;
+}
+.tc-check {
+  position:absolute; top:6px; right:6px;
+  width:20px; height:20px; border-radius:50%;
+  background:var(--blue); color:#fff; font-size:10px;
+  display:none; align-items:center; justify-content:center;
+  box-shadow:0 2px 6px rgba(30,94,255,0.4);
+}
+.tcard.promo .tc-check { background:var(--promo); }
+.tcard.on .tc-check { display:flex; }
+
+/* ── CABINAS — tabla style ── */
+.cabin-table { width:100%; border-collapse:collapse; }
+.cabin-table tr { border-bottom:1px solid var(--border); cursor:pointer; transition:background 0.12s; }
+.cabin-table tr:last-child { border-bottom:none; }
+.cabin-table tr:hover { background:var(--bg); }
+.cabin-table tr.on { background:var(--blue-soft); }
+.ct-img { width:80px; padding:10px 0 10px 0; }
+.ct-img img { width:72px; height:52px; object-fit:cover; border-radius:8px; display:block; }
+.ct-info { padding:10px 14px; }
+.ct-cat { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:2px; }
+.ct-name { font-size:13.5px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.ct-amenities { display:flex; gap:4px; }
+.ct-am { background:var(--bg2); border-radius:4px; padding:3px 7px; font-size:11px; color:var(--text2); }
+.ct-price-col { padding:10px 16px 10px 0; text-align:right; min-width:130px; }
+.ct-price { font-size:18px; font-weight:800; color:var(--navy); display:block; }
+.ct-price.promo { color:var(--promo); }
+.ct-per { font-size:10.5px; color:var(--muted); }
+.ct-sel-btn {
+  display:inline-flex; align-items:center; gap:5px;
+  background:var(--blue); color:#fff; border:none;
+  font-family:inherit; font-size:12px; font-weight:600;
+  padding:7px 14px; border-radius:7px; cursor:pointer;
+  margin-top:6px; transition:background 0.15s;
+}
+.cabin-table tr.on .ct-sel-btn { background:var(--green); }
+.ct-sel-btn:hover { opacity:0.88; }
+
+/* ── EXPERIENCIAS — chips horizontales ── */
+.exp-chips { display:flex; flex-direction:column; gap:10px; }
+.exp-chip {
+  border:1.5px solid var(--border); border-radius:12px;
+  padding:14px 16px; cursor:pointer; transition:all 0.15s;
+  display:grid; grid-template-columns:40px 1fr auto;
+  align-items:center; gap:14px;
+}
+.exp-chip:hover { border-color:var(--border2); background:var(--bg); }
+.exp-chip.on { border-color:var(--blue); background:var(--blue-soft); }
+.ec-icon { width:40px; height:40px; border-radius:10px; background:var(--navy); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.ec-body {}
+.ec-nav { font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:3px; }
+.ec-name { font-size:14px; font-weight:700; color:var(--text); margin-bottom:3px; }
+.ec-desc { font-size:12px; color:var(--text2); line-height:1.45; }
+.ec-tags { display:flex; gap:5px; margin-top:6px; flex-wrap:wrap; }
+.ec-tag { background:var(--bg2); border-radius:4px; padding:2px 8px; font-size:11px; color:var(--text2); }
+.exp-chip.on .ec-tag { background:#dde6ff; }
+.ec-toggle {
+  width:40px; height:23px; border-radius:12px; background:var(--border2);
+  position:relative; flex-shrink:0; transition:background 0.2s;
+}
+.exp-chip.on .ec-toggle { background:var(--blue); }
+.ec-toggle::after {
+  content:''; position:absolute; width:17px; height:17px;
+  border-radius:50%; background:#fff;
+  top:3px; left:3px; transition:left 0.2s;
+  box-shadow:0 1px 3px rgba(0,0,0,0.15);
+}
+.exp-chip.on .ec-toggle::after { left:20px; }
+
+/* ── ADICIONALES ── */
+.adi-list { display:flex; flex-direction:column; }
+.adi-row {
+  display:grid; grid-template-columns:38px 1fr 60px 40px;
+  align-items:center; gap:12px;
+  padding:13px 0; border-bottom:1px solid var(--border);
+}
+.adi-row:last-child { border-bottom:none; }
+.adi-ic { width:38px; height:38px; border-radius:9px; background:var(--bg2); display:flex; align-items:center; justify-content:center; font-size:17px; }
+.adi-info {}
+.adi-name { font-size:13px; font-weight:600; color:var(--text); margin-bottom:1px; }
+.adi-desc { font-size:11.5px; color:var(--muted); line-height:1.4; }
+.adi-price { font-size:13px; font-weight:700; color:var(--green); text-align:right; }
+.adi-sw {
+  width:38px; height:22px; border-radius:11px; background:var(--border2);
+  position:relative; cursor:pointer; transition:background 0.2s; justify-self:end;
+}
+.adi-sw.on { background:var(--blue); }
+.adi-sw::after { content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:left 0.2s; box-shadow:0 1px 3px rgba(0,0,0,0.15); }
+.adi-sw.on::after { left:19px; }
+
+/* ── SIDEBAR ── */
+.sidebar { position:sticky; top:80px; display:flex; flex-direction:column; gap:12px; }
+
+/* Resumen card */
+.sum-card {
+  background:var(--white); border:1px solid var(--border);
+  border-radius:14px; overflow:hidden; box-shadow:var(--shadow);
+}
+.sum-top {
+  padding:16px 18px;
+  border-bottom:1px solid var(--border);
+}
+.sum-cruise-name { font-size:16px; font-weight:800; color:var(--navy); margin-bottom:2px; }
+.sum-cruise-sub { font-size:12px; color:var(--muted); }
+
+/* Itinerario colapsable */
+.itin-trigger {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 18px; cursor:pointer;
+  border-bottom:1px solid var(--border);
+  transition:background 0.15s; background:var(--bg2);
+}
+.itin-trigger:hover { background:var(--bg); }
+.itin-trigger-label { font-size:12px; font-weight:600; color:var(--text2); display:flex; align-items:center; gap:6px; }
+.itin-trigger-arrow { font-size:10px; color:var(--muted); transition:transform 0.25s; }
+.itin-trigger-arrow.open { transform:rotate(180deg); }
+.itin-panel { max-height:0; overflow:hidden; transition:max-height 0.35s ease; }
+.itin-panel.open { max-height:900px; }
+.itin-content { padding:14px 18px; border-bottom:1px solid var(--border); }
+
+.iday { display:grid; grid-template-columns:32px 1fr; margin-bottom:0; }
+.iday-left { display:flex; flex-direction:column; align-items:center; padding-bottom:14px; }
+.iday-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; margin-top:4px; background:var(--blue); border:1.5px solid #fff; box-shadow:0 0 0 2px var(--blue); }
+.iday-dot.sea { background:var(--muted); box-shadow:0 0 0 2px var(--muted); }
+.iday-dot.end { background:var(--green); box-shadow:0 0 0 2px var(--green); }
+.iday-line { width:1px; flex:1; background:var(--border); margin-top:3px; }
+.iday-right { padding-bottom:14px; }
+.iday-n { font-size:9.5px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; }
+.iday-p { font-size:12.5px; font-weight:600; color:var(--text); margin:2px 0; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.iday-badge { font-size:9px; font-weight:700; padding:1px 6px; border-radius:3px; }
+.iday-badge.emb { background:var(--blue-soft); color:var(--blue); }
+.iday-badge.des { background:var(--green-bg); color:var(--green); }
+.iday-t { font-size:10.5px; color:var(--muted); }
+
+/* Meta filas */
+.sum-meta { padding:14px 18px; display:flex; flex-direction:column; gap:9px; border-bottom:1px solid var(--border); }
+.sm-row { display:flex; align-items:center; justify-content:space-between; }
+.sm-lbl { font-size:11.5px; color:var(--muted); }
+.sm-val { font-size:12.5px; font-weight:600; color:var(--text); text-align:right; }
+
+/* Cabina seleccionada */
+.sel-cabin {
+  padding:14px 18px; border-bottom:1px solid var(--border);
+}
+.sel-cabin-empty { font-size:12.5px; color:var(--muted); font-style:italic; }
+.sel-cabin-filled { display:none; }
+.sel-cabin-filled.show { display:block; }
+.sel-cabin-empty.hide { display:none; }
+.scf-type { font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--blue); margin-bottom:2px; }
+.scf-name { font-size:14px; font-weight:700; color:var(--navy); margin-bottom:6px; }
+.scf-price-row { display:flex; align-items:baseline; gap:5px; }
+.scf-price { font-size:24px; font-weight:800; color:var(--navy); letter-spacing:-0.5px; }
+.scf-price.promo { color:var(--promo); }
+.scf-per { font-size:11px; color:var(--muted); }
+.scf-total { font-size:12px; color:var(--text2); margin-top:4px; }
+.scf-savings { display:inline-flex; align-items:center; gap:4px; background:var(--promo-bg); color:var(--promo); font-size:11px; font-weight:700; padding:3px 8px; border-radius:4px; margin-top:6px; }
+
+/* Total */
+.sum-total {
+  padding:14px 18px; background:var(--bg2);
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.st-label { font-size:12px; color:var(--text2); font-weight:600; }
+.st-sub { font-size:10px; color:var(--muted); margin-top:1px; }
+.st-price { font-size:26px; font-weight:800; color:var(--navy); letter-spacing:-0.5px; }
+
+/* Botones */
+.sum-actions { padding:14px 18px; display:flex; flex-direction:column; gap:8px; }
+.btn-confirm {
+  width:100%; background:var(--blue); color:#fff; border:none;
+  font-family:inherit; font-size:14px; font-weight:700; padding:13px;
+  border-radius:10px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  box-shadow:0 4px 14px rgba(30,94,255,0.28); transition:background 0.15s;
+}
+.btn-confirm:hover { background:var(--blue-h); }
+.btn-add {
+  width:100%; background:var(--white); color:var(--navy);
+  border:1.5px solid var(--border); border-radius:10px;
+  font-family:inherit; font-size:13px; font-weight:600; padding:11px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;
+  transition:all 0.15s;
+}
+.btn-add:hover { border-color:var(--navy); background:var(--bg2); }
+
+/* Budget pill */
+.budget-pill {
+  display:none; align-items:center; gap:9px;
+  background:var(--green-bg); border:1px solid rgba(10,180,122,0.28);
+  border-radius:10px; padding:11px 14px;
+}
+.bp-ic { font-size:15px; }
+.bp-txt { flex:1; font-size:12px; color:var(--green); font-weight:600; }
+.bp-badge { background:var(--green); color:#fff; border-radius:100px; padding:1px 9px; font-size:11px; font-weight:700; }
+.bp-link { background:none; border:none; color:var(--green); font-family:inherit; font-size:12px; font-weight:700; cursor:pointer; text-decoration:underline; }
+
+/* Bottom CTA bar */
+.bottom-bar {
+  display:flex; gap:10px; justify-content:flex-end;
+  padding-top:4px;
+}
+.bb-add {
+  background:var(--white); color:var(--navy);
+  border:1.5px solid var(--border2); border-radius:10px;
+  font-family:inherit; font-size:13px; font-weight:600;
+  padding:12px 22px; cursor:pointer;
+  display:flex; align-items:center; gap:7px;
+  transition:all 0.15s;
+}
+.bb-add:hover { border-color:var(--navy); background:var(--bg2); }
+.bb-confirm {
+  background:var(--blue); color:#fff; border:none;
+  border-radius:10px; font-family:inherit;
+  font-size:14px; font-weight:700; padding:12px 28px;
+  cursor:pointer; display:flex; align-items:center; gap:7px;
+  box-shadow:0 4px 14px rgba(30,94,255,0.28);
+  transition:background 0.15s;
+}
+.bb-confirm:hover { background:var(--blue-h); }
+
+/* ── MODAL ── */
+.ov { display:none; position:fixed; inset:0; z-index:500; background:rgba(8,16,32,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:24px; }
+.ov.open { display:flex; }
+.modal { background:#fff; border-radius:18px; width:580px; max-width:100%; max-height:88vh; overflow-y:auto; box-shadow:var(--shadow-lg); animation:mIn 0.2s ease; }
+@keyframes mIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.modal-hd { position:sticky; top:0; background:#fff; padding:18px 22px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.modal-ht { font-size:17px; font-weight:700; color:var(--navy); }
+.modal-x { background:none; border:none; font-size:20px; color:var(--muted); cursor:pointer; }
+.modal-bd { padding:18px 22px; }
+.bitem { border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:10px; }
+.bitem-hd { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
+.bitem-ship { font-size:14px; font-weight:700; color:var(--navy); }
+.bitem-rm { background:none; border:none; color:var(--muted); cursor:pointer; font-size:18px; }
+.bitem-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px 12px; }
+.bitem-d { font-size:12px; color:var(--text2); }
+.bitem-d strong { color:var(--text); }
+.bitem-total { font-size:18px; font-weight:800; color:var(--navy); margin-top:10px; }
+.email-lbl { display:block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text2); margin-bottom:6px; }
+.email-in { width:100%; border:1.5px solid var(--border); border-radius:9px; padding:11px 14px; font-size:14px; font-family:inherit; outline:none; }
+.email-in:focus { border-color:var(--blue); }
+.btn-send { width:100%; margin-top:12px; background:var(--blue); color:#fff; border:none; font-family:inherit; font-size:14px; font-weight:700; padding:14px; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.15s; }
+.btn-send:hover { background:var(--blue-h); }
+
+/* ── TOAST ── */
+.toast { position:fixed; bottom:22px; right:22px; z-index:1000; background:var(--navy); color:#fff; padding:13px 18px; border-radius:12px; font-size:13px; font-weight:500; box-shadow:var(--shadow-lg); display:flex; align-items:center; gap:9px; transform:translateY(80px); opacity:0; transition:all 0.3s ease; pointer-events:none; }
+.toast.show { transform:translateY(0); opacity:1; }
+
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="n-logo">
+    <div class="n-mark">G</div>
+    <span class="n-name">GEIST <em>Cruceros</em></span>
+  </a>
+  <div class="n-links">
+    <a href="#" class="on">🚢 Cruceros</a>
+    <a href="#">Mis reservas</a>
+    <a href="#">Mis presupuestos</a>
+    <a href="#">Mis grupos</a>
+  </div>
+  <div class="n-user">
+    <div class="n-av">AG</div>
+    <span class="n-uname">Agencia Demo ▾</span>
+  </div>
+</nav>
+
+<!-- MAIN WRAP -->
+<div class="wrap">
+
+  <!-- ════ COLUMNA PRINCIPAL ════ -->
+  <div>
+
+    <!-- Volver + título -->
+    <div style="margin-bottom:16px;">
+      <a href="#" style="display:inline-flex;align-items:center;gap:6px;color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;padding:7px 14px;border-radius:8px;background:#fff;border:1px solid var(--border);box-shadow:var(--shadow);transition:all 0.15s;" onmouseover="this.style.borderColor='var(--navy)'" onmouseout="this.style.borderColor='var(--border)'">
+        ← Volver a resultados
+      </a>
+
+    </div>
+
+    <!-- 1. TIPO DE CABINA -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><div class="step-badge">1</div> Tipo de cabina</div>
+      </div>
+      <div class="card-body">
+        <div class="type-row">
+          <div class="tcard promo on" onclick="selectType(this,'Interior',1221,true)">
+            <div class="tc-promo-tag">PROMO</div>
+            <div class="tc-check">✓</div>
+            <div class="tc-img"><img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80" alt="Interior"></div>
+            <div class="tc-foot">
+              <div class="tc-type">Interior</div>
+              <div class="tc-price promo">Desde <strong>US$ 1.221</strong></div>
+            </div>
+          </div>
+          <div class="tcard promo" onclick="selectType(this,'Exterior',1661,true)">
+            <div class="tc-promo-tag">PROMO</div>
+            <div class="tc-check">✓</div>
+            <div class="tc-img"><img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=400&q=80" alt="Exterior"></div>
+            <div class="tc-foot">
+              <div class="tc-type">Exterior</div>
+              <div class="tc-price promo">Desde <strong>US$ 1.661</strong></div>
+            </div>
+          </div>
+          <div class="tcard" onclick="selectType(this,'Balcón',3073,false)">
+            <div class="tc-check">✓</div>
+            <div class="tc-img"><img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=400&q=80" alt="Balcon"></div>
+            <div class="tc-foot">
+              <div class="tc-type">Balcón</div>
+              <div class="tc-price">Desde <strong>US$ 3.073</strong></div>
+            </div>
+          </div>
+          <div class="tcard promo" onclick="selectType(this,'Suite',3136,true)">
+            <div class="tc-promo-tag">PROMO</div>
+            <div class="tc-check">✓</div>
+            <div class="tc-img"><img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&q=80" alt="Suite"></div>
+            <div class="tc-foot">
+              <div class="tc-type">Suite</div>
+              <div class="tc-price promo">Desde <strong>US$ 3.136</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. CABINA ESPECÍFICA -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><div class="step-badge">2</div> Elegí la cabina</div>
+        <span style="font-size:12px;color:var(--muted);" id="typeLabel">Interior</span>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <table class="cabin-table">
+          <tbody id="cabinRows">
+            <tr class="on" onclick="selectCabin(this,'IA, IB, IC, IF, IX','Interna',1221,true)">
+              <td class="ct-img"><img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=300&q=80" alt="Interna" style="margin-left:12px;"></td>
+              <td class="ct-info">
+                <div class="ct-cat">Categorías: IA, IB, IC, IF, IX</div>
+                <div class="ct-name">Interna</div>
+                <div class="ct-amenities"><span class="ct-am">🛏 Cama doble</span><span class="ct-am">❄️ A/A</span><span class="ct-am">📺 TV</span></div>
+              </td>
+              <td class="ct-price-col">
+                <span class="ct-price promo">US$ 1.221</span>
+                <span class="ct-per">por huésped</span>
+                <button class="ct-sel-btn">✓ Seleccionada</button>
+              </td>
+            </tr>
+            <tr onclick="selectCabin(this,'I4','Interna Familiar',1346,false)">
+              <td class="ct-img"><img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=300&q=80" alt="Familiar" style="margin-left:12px;"></td>
+              <td class="ct-info">
+                <div class="ct-cat">Categoría: I4</div>
+                <div class="ct-name">Interna Familiar</div>
+                <div class="ct-amenities"><span class="ct-am">🛏 Literas</span><span class="ct-am">👨‍👩‍👧 4 pax</span><span class="ct-am">📺 TV</span></div>
+              </td>
+              <td class="ct-price-col">
+                <span class="ct-price">US$ 1.346</span>
+                <span class="ct-per">por huésped</span>
+                <button class="ct-sel-btn">Seleccionar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 3. EXPERIENCIAS -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><div class="step-badge">3</div> Experiencias y promociones</div>
+        <span style="font-size:11px;color:var(--blue);font-weight:600;">Norwegian Cruise Line</span>
+      </div>
+      <div class="card-body">
+        <div class="exp-chips">
+
+          <div class="exp-chip on" onclick="this.classList.toggle('on')">
+            <div class="ec-icon">🚢</div>
+            <div class="ec-body">
+              <div class="ec-nav">NCL · Free at Sea</div>
+              <div class="ec-name">Free at Sea — Elegís hasta 5 beneficios</div>
+              <div class="ec-desc">Wi-Fi · Bebidas premium · Excursiones en tierra · Restaurantes de especialidad · Gratis 3.° y 4.° huésped</div>
+              <div class="ec-tags"><span class="ec-tag">Interior y Exterior</span><span class="ec-tag">Salidas hasta dic 2026</span></div>
+            </div>
+            <div class="ec-toggle"></div>
+          </div>
+
+          <div class="exp-chip" onclick="this.classList.toggle('on')">
+            <div class="ec-icon">🏷️</div>
+            <div class="ec-body">
+              <div class="ec-nav">NCL · Hot Deal</div>
+              <div class="ec-name">Suite Guarantee — Suite al precio de Balcón</div>
+              <div class="ec-desc">Cupos muy limitados. La cabina específica se asigna 30 días antes de la salida.</div>
+              <div class="ec-tags"><span class="ec-tag">Solo Suite Deluxe</span><span class="ec-tag">⚠️ Cupos limitados</span></div>
+            </div>
+            <div class="ec-toggle"></div>
+          </div>
+
+          <div class="exp-chip" onclick="this.classList.toggle('on')">
+            <div class="ec-icon">👨‍👩‍👧</div>
+            <div class="ec-body">
+              <div class="ec-nav">NCL · Familia</div>
+              <div class="ec-name">Kids Sail Free</div>
+              <div class="ec-desc">El 3.° y 4.° pasajero menor de 17 años navegan sin cargo. Solo pagan tasas portuarias.</div>
+              <div class="ec-tags"><span class="ec-tag">Balcón y Suite</span><span class="ec-tag">Temporada 2026</span></div>
+            </div>
+            <div class="ec-toggle"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. ADICIONALES -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><div class="step-badge">4</div> Adicionales</div>
+        <span style="font-size:11.5px;color:var(--muted);">Free At Sea · 2 a 5 beneficios</span>
+      </div>
+      <div class="card-body" style="padding-top:6px;padding-bottom:6px;">
+        <div class="adi-list">
+          <div class="adi-row">
+            <div class="adi-ic">📶</div>
+            <div class="adi-info"><div class="adi-name">Wi-Fi Starlink</div><div class="adi-desc">150 minutos, alta velocidad, 1 dispositivo por huésped</div></div>
+            <div class="adi-price">Gratis</div>
+            <div class="adi-sw on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="adi-row">
+            <div class="adi-ic">🗺️</div>
+            <div class="adi-info"><div class="adi-name">Créditos para excursiones</div><div class="adi-desc">USD 50 en créditos por puerto, aplicable a la cabina</div></div>
+            <div class="adi-price">Gratis</div>
+            <div class="adi-sw on" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="adi-row">
+            <div class="adi-ic">🍸</div>
+            <div class="adi-info"><div class="adi-name">Open Bar ilimitado</div><div class="adi-desc">45% más marcas premium. Propinas: USD 28.50/pax/día (costo adicional)</div></div>
+            <div class="adi-price">+ tasas</div>
+            <div class="adi-sw" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="adi-row">
+            <div class="adi-ic">🍽️</div>
+            <div class="adi-info"><div class="adi-name">Restaurantes de especialidad</div><div class="adi-desc">1 cena por 3-4 noches · 2 cenas por 5-6 noches · Hasta 3 entradas</div></div>
+            <div class="adi-price">Gratis</div>
+            <div class="adi-sw" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="adi-row">
+            <div class="adi-ic">🎁</div>
+            <div class="adi-info"><div class="adi-name">Tasas de servicios prepagadas</div><div class="adi-desc">Propinas y cargos de servicio prepagados</div></div>
+            <div class="adi-price">Gratis</div>
+            <div class="adi-sw" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar">
+      <button class="bb-add" onclick="addToBudget()">📄 &nbsp;Agregar al presupuesto</button>
+      <button class="bb-confirm">✅ &nbsp;Confirmar y continuar</button>
+    </div>
+
+  </div><!-- /main col -->
+
+  <!-- ════ SIDEBAR ════ -->
+  <aside class="sidebar">
+    <div class="sum-card">
+
+      <!-- Nombre + trigger itinerario -->
+      <div class="sum-top">
+        <div class="sum-cruise-name">Norwegian Pearl</div>
+        <div class="sum-cruise-sub">Norwegian Cruise Line · Mediterráneo Oriental</div>
+      </div>
+
+      <!-- Itinerario colapsable -->
+      <div class="itin-trigger" onclick="toggleItin()">
+        <div class="itin-trigger-label">🗓 Ver itinerario completo</div>
+        <div class="itin-trigger-arrow" id="itinArr">▾</div>
+      </div>
+      <div class="itin-panel" id="itinPanel">
+        <div class="itin-content">
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 1 · Dom 10 may</div><div class="iday-p">Atenas (Pireo) <span class="iday-badge emb">Embarque</span></div><div class="iday-t">⬆️ Salida 20:00</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 2 · Lun 11 may</div><div class="iday-p">Mykonos, Grecia</div><div class="iday-t">⬇️ 08:00 · ⬆️ 20:00</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 3 · Mar 12 may</div><div class="iday-p">Katakolo, Grecia</div><div class="iday-t">⬇️ 08:00 · ⬆️ 16:00</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 4 · Mié 13 may</div><div class="iday-p">Corfú, Grecia</div><div class="iday-t">⬇️ 08:00 · ⬆️ 18:00</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 5 · Jue 14 may</div><div class="iday-p">Kotor, Montenegro</div><div class="iday-t">⬇️ 08:00 · ⬆️ 19:00</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 6 · Vie 15 may</div><div class="iday-p">Split, Croacia</div><div class="iday-t">⬇️ 08:00 · ⬆️ 19:00</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 7 · Sáb 16 may</div><div class="iday-p">Koper, Eslovenia</div><div class="iday-t">⬇️ 08:00 · ⬆️ 18:00</div></div></div>
+          <div class="iday"><div class="iday-left"><div class="iday-dot end"></div></div><div class="iday-right"><div class="iday-n">Día 8 · Dom 17 may</div><div class="iday-p">Ravena, Italia <span class="iday-badge des">Desembarque</span></div><div class="iday-t">⬇️ Llegada 06:00</div></div></div>
+        </div>
+      </div>
+
+      <!-- Datos del viaje -->
+      <div class="sum-meta">
+        <div class="sm-row"><span class="sm-lbl">📅 Salida</span><span class="sm-val">Dom 10 may 2026</span></div>
+        <div class="sm-row"><span class="sm-lbl">🏁 Regreso</span><span class="sm-val">Dom 17 may 2026</span></div>
+        <div class="sm-row"><span class="sm-lbl">🌙 Noches</span><span class="sm-val">7 noches</span></div>
+        <div class="sm-row"><span class="sm-lbl">📍 Sale de</span><span class="sm-val">Atenas, Grecia</span></div>
+        <div class="sm-row"><span class="sm-lbl">📍 Llega a</span><span class="sm-val">Ravena, Italia</span></div>
+        <div class="sm-row">
+          <span class="sm-lbl">👥 Pasajeros</span>
+          <span class="sm-val" style="display:flex;align-items:center;gap:8px;">
+            <span id="paxSumVal">2 adultos</span>
+            <button onclick="togglePaxEditor()" style="background:none;border:none;color:var(--blue);font-size:11.5px;font-weight:600;font-family:inherit;cursor:pointer;padding:0;text-decoration:underline;">Editar</button>
+          </span>
+        </div>
+        <!-- Editor de pasajeros colapsable -->
+        <div id="paxEditor" style="display:none;margin-top:4px;background:var(--bg2);border-radius:10px;padding:12px 14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);">Adultos</div>
+              <div style="font-size:11px;color:var(--muted);">+18 años</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <button onclick="changePax('a',-1)" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:15px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;">−</button>
+              <span id="paxA" style="font-size:15px;font-weight:700;min-width:18px;text-align:center;">2</span>
+              <button onclick="changePax('a',1)" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:15px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;">+</button>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);">Niños</div>
+              <div style="font-size:11px;color:var(--muted);">Hasta 17 años</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <button onclick="changePax('k',-1)" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:15px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;">−</button>
+              <span id="paxK" style="font-size:15px;font-weight:700;min-width:18px;text-align:center;">0</span>
+              <button onclick="changePax('k',1)" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:15px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;">+</button>
+            </div>
+          </div>
+          <button onclick="togglePaxEditor()" style="width:100%;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;padding:9px;cursor:pointer;">Confirmar</button>
+        </div>
+      </div>
+
+      <!-- Cabina seleccionada -->
+      <div class="sel-cabin">
+        <div class="sel-cabin-empty hide" id="scEmpty">— Seleccioná una cabina</div>
+        <div class="sel-cabin-filled show" id="scFilled">
+          <div class="scf-type" id="scType">Interior</div>
+          <div class="scf-name" id="scName">Interna</div>
+          <div class="scf-price-row">
+            <div class="scf-price promo" id="scPrice">US$ 1.221</div>
+            <div class="scf-per">/ huésped</div>
+          </div>
+          <div class="scf-total" id="scTotal">Total 2 adultos: US$ 2.442</div>
+          <div class="scf-savings" id="scSavings">🔥 Precio promocional</div>
+        </div>
+      </div>
+
+      <!-- Total -->
+      <div class="sum-total">
+        <div>
+          <div class="st-label">Precio total</div>
+          <div class="st-sub" id="stSub">2 adultos · Interior · Interna</div>
+        </div>
+        <div class="st-price" id="stPrice">US$ 2.442</div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="sum-actions">
+        <button class="btn-confirm">✅ &nbsp;Confirmar y continuar</button>
+        <button class="btn-add" onclick="addToBudget()">📄 &nbsp;Incluir en el presupuesto</button>
+      </div>
+
+    </div>
+
+    <!-- Pill presupuesto -->
+    <div class="budget-pill" id="bPill">
+      <span class="bp-ic">📁</span>
+      <span class="bp-txt" id="bPillTxt">1 crucero</span>
+      <span class="bp-badge" id="bPillN">1</span>
+      <button class="bp-link" onclick="openModal()">Ver y enviar →</button>
+    </div>
+
+  </aside>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastMsg">Agregado</span></div>
+
+<!-- MODAL -->
+<div class="ov" id="ov" onclick="if(event.target.id==='ov')closeModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-ht">📁 Mis presupuestos</div>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-bd">
+      <div id="bList"></div>
+      <div style="margin-top:16px;">
+        <label class="email-lbl">Enviar por email a la agencia</label>
+        <input class="email-in" type="email" id="emailIn" placeholder="agencia@ejemplo.com">
+        <button class="btn-send" onclick="sendBudgets()">✉️ &nbsp;Enviar todos los presupuestos</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function togglePaxEditor() {
+    const ed = document.getElementById('paxEditor');
+    ed.style.display = ed.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function changePax(type, delta) {
+    if (type === 'a') { S.adults = Math.max(1, Math.min(8, S.adults + delta)); document.getElementById('paxA').textContent = S.adults; }
+    else { S.kids = Math.max(0, Math.min(4, S.kids + delta)); document.getElementById('paxK').textContent = S.kids; }
+    updateUI();
+  }
+
+  const S = { adults:2, kids:0, cabinType:'Interior', cabinName:'Interna', price:1221, isPromo:true, budgets:[] };
+
+  // ── Itinerario ──
+  function toggleItin() {
+    const p = document.getElementById('itinPanel');
+    const a = document.getElementById('itinArr');
+    p.classList.toggle('open');
+    a.classList.toggle('open');
+  }
+
+  // ── Tipo de cabina ──
+  function selectType(el, type, price, isPromo) {
+    document.querySelectorAll('.tcard').forEach(c => c.classList.remove('on'));
+    el.classList.add('on');
+    S.cabinType = type; S.price = price; S.isPromo = isPromo;
+    document.getElementById('typeLabel').textContent = type;
+    updateUI();
+  }
+
+  // ── Cabina específica ──
+  function selectCabin(row, cats, name, price, isPromo) {
+    document.querySelectorAll('#cabinRows tr').forEach(r => {
+      r.classList.remove('on');
+      r.querySelector('.ct-sel-btn').textContent = 'Seleccionar';
+    });
+    row.classList.add('on');
+    row.querySelector('.ct-sel-btn').textContent = '✓ Seleccionada';
+    S.cabinName = name; S.price = price; S.isPromo = isPromo;
+    updateUI();
+  }
+
+  // ── UI update ──
+  function updateUI() {
+    const total = S.price * S.adults;
+    document.getElementById('scType').textContent = S.cabinType;
+    document.getElementById('scName').textContent = S.cabinName;
+    document.getElementById('scPrice').textContent = 'US$ ' + S.price.toLocaleString('es-AR');
+    document.getElementById('scPrice').className = 'scf-price' + (S.isPromo ? ' promo' : '');
+    document.getElementById('scTotal').textContent = `Total ${S.adults} adulto${S.adults>1?'s':''}: US$ ${total.toLocaleString('es-AR')}`;
+    document.getElementById('scSavings').style.display = S.isPromo ? 'inline-flex' : 'none';
+    document.getElementById('stPrice').textContent = 'US$ ' + total.toLocaleString('es-AR');
+    document.getElementById('stSub').textContent = `${S.adults} adulto${S.adults>1?'s':''}${S.kids>0?' + '+S.kids+' niño'+(S.kids>1?'s':''):''} · ${S.cabinType} · ${S.cabinName}`;
+    const paxStr = `${S.adults} adulto${S.adults>1?'s':''}${S.kids>0?' + '+S.kids+' niño'+(S.kids>1?'s':''):''}`;
+    document.getElementById('paxSumVal').textContent = paxStr;
+  }
+
+  // ── Presupuesto ──
+  function addToBudget() {
+    S.budgets.push({ id:Date.now(), ship:'Norwegian Pearl', operator:'Norwegian Cruise Line', route:'Atenas → Ravena', date:'10 may 2026', nights:7, cabin:S.cabinName, type:S.cabinType, adults:S.adults, kids:S.kids, price:S.price, total:S.price*S.adults, promo:S.isPromo });
+    updatePill();
+    showToast(`✅ "${S.cabinName}" agregada al presupuesto`);
+  }
+
+  function updatePill() {
+    const n = S.budgets.length;
+    const p = document.getElementById('bPill');
+    p.style.display = n > 0 ? 'flex' : 'none';
+    document.getElementById('bPillN').textContent = n;
+    document.getElementById('bPillTxt').textContent = `${n} crucero${n>1?'s':''} en presupuesto`;
+  }
+
+  function openModal() { renderList(); document.getElementById('ov').classList.add('open'); }
+  function closeModal() { document.getElementById('ov').classList.remove('open'); }
+
+  function removeBudget(id) {
+    S.budgets = S.budgets.filter(b => b.id !== id);
+    updatePill(); renderList();
+  }
+
+  function renderList() {
+    const el = document.getElementById('bList');
+    if (!S.budgets.length) { el.innerHTML='<div style="text-align:center;color:var(--muted);padding:24px;font-size:14px;">No hay cruceros en el presupuesto</div>'; return; }
+    el.innerHTML = S.budgets.map(b=>`
+      <div class="bitem">
+        <div class="bitem-hd"><div class="bitem-ship">${b.ship}</div><button class="bitem-rm" onclick="removeBudget(${b.id})">✕</button></div>
+        <div class="bitem-grid">
+          <div class="bitem-d"><strong>Ruta:</strong> ${b.route}</div>
+          <div class="bitem-d"><strong>Salida:</strong> ${b.date}</div>
+          <div class="bitem-d"><strong>Duración:</strong> ${b.nights} noches</div>
+          <div class="bitem-d"><strong>Cabina:</strong> ${b.cabin} (${b.type})</div>
+          <div class="bitem-d"><strong>Pasajeros:</strong> ${b.adults} adultos${b.kids>0?' + '+b.kids+' niños':''}</div>
+          <div class="bitem-d"><strong>Precio/pax:</strong> US$ ${b.price.toLocaleString('es-AR')}</div>
+        </div>
+        <div class="bitem-total">Total: US$ ${b.total.toLocaleString('es-AR')} ${b.promo?'🔥':''}</div>
+      </div>`).join('');
+  }
+
+  function sendBudgets() {
+    const e = document.getElementById('emailIn').value;
+    if (!e) { alert('Ingresá un email'); return; }
+    if (!S.budgets.length) { alert('No hay presupuestos'); return; }
+    showToast(`✉️ Enviado a ${e}`);
+    closeModal();
+  }
+
+  let tt;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show'); clearTimeout(tt);
+    tt = setTimeout(()=>t.classList.remove('show'), 3000);
+  }
+
+  updateUI();
+</script>
+</body>
+</html>
