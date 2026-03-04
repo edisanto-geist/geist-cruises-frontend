@@ -715,6 +715,200 @@ nav {
 </div>
 
 <script>
+  // ─────────────────────────────────────────
+  // CONFIG
+  // ─────────────────────────────────────────
+  const API   = 'https://geist-cruises-backend-production.up.railway.app/api';
+  let   TOKEN = localStorage.getItem('geist_token') || null;
+
+  const S = { adults:2, kids:0, cabinType:null, cabinName:null, price:0, isPromo:false, budgets:[], dateData:null };
+
+  // ─────────────────────────────────────────
+  // INIT — cargar datos reales al abrir la página
+  // ─────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!TOKEN) { window.location.href = 'index.html'; return; }
+
+    const params  = new URLSearchParams(window.location.search);
+    const dateRef = params.get('date_ref');
+
+    if (dateRef) {
+      loadDateDetail(dateRef);
+    }
+    // Si no hay date_ref, la página muestra los datos hardcoded de ejemplo
+  });
+
+  async function loadDateDetail(dateRef) {
+    try {
+      const res = await fetch(`${API}/cruises/dates/${encodeURIComponent(dateRef)}`, {
+        headers: { 'Authorization': `Bearer ${TOKEN}` },
+      });
+      if (res.status === 401) { localStorage.removeItem('geist_token'); window.location.href = 'index.html'; return; }
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Error cargando detalle');
+      S.dateData = data.data;
+      populatePage(data.data);
+    } catch(e) {
+      console.error('Error cargando detalle de fecha:', e);
+      // Mantiene los datos hardcoded de ejemplo visibles
+    }
+  }
+
+  function stripHtml(str) {
+    if (!str) return '';
+    return str.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function fmtDate(d) {
+    if (!d) return '—';
+    return new Date(d).toLocaleDateString('es-AR', { day:'numeric', month:'short', year:'numeric' });
+  }
+
+  function fmtPrice(p) {
+    const n = parseFloat(p);
+    if (!n || n <= 0) return null;
+    return n.toLocaleString('es-AR');
+  }
+
+  /**
+   * Popula la página con datos reales de Widgety.
+   * Estructura esperada: respuesta de /holidays/dates/:date_ref.json
+   */
+  function populatePage(d) {
+    // ── Sidebar: nombre y subtítulo ──
+    const sumName = document.querySelector('.sum-cruise-name');
+    const sumSub  = document.querySelector('.sum-cruise-sub');
+    if (sumName) sumName.textContent = d.name || d.operator_title || 'Crucero';
+    if (sumSub)  sumSub.textContent  = `${d.operator_title || ''} · ${d.ship_title || ''}`;
+
+    // ── Sidebar: datos del viaje ──
+    const metaRows = document.querySelectorAll('.sm-row');
+    const nights   = d.cruise_nights || d.duration_days || '—';
+    const pairs    = [
+      ['📅 Salida',    fmtDate(d.date_from)],
+      ['🏁 Regreso',   fmtDate(d.date_to)],
+      ['🌙 Noches',    `${nights} noches`],
+      ['📍 Sale de',   d.starts_at?.name || '—'],
+      ['📍 Llega a',   d.ends_at?.name   || '—'],
+    ];
+    metaRows.forEach((row, i) => {
+      if (!pairs[i]) return;
+      const lbl = row.querySelector('.sm-lbl');
+      const val = row.querySelector('.sm-val:not(:has(button))') || row.querySelector('.sm-val');
+      if (lbl) lbl.textContent = pairs[i][0];
+      // No tocar la fila de pasajeros (índice ≥5)
+      if (val && i < 5) val.textContent = pairs[i][1];
+    });
+
+    // ── Sidebar: itinerario colapsable ──
+    const itinContent = document.querySelector('.itin-content');
+    const days = d.itinerary?.days || [];
+    if (itinContent && days.length) {
+      itinContent.innerHTML = days.map((day, i) => {
+        const loc     = (day.locations || []).map(l => l.name).join(' / ') || day.day_name || '—';
+        const isFirst = i === 0;
+        const isLast  = i === days.length - 1;
+        const dotCls  = isLast ? 'iday-dot end' : isFirst ? 'iday-dot' : 'iday-dot';
+        return `<div class="iday">
+          <div class="iday-left">
+            <div class="${dotCls}"></div>
+            ${!isLast ? '<div class="iday-line"></div>' : ''}
+          </div>
+          <div class="iday-right">
+            <div class="iday-n">Día ${day.day}</div>
+            <div class="iday-p">
+              ${loc}
+              ${isFirst ? '<span class="iday-badge emb">Embarque</span>' : ''}
+              ${isLast  ? '<span class="iday-badge des">Desembarque</span>' : ''}
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // ── Tipos de cabina (fila superior) ──
+    // Usamos el pricing del detalle de fecha: d.pricing[] con precios por grade
+    const pricing   = d.pricing || [];
+    // Agrupar todos los precios por room_type
+    const byType    = {};
+    for (const fare of pricing) {
+      for (const price of (fare.prices || [])) {
+        const rt = price.room_type || 'Outside';
+        if (!byType[rt] || (parseFloat(price.double_price_pp) < parseFloat(byType[rt].price))) {
+          byType[rt] = { price: parseFloat(price.double_price_pp) || 0, name: price.grade_name, code: price.grade_code };
+        }
+      }
+    }
+
+    // También usar headline_prices si no hay pricing detallado
+    const hp = d.headline_prices?.cruise?.double || {};
+
+    // Mapeo room_type → columna UI
+    const typeMap = [
+      { key:'Inside',  label:'Interior', hpKey:'from_inside',  img:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80' },
+      { key:'Outside', label:'Exterior', hpKey:'from_outside', img:'https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=400&q=80' },
+      { key:'Balcony', label:'Balcón',   hpKey:'from_balcony', img:'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=400&q=80' },
+      { key:'Suite',   label:'Suite',    hpKey:'from_suite',   img:'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&q=80' },
+    ];
+
+    const typeRow = document.querySelector('.type-row');
+    if (typeRow) {
+      typeRow.innerHTML = typeMap.map((t, idx) => {
+        const fromByType = byType[t.key]?.price;
+        const fromHp     = parseFloat(hp[t.hpKey]);
+        const price      = fromByType || fromHp || 0;
+        const pStr       = price > 0 ? `US$ ${price.toLocaleString('es-AR')}` : 'Consultar';
+        return `
+          <div class="tcard${idx===0?' on':''}" onclick="selectType(this,'${t.label}',${price},false)">
+            <div class="tc-check">✓</div>
+            <div class="tc-img"><img src="${t.img}" alt="${t.label}"></div>
+            <div class="tc-foot">
+              <div class="tc-type">${t.label}</div>
+              <div class="tc-price">Desde <strong>${pStr}</strong></div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    // ── Tabla de cabinas ──
+    // Usar el primer fare set con precios detallados
+    const firstFare = pricing.find(f => f.prices?.some(p => p.double_price_pp));
+    const cabinRows = document.getElementById('cabinRows');
+    if (cabinRows && firstFare?.prices?.length) {
+      cabinRows.innerHTML = firstFare.prices
+        .filter(p => p.double_price_pp && parseFloat(p.double_price_pp) > 0)
+        .map((p, i) => {
+          const price = parseFloat(p.double_price_pp);
+          return `
+            <tr class="${i===0?'on':''}" onclick="selectCabin(this,'${p.grade_code}','${(p.grade_name||'').replace(/'/g,"\\'")}',${price},false)">
+              <td class="ct-img"><img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=300&q=80" alt="${p.grade_name||''}" style="margin-left:12px;"></td>
+              <td class="ct-info">
+                <div class="ct-cat">Código: ${p.grade_code || '—'} · ${p.room_type || '—'}</div>
+                <div class="ct-name">${p.grade_name || '—'}</div>
+                <div class="ct-amenities">
+                  <span class="ct-am">${p.availability === 'available' ? '✅ Disponible' : p.availability === 'closed' ? '🔒 No disponible' : '📋 Consultar'}</span>
+                  ${firstFare.name ? `<span class="ct-am">🏷️ ${firstFare.name}</span>` : ''}
+                </div>
+              </td>
+              <td class="ct-price-col">
+                <span class="ct-price">US$ ${price.toLocaleString('es-AR')}</span>
+                <span class="ct-per">por huésped</span>
+                <button class="ct-sel-btn">${i===0?'✓ Seleccionada':'Seleccionar'}</button>
+              </td>
+            </tr>`;
+        }).join('');
+
+      // Inicializar S con la primera cabina
+      if (firstFare.prices[0]?.double_price_pp) {
+        S.cabinType = firstFare.prices[0].room_type || 'Cabina';
+        S.cabinName = firstFare.prices[0].grade_name || '—';
+        S.price     = parseFloat(firstFare.prices[0].double_price_pp) || 0;
+      }
+    }
+
+    updateUI();
+  }
+
   function togglePaxEditor() {
     const ed = document.getElementById('paxEditor');
     ed.style.display = ed.style.display === 'none' ? 'block' : 'none';
@@ -725,8 +919,6 @@ nav {
     else { S.kids = Math.max(0, Math.min(4, S.kids + delta)); document.getElementById('paxK').textContent = S.kids; }
     updateUI();
   }
-
-  const S = { adults:2, kids:0, cabinType:'Interior', cabinName:'Interna', price:1221, isPromo:true, budgets:[] };
 
   // ── Itinerario ──
   function toggleItin() {
@@ -774,7 +966,14 @@ nav {
 
   // ── Presupuesto ──
   function addToBudget() {
-    S.budgets.push({ id:Date.now(), ship:'Norwegian Pearl', operator:'Norwegian Cruise Line', route:'Atenas → Ravena', date:'10 may 2026', nights:7, cabin:S.cabinName, type:S.cabinType, adults:S.adults, kids:S.kids, price:S.price, total:S.price*S.adults, promo:S.isPromo });
+    const d = S.dateData;
+    const ship     = d?.ship_title     || 'Crucero';
+    const operator = d?.operator_title || '';
+    const from     = d?.starts_at?.name || '—';
+    const to       = d?.ends_at?.name   || '—';
+    const date     = d?.date_from ? new Date(d.date_from).toLocaleDateString('es-AR', {day:'numeric',month:'short',year:'numeric'}) : '—';
+    const nights   = d?.cruise_nights || d?.duration_days || '—';
+    S.budgets.push({ id:Date.now(), ship, operator, route:`${from} → ${to}`, date, nights, cabin:S.cabinName||'—', type:S.cabinType||'—', adults:S.adults, kids:S.kids, price:S.price, total:S.price*S.adults, promo:S.isPromo });
     updatePill();
     showToast(`✅ "${S.cabinName}" agregada al presupuesto`);
   }
