@@ -570,10 +570,15 @@
   }
   .iday-dot.sea { background: var(--muted); box-shadow: 0 0 0 2px var(--muted); }
   .iday-line { width: 1px; flex:1; background: var(--border); margin-top: 4px; }
-  .iday-right { padding-bottom: 24px; }
+  .iday-right { padding-bottom: 24px; display: flex; gap: 10px; align-items: flex-start; }
+  .iday-text { flex: 1; }
+  .iday-img { width: 80px; height: 56px; object-fit: cover; border-radius: 7px; flex-shrink: 0; order: 2; }
   .iday-n { font-size: 10.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
   .iday-p { font-size: 14.5px; font-weight: 600; color: var(--text); margin: 3px 0 4px; }
   .iday-d { font-size: 12.5px; color: var(--text2); line-height: 1.55; }
+  .iday-num { font-size: 10px; font-weight: 700; color: var(--blue); margin-bottom: 4px; white-space: nowrap; }
+  .iday-sea { color: var(--muted) !important; font-style: italic; }
+  .iday-meta { display: flex; gap: 10px; font-size: 11.5px; color: var(--muted); flex-wrap: wrap; margin-top: 2px; }
 
   /* price summary in modal */
   .price-summary {
@@ -1711,28 +1716,59 @@
       </div>
       ${c.description ? `<p class="m-desc">${c.description}</p>` : ''}`;
 
-    // Tab: Itinerario
+    // Tab: Itinerario — agrupar por día, rellenar días de mar faltantes
     const idays = c.itinerary_days || [];
-    document.getElementById('tab-itin').innerHTML = idays.length ? `
+    const startDateItin = (() => { const d = date.date_from || c.date_from; return d ? new Date(d) : null; })();
+    const totalNightsItin = c.cruise_nights || (idays[idays.length-1]?.day || idays.length);
+
+    // Agrupar puertos por número de día (puede haber 2 puertos en el mismo día)
+    const dayMapItin = {};
+    idays.forEach(d => {
+      if (!dayMapItin[d.day]) dayMapItin[d.day] = [];
+      dayMapItin[d.day].push(d);
+    });
+
+    // Construir lista completa rellenando días de mar faltantes
+    const fullDaysItin = [];
+    for (let n = 1; n <= totalNightsItin + 1; n++) {
+      if (dayMapItin[n]) {
+        fullDaysItin.push({ day: n, ports: dayMapItin[n], at_sea: false });
+      } else if (n <= totalNightsItin) {
+        fullDaysItin.push({ day: n, ports: [], at_sea: true });
+      }
+    }
+
+    document.getElementById('tab-itin').innerHTML = fullDaysItin.length ? `
       <div class="m-section-title">Itinerario — ${noches} noches</div>
       <div class="itin-list">
-        ${idays.map((d, i) => `
-          <div class="iday">
-            <div class="iday-left">
-              <div class="iday-num">Día ${d.day}</div>
-              <div class="iday-dot ${d.at_sea ? 'sea' : ''}"></div>
-              ${i < idays.length-1 ? '<div class="iday-line"></div>' : ''}
-            </div>
-            <div class="iday-right">
-              ${d.image ? `<img class="iday-img" src="${d.image}" alt="${d.port_name}" loading="lazy">` : ''}
-              <div class="iday-p">${d.port_name || (d.at_sea ? '🌊 Día de navegación' : '—')}</div>
-              <div class="iday-meta">
-                ${d.country ? `<span>📍 ${d.country}</span>` : ''}
-                ${d.arrival_time ? `<span>🛬 ${d.arrival_time}</span>` : ''}
-                ${d.departure_time ? `<span>🛫 ${d.departure_time}</span>` : ''}
+        ${fullDaysItin.map((dayGroup, i) => {
+          const isLast  = i === fullDaysItin.length - 1;
+          const isSea   = dayGroup.at_sea || !dayGroup.ports.length;
+          const fecha   = startDateItin ? (() => { const dd = new Date(startDateItin); dd.setDate(dd.getDate() + dayGroup.day - 1); return dd.toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'short' }); })() : '';
+          const dotCls  = isLast ? 'end' : isSea ? 'sea' : '';
+          const portsHtml = isSea
+            ? `<div class="iday-p iday-sea">🌊 Disfrutando del mar</div>`
+            : dayGroup.ports.map((p, pi) => `
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:${pi<dayGroup.ports.length-1?'6px':'0'};">
+                  ${p.image ? `<img src="${p.image}" alt="${p.port_name}" loading="lazy" style="width:52px;height:38px;object-fit:cover;border-radius:6px;flex-shrink:0;">` : ''}
+                  <div>
+                    <div class="iday-p" style="margin:0;">${p.port_name || '—'}</div>
+                    <div class="iday-meta">
+                      ${p.arrival_time ? `<span>🛬 ${p.arrival_time}</span>` : ''}
+                      ${p.departure_time ? `<span>🛫 ${p.departure_time}</span>` : ''}
+                    </div>
+                  </div>
+                </div>`).join('');
+          return `
+            <div class="iday">
+              <div class="iday-left">
+                <div class="iday-num">Día ${dayGroup.day}${fecha ? ' · '+fecha : ''}</div>
+                <div class="iday-dot ${dotCls}"></div>
+                ${!isLast ? '<div class="iday-line"></div>' : ''}
               </div>
-            </div>
-          </div>`).join('')}
+              <div class="iday-right">${portsHtml}</div>
+            </div>`;
+        }).join('')}
       </div>` : `
       <div style="text-align:center;padding:40px 0;color:var(--muted);">
         <div style="font-size:32px;margin-bottom:12px;">🗺️</div>
@@ -1835,20 +1871,41 @@
 
       // Calcular fechas por día a partir de date_from
       const startDate = dateFrom ? new Date(dateFrom) : null;
-      document.getElementById('itin-modal-tbody').innerHTML = idays.map(d => {
+      // Agrupar por día, rellenar días de mar faltantes
+      const totalNights = c.cruise_nights || idays[idays.length-1]?.day || idays.length;
+      const dayMap = {};
+      idays.forEach(d => {
+        if (!dayMap[d.day]) dayMap[d.day] = [];
+        dayMap[d.day].push(d);
+      });
+      const fullDays = [];
+      for (let n = 1; n <= totalNights + 1; n++) {
+        if (dayMap[n]) fullDays.push({ day: n, ports: dayMap[n], at_sea: false });
+        else if (n <= totalNights) fullDays.push({ day: n, ports: [], at_sea: true });
+      }
+      document.getElementById('itin-modal-tbody').innerHTML = fullDays.flatMap(dayGroup => {
         const fecha = startDate ? (() => {
           const dd = new Date(startDate);
-          dd.setDate(dd.getDate() + d.day - 1);
+          dd.setDate(dd.getDate() + dayGroup.day - 1);
           return dd.toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'short' });
         })() : '—';
-        const isSea = d.at_sea || !d.port_name;
-        return `<tr>
-          <td><span class="itin-day-num">${d.day}</span></td>
-          <td>${fecha}</td>
-          <td class="${isSea ? 'itin-sea' : ''}">${isSea ? '🌊 Navegación' : d.port_name}</td>
-          <td>${d.arrival_time || '—'}</td>
-          <td>${d.departure_time || '—'}</td>
-        </tr>`;
+        const isSea = dayGroup.at_sea || !dayGroup.ports.length;
+        if (isSea) {
+          return [`<tr>
+            <td><span class="itin-day-num">${dayGroup.day}</span></td>
+            <td>${fecha}</td>
+            <td class="itin-sea">🌊 Disfrutando del mar</td>
+            <td>—</td><td>—</td>
+          </tr>`];
+        }
+        // Múltiples puertos en el mismo día: primera fila muestra día y fecha, las siguientes celdas vacías
+        return dayGroup.ports.map((p, pi) => `<tr>
+          <td>${pi === 0 ? `<span class="itin-day-num">${dayGroup.day}</span>` : ''}</td>
+          <td>${pi === 0 ? fecha : ''}</td>
+          <td>${p.port_name || '—'}</td>
+          <td>${p.arrival_time || '—'}</td>
+          <td>${p.departure_time || '—'}</td>
+        </tr>`);
       }).join('');
     } catch(e) {
       document.getElementById('itin-modal-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted)">Error al cargar el itinerario.</td></tr>';
