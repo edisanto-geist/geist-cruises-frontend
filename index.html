@@ -355,6 +355,13 @@
   .rth-center { text-align: center; justify-content: center; }
   /* accion cell */
   .rta-action { padding: 13px 12px; display: flex; justify-content: flex-end; }
+  .rta-btn-info {
+    background: #fff !important;
+    color: var(--blue) !important;
+    border: 1.5px solid var(--blue) !important;
+    box-shadow: none !important;
+  }
+  .rta-btn-info:hover { background: #eef2ff !important; }
   .rta-btn {
     background: var(--blue); color: #fff;
     border: none; border-radius: 8px;
@@ -1490,8 +1497,8 @@
       const llegada = c.ends_at?.name   || c.arrival_port_name   || '—';
       const fecha   = formatDate(c.date_from || c.departure_date);
 
-      // Barco: extraer del ref o del nombre
-      const barco = c.ship_name || c.ship?.name || '—';
+      // Barco: extraer del campo normalizado
+      const barco = c.ship_title || c.ship_name || c.ship?.name || '—';
 
       // Precio mínimo disponible
       const precios = [c.inside_price, c.outside_price, c.balcony_price, c.suite_price].filter(p => p && p > 0);
@@ -1506,7 +1513,7 @@
         : `${salida} → ${llegada}`;
 
       return `
-        <div class="rt-row" onclick="openCruiseDetail('${ref}')">
+        <div class="rt-row">
           <div class="rta rta-itin">
             <div class="rta-route">${puertoText}</div>
             <div class="rta-stops">${nombre}</div>
@@ -1522,7 +1529,10 @@
               ? `<span class="price-val">US$ ${Number(minPrecio).toLocaleString('es-AR')}</span><span style="font-size:10px;color:var(--muted);display:block;">por huésped</span>`
               : `<span style="color:var(--muted);font-size:12px;">Consultar</span>`}
           </div>
-          <div class="rta rta-action"><button class="rta-btn">Ver →</button></div>
+          <div class="rta rta-action" style="display:flex;gap:6px;justify-content:flex-end;">
+            <button class="rta-btn rta-btn-info" onclick="event.stopPropagation();openCruiseDetail('${ref}')">+Info</button>
+            <button class="rta-btn" onclick="event.stopPropagation();cotizar('${ref}','${nombre.replace(/'/g,'')}')">Cotizar</button>
+          </div>
         </div>`;
     }).join('');
   }
@@ -1692,6 +1702,11 @@
   // ─────────────────────────────────────────
   // UI HELPERS
   // ─────────────────────────────────────────
+  function cotizar(ref, nombre) {
+    const base = window.location.href.replace('index.html','').replace(/\/$/, '');
+    window.location.href = `${base}/detalle.html?ref=${encodeURIComponent(ref)}&nombre=${encodeURIComponent(nombre)}`;
+  }
+
   function openModal() {
     document.getElementById('ov').classList.add('open');
     renderExampleModal();
