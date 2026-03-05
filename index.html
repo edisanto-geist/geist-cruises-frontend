@@ -1596,10 +1596,12 @@
                      : naviera.includes('Royal')      ? 'RCI'
                      : naviera.substring(0,3).toUpperCase();
 
+      const puertoText = salida === llegada ? salida : `${salida} → ${llegada}`;
+
       const itin = (c.itinerary_days || [])
         .filter(d => d.port_name && !d.at_sea)
         .map(d => d.port_name.split(',')[0])
-        .slice(1,-1); // excluir salida y llegada
+        .slice(1,-1);
       const paradas = itin.length ? itin.join(' · ') : (c.regions || []).join(' · ') || nombre;
 
       return `
