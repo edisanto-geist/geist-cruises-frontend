@@ -1218,12 +1218,6 @@
     return res.json();
   }
 
-  // ─────────────────────────────────────────
-  // CARGAR FILTROS (navieras, puertos)
-  // ─────────────────────────────────────────
-  async function loadFilters() {
-    try {
-
   // ─── ESTADO BÚSQUEDA ───
   const searchState = { destino:'', puerto:'', naviera:'', dateFrom:'', dateTo:'', durMin:'', durMax:'', cabina:'' };
 
@@ -1377,7 +1371,9 @@
     searchCruises();
   }
 
-  // ─── CARGAR FILTROS DEL BACKEND ───
+  // ─────────────────────────────────────────
+  // CARGAR FILTROS (navieras, puertos)
+  // ─────────────────────────────────────────
   async function loadFilters() {
     try {
       const data = await apiFetch('/cruises/filters');
