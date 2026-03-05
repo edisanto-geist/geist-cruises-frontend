@@ -282,7 +282,7 @@
 
   .rt-head {
     display: grid;
-    grid-template-columns: 2.2fr 1.8fr 0.7fr 1.1fr 1.1fr 90px;
+    grid-template-columns: 2fr 1.6fr 0.5fr 1fr 1fr 90px 140px;
     background: var(--bg2);
     border-bottom: 2px solid var(--border);
   }
@@ -302,7 +302,7 @@
 
   .rt-row {
     display: grid;
-    grid-template-columns: 2.2fr 1.8fr 0.7fr 1.1fr 1.1fr 90px;
+    grid-template-columns: 2fr 1.6fr 0.5fr 1fr 1fr 90px 140px;
     border-bottom: 1px solid var(--border);
     align-items: center;
     transition: background 0.15s;
@@ -353,6 +353,69 @@
     padding: 13px 10px;
   }
   .rth-center { text-align: center; justify-content: center; }
+
+  /* ── ITINERARIO LINK ── */
+  .itin-link {
+    font-size: 12px; font-weight: 600; color: var(--blue);
+    cursor: pointer; text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .itin-link:hover { color: var(--navy); }
+
+  /* ── ITINERARIO MODAL ── */
+  #itin-modal-ov {
+    display: none; position: fixed; inset: 0; z-index: 600;
+    background: rgba(13,31,60,0.55); backdrop-filter: blur(3px);
+    align-items: center; justify-content: center;
+  }
+  #itin-modal-ov.open { display: flex; }
+  .itin-modal {
+    background: #fff; border-radius: 16px; width: 700px; max-width: 95vw;
+    max-height: 85vh; display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(13,31,60,0.25);
+    animation: dropIn 0.2s ease;
+  }
+  .itin-modal-head {
+    padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .itin-modal-title { font-size: 17px; font-weight: 700; color: var(--navy); }
+  .itin-modal-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .itin-modal-body { flex: 1; overflow-y: auto; padding: 0; }
+  .itin-modal-foot {
+    padding: 14px 24px; border-top: 1px solid var(--border);
+    display: flex; gap: 10px; justify-content: flex-end;
+  }
+  .itin-close { background: none; border: none; font-size: 20px; color: var(--muted); cursor: pointer; padding: 0 4px; line-height: 1; }
+  .itin-close:hover { color: var(--text); }
+  .itin-table { width: 100%; border-collapse: collapse; }
+  .itin-table th {
+    background: #f8fafc; font-size: 11px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0;
+  }
+  .itin-table td {
+    padding: 11px 16px; font-size: 13px; color: var(--text);
+    border-bottom: 1px solid #f1f5f9; vertical-align: middle;
+  }
+  .itin-table tr:last-child td { border-bottom: none; }
+  .itin-table tr:hover td { background: #f8fafc; }
+  .itin-day-num { font-weight: 700; color: var(--blue); font-size: 12px; }
+  .itin-sea { color: var(--muted); font-style: italic; }
+  .btn-copy {
+    background: var(--blue); color: #fff; border: none; border-radius: 8px;
+    padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: inherit; display: flex; align-items: center; gap: 6px;
+  }
+  .btn-copy:hover { background: var(--navy); }
+  .btn-copy-sec {
+    background: #fff; color: var(--text); border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+  }
+  .btn-copy-sec:hover { border-color: var(--blue); color: var(--blue); }
+
   /* accion cell */
   .rta-action { padding: 13px 12px; display: flex; justify-content: flex-end; }
   .rta-btn-info {
@@ -859,11 +922,12 @@
     <div class="results-table">
       <!-- HEAD -->
       <div class="rt-head">
-        <div class="rth">Itinerario</div>
-        <div class="rth">Barco / Naviera</div>
-        <div class="rth rth-center">Noches</div>
-        <div class="rth rth-center">Fecha salida</div>
-        <div class="rth rth-center">Tarifa desde</div>
+        <div class="rth" onclick="sortTable('nombre')">Itinerario <span class="sort-ic" id="sort-nombre"></span></div>
+        <div class="rth" onclick="sortTable('barco')">Barco / Naviera <span class="sort-ic" id="sort-barco"></span></div>
+        <div class="rth rth-center" onclick="sortTable('noches')">Noches <span class="sort-ic" id="sort-noches"></span></div>
+        <div class="rth rth-center" onclick="sortTable('fecha')">Fecha salida <span class="sort-ic" id="sort-fecha"></span></div>
+        <div class="rth rth-center" onclick="sortTable('precio')">Tarifa desde <span class="sort-ic" id="sort-precio"></span></div>
+        <div class="rth rth-center">Itinerario</div>
         <div class="rth"></div>
       </div>
 
@@ -1483,7 +1547,31 @@
   // ─────────────────────────────────────────
   // RENDERIZAR RESULTADOS REALES
   // ─────────────────────────────────────────
-  function renderCruises(cruises) {
+  // ── SORTING ──
+  let _cruisesData = [];
+  let _sortField = '';
+  let _sortDir = 1;
+
+  function sortTable(field) {
+    if (_sortField === field) { _sortDir *= -1; }
+    else { _sortField = field; _sortDir = 1; }
+    document.querySelectorAll('.sort-ic').forEach(el => el.textContent = '');
+    const ic = document.getElementById('sort-' + field);
+    if (ic) ic.textContent = _sortDir === 1 ? ' ↑' : ' ↓';
+    const sorted = [..._cruisesData].sort((a, b) => {
+      let va, vb;
+      if (field === 'nombre')  { va = a.name || ''; vb = b.name || ''; return va.localeCompare(vb) * _sortDir; }
+      if (field === 'barco')   { va = a.ship_title || ''; vb = b.ship_title || ''; return va.localeCompare(vb) * _sortDir; }
+      if (field === 'noches')  { va = a.cruise_nights || 0; vb = b.cruise_nights || 0; return (va - vb) * _sortDir; }
+      if (field === 'fecha')   { va = new Date(a.date_from || 0); vb = new Date(b.date_from || 0); return (va - vb) * _sortDir; }
+      if (field === 'precio')  { va = a.min_price || 999999; vb = b.min_price || 999999; return (va - vb) * _sortDir; }
+      return 0;
+    });
+    renderCruises(sorted, false);
+  }
+
+  function renderCruises(cruises, save = true) {
+    if (save) _cruisesData = cruises;
     const tbody = document.getElementById('resultsBody');
     const total = document.getElementById('resultsCount');
     if (total) total.innerHTML = `<strong>${cruises.length} cruceros</strong> encontrados`;
@@ -1508,30 +1596,36 @@
                      : naviera.includes('Royal')      ? 'RCI'
                      : naviera.substring(0,3).toUpperCase();
 
-      const puertoText = salida === llegada
-        ? salida
-        : `${salida} → ${llegada}`;
+      const itin = (c.itinerary_days || [])
+        .filter(d => d.port_name && !d.at_sea)
+        .map(d => d.port_name.split(',')[0])
+        .slice(1,-1); // excluir salida y llegada
+      const paradas = itin.length ? itin.join(' · ') : (c.regions || []).join(' · ') || nombre;
 
       return `
-        <div class="rt-row">
+        <div class="rt-row" data-nombre="${nombre.replace(/"/g,'&quot;')}">
           <div class="rta rta-itin">
             <div class="rta-route">${puertoText}</div>
-            <div class="rta-stops">${nombre}</div>
+            <div class="rta-stops">${paradas}</div>
           </div>
           <div class="rta rta-line">
             <div class="line-chip">${navBadge}</div>
-            <div class="rta-ship">${barco !== '—' ? barco : naviera}</div>
+            <div class="rta-ship" style="font-weight:600;color:var(--text);">${barco !== '—' ? barco : '—'}</div>
+            <div class="rta-nights">${naviera}</div>
           </div>
-          <div class="rta rta-center">${noches}<span style="font-size:10px;color:var(--muted);display:block;">noches</span></div>
+          <div class="rta rta-center" style="font-size:15px;font-weight:700;">${noches}</div>
           <div class="rta rta-center">${fecha}</div>
           <div class="rta rta-center">
             ${minPrecio
               ? `<span class="price-val">US$ ${Number(minPrecio).toLocaleString('es-AR')}</span><span style="font-size:10px;color:var(--muted);display:block;">por huésped</span>`
               : `<span style="color:var(--muted);font-size:12px;">Consultar</span>`}
           </div>
-          <div class="rta rta-action" style="display:flex;gap:6px;justify-content:flex-end;">
-            <button class="rta-btn rta-btn-info" onclick="event.stopPropagation();openCruiseDetail('${ref}')">+Info</button>
-            <button class="rta-btn" onclick="event.stopPropagation();cotizar('${ref}','${nombre.replace(/'/g,'')}')">Cotizar</button>
+          <div class="rta rta-center">
+            <a class="itin-link" onclick="event.stopPropagation();openItinerarioModal('${ref}', this)">Ver</a>
+          </div>
+          <div class="rta rta-action" style="display:flex;gap:5px;justify-content:flex-end;align-items:center;padding:8px 10px;">
+            <button class="rta-btn rta-btn-info" style="padding:7px 11px;font-size:12px;" onclick="event.stopPropagation();openCruiseDetail('${ref}')">+Info</button>
+            <button class="rta-btn" style="padding:7px 11px;font-size:12px;" onclick="event.stopPropagation();cotizar('${ref}','${nombre.replace(/'/g,'')}')">Cotizar</button>
           </div>
         </div>`;
     }).join('');
@@ -1620,16 +1714,21 @@
     document.getElementById('tab-itin').innerHTML = idays.length ? `
       <div class="m-section-title">Itinerario — ${noches} noches</div>
       <div class="itin-list">
-        ${idays.map((d,i) => `
+        ${idays.map((d, i) => `
           <div class="iday">
             <div class="iday-left">
+              <div class="iday-num">Día ${d.day}</div>
               <div class="iday-dot ${d.at_sea ? 'sea' : ''}"></div>
               ${i < idays.length-1 ? '<div class="iday-line"></div>' : ''}
             </div>
             <div class="iday-right">
-              <div class="iday-n">Día ${i+1} · ${d.date ? formatDate(d.date) : ''}</div>
-              <div class="iday-p">${d.port_name || d.name || (d.at_sea ? 'Día de mar' : '—')}</div>
-              ${d.description ? `<div class="iday-d">${d.description}</div>` : ''}
+              ${d.image ? `<img class="iday-img" src="${d.image}" alt="${d.port_name}" loading="lazy">` : ''}
+              <div class="iday-p">${d.port_name || (d.at_sea ? '🌊 Día de navegación' : '—')}</div>
+              <div class="iday-meta">
+                ${d.country ? `<span>📍 ${d.country}</span>` : ''}
+                ${d.arrival_time ? `<span>🛬 ${d.arrival_time}</span>` : ''}
+                ${d.departure_time ? `<span>🛫 ${d.departure_time}</span>` : ''}
+              </div>
             </div>
           </div>`).join('')}
       </div>` : `
@@ -1702,6 +1801,79 @@
   // ─────────────────────────────────────────
   // UI HELPERS
   // ─────────────────────────────────────────
+
+  // ── ITINERARIO MODAL ──
+  let _currentItinCruise = null;
+
+  async function openItinerarioModal(ref, el) {
+    const nombre = el?.closest('.rt-row')?.dataset?.nombre || '';
+    _currentItinCruise = null;
+    document.getElementById('itin-modal-title').textContent = nombre || 'Itinerario';
+    document.getElementById('itin-modal-sub').textContent = 'Cargando...';
+    document.getElementById('itin-modal-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted)">Cargando itinerario...</td></tr>';
+    document.getElementById('itin-modal-ov').classList.add('open');
+
+    try {
+      const data = await apiFetch(`/cruises/${ref}`);
+      if (!data?.success) throw new Error();
+      const c = data.data;
+      _currentItinCruise = c;
+      const idays = c.itinerary_days || [];
+      const noches = c.cruise_nights || '';
+      const naviera = c.operator_title || '';
+      const dateFrom = c.operating_seasons?.[0]?.dates?.[0]?.date_from || c.date_from;
+
+      document.getElementById('itin-modal-title').textContent = c.name || nombre;
+      document.getElementById('itin-modal-sub').textContent = `${naviera} · ${noches} noches · Salida: ${formatDate(dateFrom)}`;
+
+      if (!idays.length) {
+        document.getElementById('itin-modal-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted)">Itinerario no disponible para este crucero.</td></tr>';
+        return;
+      }
+
+      // Calcular fechas por día a partir de date_from
+      const startDate = dateFrom ? new Date(dateFrom) : null;
+      document.getElementById('itin-modal-tbody').innerHTML = idays.map(d => {
+        const fecha = startDate ? (() => {
+          const dd = new Date(startDate);
+          dd.setDate(dd.getDate() + d.day - 1);
+          return dd.toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'short' });
+        })() : '—';
+        const isSea = d.at_sea || !d.port_name;
+        return `<tr>
+          <td><span class="itin-day-num">${d.day}</span></td>
+          <td>${fecha}</td>
+          <td class="${isSea ? 'itin-sea' : ''}">${isSea ? '🌊 Navegación' : d.port_name}</td>
+          <td>${d.arrival_time || '—'}</td>
+          <td>${d.departure_time || '—'}</td>
+        </tr>`;
+      }).join('');
+    } catch(e) {
+      document.getElementById('itin-modal-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted)">Error al cargar el itinerario.</td></tr>';
+    }
+  }
+
+  function closeItinModal() {
+    document.getElementById('itin-modal-ov').classList.remove('open');
+  }
+
+  function copyItinerario() {
+    const rows = document.querySelectorAll('#itin-modal-tbody tr');
+    const title = document.getElementById('itin-modal-title').textContent;
+    const sub   = document.getElementById('itin-modal-sub').textContent;
+    let txt = `${title}\n${sub}\n\n`;
+    txt += `DÍA\tFECHA\tPUERTO\tLLEGA\tSALE\n`;
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      txt += [...cells].map(c => c.textContent.trim()).join('\t') + '\n';
+    });
+    navigator.clipboard.writeText(txt).then(() => {
+      const btn = document.querySelector('.btn-copy');
+      btn.textContent = '✅ Copiado!';
+      setTimeout(() => btn.innerHTML = '📋 Copiar itinerario', 2000);
+    });
+  }
+
   function cotizar(ref, nombre) {
     const base = window.location.href.replace('index.html','').replace(/\/$/, '');
     window.location.href = `${base}/detalle.html?ref=${encodeURIComponent(ref)}&nombre=${encodeURIComponent(nombre)}`;
@@ -1733,5 +1905,36 @@
     else { sq.classList.add('on'); sq.textContent='✓'; }
   }
 </script>
+
+<!-- ITINERARIO MODAL -->
+<div id="itin-modal-ov" onclick="if(event.target===this)closeItinModal()">
+  <div class="itin-modal">
+    <div class="itin-modal-head">
+      <div>
+        <div class="itin-modal-title" id="itin-modal-title">Itinerario</div>
+        <div class="itin-modal-sub" id="itin-modal-sub"></div>
+      </div>
+      <button class="itin-close" onclick="closeItinModal()">✕</button>
+    </div>
+    <div class="itin-modal-body">
+      <table class="itin-table" id="itin-modal-table">
+        <thead>
+          <tr>
+            <th>Día</th>
+            <th>Fecha</th>
+            <th>Puerto</th>
+            <th>Llega</th>
+            <th>Sale</th>
+          </tr>
+        </thead>
+        <tbody id="itin-modal-tbody"></tbody>
+      </table>
+    </div>
+    <div class="itin-modal-foot">
+      <button class="btn-copy-sec" onclick="closeItinModal()">Cerrar</button>
+      <button class="btn-copy" onclick="copyItinerario()">📋 Copiar itinerario</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
