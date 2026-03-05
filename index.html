@@ -529,6 +529,68 @@
   .ft-links a { font-size: 12px; color: var(--muted); text-decoration: none; }
   .ft-links a:hover { color: var(--blue); }
 
+
+  /* ── DROPDOWNS BARRA DE BÚSQUEDA ── */
+  .sb-field { position: relative; cursor: pointer; user-select: none; }
+  .sb-drop {
+    display: none; position: absolute; top: calc(100% + 12px); left: -12px; z-index: 300;
+    background: #fff; border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(13,31,60,0.14);
+    min-width: 240px; overflow: hidden;
+    animation: dropIn 0.15s ease;
+  }
+  .sb-drop.open { display: block; }
+  .sb-drop-wide { min-width: 380px; }
+  .sb-drop-sm { min-width: 200px; }
+  @keyframes dropIn {
+    from { opacity:0; transform:translateY(-6px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .drop-search-wrap { padding: 10px 12px 6px; border-bottom: 1px solid var(--border); }
+  .drop-search {
+    width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 7px 10px; font-family: inherit; font-size: 13px; color: var(--text);
+    outline: none;
+  }
+  .drop-search:focus { border-color: var(--blue); }
+  .drop-list { max-height: 240px; overflow-y: auto; padding: 6px 0; }
+  .drop-item {
+    padding: 9px 14px; font-size: 13px; color: var(--text2);
+    cursor: pointer; transition: background 0.12s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .drop-item:hover { background: #f0f4ff; color: var(--text); }
+  .drop-item.on { color: var(--blue); font-weight: 600; background: #eef2ff; }
+  .drop-item.hidden { display: none; }
+
+  /* Calendario */
+  .cal-wrap { padding: 16px; }
+  .cal-hint { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+  .cal-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .cal-field { flex: 1; }
+  .cal-lbl { display: block; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
+  .cal-input {
+    width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 8px 10px; font-family: inherit; font-size: 13px; color: var(--text);
+    outline: none; cursor: pointer;
+  }
+  .cal-input:focus { border-color: var(--blue); }
+  .cal-arrow { color: var(--muted); font-size: 16px; flex-shrink: 0; }
+  .cal-shortcuts { display: flex; gap: 6px; flex-wrap: wrap; }
+  .cal-short {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 6px;
+    font-family: inherit; font-size: 11.5px; color: var(--text2);
+    padding: 5px 10px; cursor: pointer; transition: all 0.12s;
+  }
+  .cal-short:hover { border-color: var(--blue); color: var(--blue); background: #eef2ff; }
+
+  /* Chip limpiar */
+  .sa-clear {
+    background: none; border: none; font-family: inherit; font-size: 12.5px;
+    color: var(--muted); cursor: pointer; padding: 0;
+  }
+  .sa-clear:hover { color: var(--text); }
+
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
@@ -574,62 +636,122 @@
     <!-- Buscador derecha -->
     <div class="search-panel">
 
-      <!-- Fila principal: los campos más importantes en una barra unificada -->
+      <!-- Fila principal -->
       <div class="search-bar">
-        <div class="sb-field sb-destination">
+
+        <!-- DESTINO -->
+        <div class="sb-field sb-destination" onclick="toggleDrop('drop-destino')">
           <div class="sb-icon">🌍</div>
           <div class="sb-content">
             <div class="sb-label">Destino</div>
-            <div class="sb-value">Mediterráneo</div>
+            <div class="sb-value" id="val-destino">Cualquier destino</div>
+          </div>
+          <!-- Dropdown destino -->
+          <div class="sb-drop" id="drop-destino">
+            <div class="drop-search-wrap">
+              <input class="drop-search" id="drop-destino-search" placeholder="Buscar región..." oninput="filterDrop('drop-destino',this.value)" onclick="event.stopPropagation()">
+            </div>
+            <div class="drop-list" id="drop-destino-list">
+              <div class="drop-item on" onclick="selectDrop('destino','','Cualquier destino',this)">Cualquier destino</div>
+            </div>
           </div>
         </div>
+
         <div class="sb-sep"></div>
-        <div class="sb-field">
+
+        <!-- FECHAS -->
+        <div class="sb-field sb-dates" onclick="toggleDrop('drop-fechas')">
           <div class="sb-icon">📅</div>
           <div class="sb-content">
-            <div class="sb-label">Fecha de salida</div>
-            <div class="sb-value">10 may 2026</div>
+            <div class="sb-label">Fechas</div>
+            <div class="sb-value" id="val-fechas">Cualquier fecha</div>
+          </div>
+          <!-- Dropdown calendario -->
+          <div class="sb-drop sb-drop-wide" id="drop-fechas" onclick="event.stopPropagation()">
+            <div class="cal-wrap">
+              <div class="cal-hint">Seleccioná fecha de inicio y fin del viaje</div>
+              <div class="cal-row">
+                <div class="cal-field">
+                  <label class="cal-lbl">Desde</label>
+                  <input type="date" class="cal-input" id="date-from" onchange="updateFechas()">
+                </div>
+                <div class="cal-arrow">→</div>
+                <div class="cal-field">
+                  <label class="cal-lbl">Hasta</label>
+                  <input type="date" class="cal-input" id="date-to" onchange="updateFechas()">
+                </div>
+              </div>
+              <div class="cal-shortcuts">
+                <button class="cal-short" onclick="setFechaPreset(3)">Próx. 3 meses</button>
+                <button class="cal-short" onclick="setFechaPreset(6)">Próx. 6 meses</button>
+                <button class="cal-short" onclick="setFechaPreset(12)">Próx. 12 meses</button>
+                <button class="cal-short" onclick="clearFechas()">Limpiar</button>
+              </div>
+            </div>
           </div>
         </div>
+
         <div class="sb-sep"></div>
-        <div class="sb-field">
+
+        <!-- PUERTO DE SALIDA -->
+        <div class="sb-field" onclick="toggleDrop('drop-puerto')">
+          <div class="sb-icon">⚓</div>
+          <div class="sb-content">
+            <div class="sb-label">Puerto de salida</div>
+            <div class="sb-value" id="val-puerto">Cualquier puerto</div>
+          </div>
+          <div class="sb-drop" id="drop-puerto">
+            <div class="drop-search-wrap">
+              <input class="drop-search" id="drop-puerto-search" placeholder="Buscar puerto..." oninput="filterDrop('drop-puerto',this.value)" onclick="event.stopPropagation()">
+            </div>
+            <div class="drop-list" id="drop-puerto-list">
+              <div class="drop-item on" onclick="selectDrop('puerto','','Cualquier puerto',this)">Cualquier puerto</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-sep"></div>
+
+        <!-- DURACIÓN -->
+        <div class="sb-field" onclick="toggleDrop('drop-duracion')">
           <div class="sb-icon">🌙</div>
           <div class="sb-content">
             <div class="sb-label">Duración</div>
-            <div class="sb-value">Cualquier duración</div>
+            <div class="sb-value" id="val-duracion">Cualquier duración</div>
+          </div>
+          <div class="sb-drop sb-drop-sm" id="drop-duracion" onclick="event.stopPropagation()">
+            <div class="drop-list">
+              <div class="drop-item on" onclick="selectDuracion('','Cualquier duración',this)">Cualquier duración</div>
+              <div class="drop-item" onclick="selectDuracion('1,4','1 a 4 noches',this)">1 a 4 noches</div>
+              <div class="drop-item" onclick="selectDuracion('5,7','5 a 7 noches',this)">5 a 7 noches</div>
+              <div class="drop-item" onclick="selectDuracion('8,10','8 a 10 noches',this)">8 a 10 noches</div>
+              <div class="drop-item" onclick="selectDuracion('11,14','11 a 14 noches',this)">11 a 14 noches</div>
+              <div class="drop-item" onclick="selectDuracion('15,99','15+ noches',this)">15+ noches</div>
+            </div>
           </div>
         </div>
-        <div class="sb-sep"></div>
-        <div class="sb-field">
-          <div class="sb-icon">👥</div>
-          <div class="sb-content">
-            <div class="sb-label">Pasajeros</div>
-            <div class="sb-value">2 adultos</div>
-          </div>
-        </div>
+
         <button class="sb-btn" onclick="searchCruises()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           Buscar
         </button>
+
       </div>
 
-      <!-- Fila secundaria: filtros avanzados como chips clicables -->
+      <!-- Fila secundaria: filtros avanzados -->
       <div class="search-advanced">
         <span class="sa-label">Más filtros:</span>
-        <div class="sa-chip active">
-          <span class="sa-chip-icon">⚓</span> Naviera / Barco
+        <div class="sa-chip" onclick="toggleDrop('drop-naviera')">
+          <span class="sa-chip-icon">🚢</span> Naviera / Barco
+          <div class="sb-drop sb-drop-sm" id="drop-naviera" onclick="event.stopPropagation()">
+            <div class="drop-list" id="drop-naviera-list">
+              <div class="drop-item on" onclick="selectDrop('naviera','','Naviera / Barco',this)">Cualquier naviera</div>
+            </div>
+          </div>
         </div>
-        <div class="sa-chip">
-          <span class="sa-chip-icon">↗</span> Puerto salida
+        <div class="sa-chip" id="chip-clear" style="display:none">
+          <button class="sa-clear" onclick="clearAllFilters()">Limpiar todo ✕</button>
         </div>
-        <div class="sa-chip">
-          <span class="sa-chip-icon">↙</span> Puerto llegada
-        </div>
-        <div class="sa-chip sa-chip-tag">
-          <span class="sa-chip-icon">📍</span> Pasar por: <strong>Mykonos</strong>
-          <span class="sa-remove">✕</span>
-        </div>
-        <button class="sa-clear">Limpiar todo</button>
       </div>
 
     </div>
@@ -1099,15 +1221,151 @@
   // ─────────────────────────────────────────
   async function loadFilters() {
     try {
+
+  // ─── ESTADO BÚSQUEDA ───
+  const searchState = { destino:'', puerto:'', naviera:'', dateFrom:'', dateTo:'', durMin:'', durMax:'' };
+
+  // ─── DROPDOWNS ───
+  function toggleDrop(id) {
+    document.querySelectorAll('.sb-drop.open').forEach(d => { if(d.id !== id) d.classList.remove('open'); });
+    document.getElementById(id)?.classList.toggle('open');
+  }
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.sb-drop.open').forEach(d => d.classList.remove('open'));
+  });
+
+  function selectDrop(field, value, label, el) {
+    searchState[field] = value;
+    document.getElementById('val-' + field).textContent = label;
+    el.closest('.drop-list')?.querySelectorAll('.drop-item').forEach(i => i.classList.remove('on'));
+    el.classList.add('on');
+    el.closest('.sb-drop')?.classList.remove('open');
+    updateClearChip();
+    event.stopPropagation();
+  }
+
+  function selectDuracion(val, label, el) {
+    if (val) { const [a,b] = val.split(','); searchState.durMin=a; searchState.durMax=b; }
+    else { searchState.durMin=''; searchState.durMax=''; }
+    document.getElementById('val-duracion').textContent = label;
+    el.closest('.drop-list')?.querySelectorAll('.drop-item').forEach(i => i.classList.remove('on'));
+    el.classList.add('on');
+    el.closest('.sb-drop')?.classList.remove('open');
+    updateClearChip();
+  }
+
+  function filterDrop(dropId, query) {
+    const listId = dropId + '-list';
+    document.querySelectorAll(`#${listId} .drop-item`).forEach(item => {
+      const match = item.textContent.toLowerCase().includes(query.toLowerCase());
+      item.classList.toggle('hidden', !match);
+    });
+  }
+
+  // ─── FECHAS ───
+  function updateFechas() {
+    const from = document.getElementById('date-from').value;
+    const to   = document.getElementById('date-to').value;
+    searchState.dateFrom = from;
+    searchState.dateTo   = to;
+    if (from && to) {
+      document.getElementById('val-fechas').textContent =
+        formatDateShort(from) + ' → ' + formatDateShort(to);
+    } else if (from) {
+      document.getElementById('val-fechas').textContent = 'Desde ' + formatDateShort(from);
+    } else {
+      document.getElementById('val-fechas').textContent = 'Cualquier fecha';
+    }
+    updateClearChip();
+  }
+
+  function formatDateShort(d) {
+    if (!d) return '';
+    const dt = new Date(d + 'T00:00:00');
+    return dt.toLocaleDateString('es-AR', { day:'numeric', month:'short', year:'numeric' });
+  }
+
+  function setFechaPreset(months) {
+    const from = new Date();
+    const to   = new Date();
+    to.setMonth(to.getMonth() + months);
+    const fmt = d => d.toISOString().split('T')[0];
+    document.getElementById('date-from').value = fmt(from);
+    document.getElementById('date-to').value   = fmt(to);
+    updateFechas();
+  }
+
+  function clearFechas() {
+    document.getElementById('date-from').value = '';
+    document.getElementById('date-to').value   = '';
+    searchState.dateFrom = ''; searchState.dateTo = '';
+    document.getElementById('val-fechas').textContent = 'Cualquier fecha';
+    updateClearChip();
+  }
+
+  function clearAllFilters() {
+    searchState.destino=''; searchState.puerto=''; searchState.naviera='';
+    searchState.dateFrom=''; searchState.dateTo=''; searchState.durMin=''; searchState.durMax='';
+    document.getElementById('val-destino').textContent  = 'Cualquier destino';
+    document.getElementById('val-fechas').textContent   = 'Cualquier fecha';
+    document.getElementById('val-puerto').textContent   = 'Cualquier puerto';
+    document.getElementById('val-duracion').textContent = 'Cualquier duración';
+    clearFechas();
+    document.querySelectorAll('.drop-item.on').forEach(i => i.classList.remove('on'));
+    document.querySelector('#drop-destino-list .drop-item')?.classList.add('on');
+    document.querySelector('#drop-puerto-list .drop-item')?.classList.add('on');
+    updateClearChip();
+  }
+
+  function updateClearChip() {
+    const hasFilter = searchState.destino || searchState.puerto || searchState.dateFrom || searchState.durMin;
+    document.getElementById('chip-clear').style.display = hasFilter ? 'flex' : 'none';
+  }
+
+  // ─── CARGAR FILTROS DEL BACKEND ───
+  async function loadFilters() {
+    try {
       const data = await apiFetch('/cruises/filters');
       if (!data?.success) return;
+      const f = data.data || {};
 
-      // Poblar dropdown de navieras si la API devuelve datos
-      if (data.data?.operators?.length) {
-        console.log('Navieras disponibles:', data.data.operators.length);
+      // Poblar DESTINOS (regiones)
+      const destList = document.getElementById('drop-destino-list');
+      if (f.regions?.length) {
+        f.regions.forEach(r => {
+          const el = document.createElement('div');
+          el.className = 'drop-item';
+          el.textContent = r;
+          el.onclick = (e) => { selectDrop('destino', r, r, el); e.stopPropagation(); };
+          destList.appendChild(el);
+        });
+      }
+
+      // Poblar PUERTOS DE SALIDA
+      const puertoList = document.getElementById('drop-puerto-list');
+      if (f.departure_ports?.length) {
+        f.departure_ports.forEach(p => {
+          const el = document.createElement('div');
+          el.className = 'drop-item';
+          el.textContent = p.name || p;
+          el.onclick = (e) => { selectDrop('puerto', p.code || p.name || p, p.name || p, el); e.stopPropagation(); };
+          puertoList.appendChild(el);
+        });
+      }
+
+      // Poblar NAVIERAS
+      const navList = document.getElementById('drop-naviera-list');
+      if (f.operators?.length) {
+        f.operators.forEach(op => {
+          const el = document.createElement('div');
+          el.className = 'drop-item';
+          el.textContent = op.name || op;
+          el.onclick = (e) => { selectDrop('naviera', op.code || op.name || op, op.name || op, el); e.stopPropagation(); };
+          navList.appendChild(el);
+        });
       }
     } catch(e) {
-      console.log('Filtros: usando datos de ejemplo');
+      console.log('Filtros: usando datos por defecto');
     }
   }
 
@@ -1118,22 +1376,32 @@
     const tbody = document.getElementById('resultsBody');
     const countEl = document.getElementById('resultsCount');
 
+    // Cerrar dropdowns
+    document.querySelectorAll('.sb-drop.open').forEach(d => d.classList.remove('open'));
+
     // Mostrar loading
     tbody.innerHTML = `<div class="loading-row"><div class="spinner"></div>Buscando cruceros...</div>`;
 
     try {
-      // Recoger filtros del formulario
-      const params = new URLSearchParams({
-        guests: 2,
-        page: 1,
-        per_page: 20,
-      });
+      // Construir params desde searchState
+      const p = {};
+      if (searchState.destino)  p.destination    = searchState.destino;
+      if (searchState.puerto)   p.departure_port = searchState.puerto;
+      if (searchState.naviera)  p.operator       = searchState.naviera;
+      if (searchState.dateFrom) p.date_from      = searchState.dateFrom;
+      if (searchState.dateTo)   p.date_to        = searchState.dateTo;
+      if (searchState.durMin)   p.duration_min   = searchState.durMin;
+      if (searchState.durMax)   p.duration_max   = searchState.durMax;
+      p.page     = 1;
+      p.per_page = 20;
 
+      const params = new URLSearchParams(p);
       const data = await apiFetch(`/cruises?${params}`);
 
       if (!data?.success) throw new Error('Error en la búsqueda');
 
       const cruises = data.data?.cruises || data.data || [];
+      const total   = data.data?.total || cruises.length;
 
       if (!cruises.length) {
         tbody.innerHTML = `<div class="empty-state"><div class="ei">🔍</div><p>No se encontraron cruceros con esos filtros.<br>Probá con otros criterios.</p></div>`;
@@ -1141,14 +1409,13 @@
         return;
       }
 
-      countEl.innerHTML = `<strong>${cruises.length} cruceros</strong> encontrados`;
+      countEl.innerHTML = `<strong>${total.toLocaleString()} cruceros</strong> encontrados`;
       renderCruises(cruises);
 
     } catch(e) {
       console.error('Search error:', e);
-      // Si Widgety aún no está configurado, mostrar datos de ejemplo
-      countEl.innerHTML = '<strong>Datos de ejemplo</strong> · Widgety pendiente';
-      tbody.innerHTML = getExampleRows();
+      countEl.innerHTML = '<strong>Error al buscar</strong> · Verificá la conexión';
+      tbody.innerHTML = `<div class="empty-state"><div class="ei">⚠️</div><p>Error conectando con el servidor.<br>Intentá de nuevo.</p></div>`;
     }
   }
 
