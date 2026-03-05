@@ -86,7 +86,7 @@
   .hero {
     padding-top: 58px;
     background: var(--navy);
-    position: relative; overflow: hidden;
+    position: relative; overflow: visible;
   }
   .hero::after {
     content: '';
@@ -116,7 +116,7 @@
   .hs-div { width: 1px; height: 28px; background: rgba(255,255,255,0.15); }
 
   /* ─────────── SEARCH PANEL ─────────── */
-  .search-panel {
+  .search-panel { overflow: visible;
     flex: 1;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
@@ -128,7 +128,7 @@
   .search-bar {
     display: flex; align-items: stretch;
     background: #fff; border-radius: 12px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 4px 24px rgba(0,0,0,0.2);
     margin-bottom: 14px; height: 58px;
   }
@@ -549,11 +549,10 @@
   /* ── DROPDOWNS BARRA DE BÚSQUEDA ── */
   .sb-field { position: relative; cursor: pointer; user-select: none; }
   .sb-drop {
-    display: none; position: absolute; top: calc(100% + 12px); left: -12px; z-index: 300;
+    display: none; position: absolute; top: calc(100% + 12px); left: -12px; z-index: 9999;
     background: #fff; border: 1px solid var(--border); border-radius: 14px;
     box-shadow: 0 8px 32px rgba(13,31,60,0.14);
-    min-width: 240px; overflow: hidden;
-    animation: dropIn 0.15s ease;
+    min-width: 240px;
   }
   .sb-drop.open { display: block; }
   .sb-drop-wide { min-width: 380px; }
@@ -655,7 +654,7 @@
       <div class="search-bar">
 
         <!-- DESTINO -->
-        <div class="sb-field sb-destination" onclick="toggleDrop('drop-destino')">
+        <div class="sb-field sb-destination" onclick="toggleDrop('drop-destino', event)">
           <div class="sb-icon">🌍</div>
           <div class="sb-content">
             <div class="sb-label">Destino</div>
@@ -675,7 +674,7 @@
         <div class="sb-sep"></div>
 
         <!-- FECHAS -->
-        <div class="sb-field sb-dates" onclick="toggleDrop('drop-fechas')">
+        <div class="sb-field sb-dates" onclick="toggleDrop('drop-fechas', event)">
           <div class="sb-icon">📅</div>
           <div class="sb-content">
             <div class="sb-label">Fechas</div>
@@ -709,7 +708,7 @@
         <div class="sb-sep"></div>
 
         <!-- PUERTO DE SALIDA -->
-        <div class="sb-field" onclick="toggleDrop('drop-puerto')">
+        <div class="sb-field" onclick="toggleDrop('drop-puerto', event)">
           <div class="sb-icon">⚓</div>
           <div class="sb-content">
             <div class="sb-label">Puerto de salida</div>
@@ -728,7 +727,7 @@
         <div class="sb-sep"></div>
 
         <!-- DURACIÓN -->
-        <div class="sb-field" onclick="toggleDrop('drop-duracion')">
+        <div class="sb-field" onclick="toggleDrop('drop-duracion', event)">
           <div class="sb-icon">🌙</div>
           <div class="sb-content">
             <div class="sb-label">Duración</div>
@@ -756,7 +755,7 @@
       <!-- Fila secundaria: filtros avanzados -->
       <div class="search-advanced">
         <span class="sa-label">Más filtros:</span>
-        <div class="sa-chip" onclick="toggleDrop('drop-naviera')">
+        <div class="sa-chip" onclick="toggleDrop('drop-naviera', event)">
           <span class="sa-chip-icon">🚢</span> Naviera / Barco
           <div class="sb-drop sb-drop-sm" id="drop-naviera" onclick="event.stopPropagation()">
             <div class="drop-list" id="drop-naviera-list">
@@ -1222,12 +1221,18 @@
   const searchState = { destino:'', puerto:'', naviera:'', dateFrom:'', dateTo:'', durMin:'', durMax:'', cabina:'' };
 
   // ─── DROPDOWNS ───
-  function toggleDrop(id) {
-    document.querySelectorAll('.sb-drop.open').forEach(d => { if(d.id !== id) d.classList.remove('open'); });
-    document.getElementById(id)?.classList.toggle('open');
-  }
-  document.addEventListener('click', () => {
+  function toggleDrop(id, event) {
+    if (event) { event.preventDefault(); event.stopPropagation(); }
+    const target = document.getElementById(id);
+    if (!target) return;
+    const isOpen = target.classList.contains('open');
     document.querySelectorAll('.sb-drop.open').forEach(d => d.classList.remove('open'));
+    if (!isOpen) target.classList.add('open');
+  }
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.sb-field') && !e.target.closest('.sa-chip')) {
+      document.querySelectorAll('.sb-drop.open').forEach(d => d.classList.remove('open'));
+    }
   });
 
   function selectDrop(field, value, label, el) {
@@ -1376,14 +1381,20 @@
   // ─────────────────────────────────────────
   async function loadFilters() {
     try {
-      const data = await apiFetch('/cruises/filters');
-      if (!data?.success) return;
-      const f = data.data || {};
+      // Cargar puertos desde endpoint admin (lista estática completa)
+      const [cruisesData, portsData] = await Promise.all([
+        apiFetch('/cruises?per_page=50&page=1'),
+        apiFetch('/admin/ports')
+      ]);
 
-      // Poblar DESTINOS (regiones)
-      const destList = document.getElementById('drop-destino-list');
-      if (f.regions?.length) {
-        f.regions.forEach(r => {
+      // Poblar DESTINOS desde cruceros
+      if (cruisesData?.success) {
+        const regionesSet = new Set();
+        (cruisesData.data?.cruises || []).forEach(c => {
+          (c.regions || []).forEach(r => regionesSet.add(r));
+        });
+        const destList = document.getElementById('drop-destino-list');
+        [...regionesSet].sort().forEach(r => {
           const el = document.createElement('div');
           el.className = 'drop-item';
           el.textContent = r;
@@ -1392,34 +1403,22 @@
         });
       }
 
-      // Poblar PUERTOS DE SALIDA
+      // Poblar PUERTOS desde endpoint admin (lista completa estática)
       const puertoList = document.getElementById('drop-puerto-list');
-      if (f.departure_ports?.length) {
-        f.departure_ports.forEach(p => {
+      const ports = portsData?.data || portsData?.ports || [];
+      if (ports.length) {
+        [...ports].sort((a,b) => (a.name||a).localeCompare(b.name||b)).forEach(p => {
+          const name = p.name || p;
           const el = document.createElement('div');
           el.className = 'drop-item';
-          el.textContent = p.name || p;
-          el.onclick = (e) => { selectDrop('puerto', p.code || p.name || p, p.name || p, el); e.stopPropagation(); };
+          el.textContent = name;
+          el.onclick = (e) => { selectDrop('puerto', name, name, el); e.stopPropagation(); };
           puertoList.appendChild(el);
         });
       }
 
-      // Poblar NAVIERAS (barra superior)
-      const navList = document.getElementById('drop-naviera-list');
-      const operators = f.operators?.operators || f.operators || [];
-      if (operators.length) {
-        operators.forEach(op => {
-          const name = op.name || op;
-          const slug = name.toLowerCase().replace(/\s+/g,'-');
-          const el = document.createElement('div');
-          el.className = 'drop-item';
-          el.textContent = name;
-          el.onclick = (e) => { selectDrop('naviera', slug, name, el); e.stopPropagation(); };
-          navList?.appendChild(el);
-        });
-      }
     } catch(e) {
-      console.log('Filtros: usando datos por defecto');
+      console.log('Filtros: usando datos por defecto', e);
     }
   }
 
@@ -1560,26 +1559,85 @@
   }
 
   function renderCruiseModal(c) {
-    const ship = c.ship || {};
-    document.querySelector('.m-cruise-name').textContent = ship.name || c.ship_name || 'Crucero';
-    document.querySelector('.m-cruise-sub').textContent =
-      `${formatDate(c.departure_date)} · ${c.duration} noches`;
+    // Extraer datos de la estructura real de Widgety
+    const season   = c.operating_seasons?.[0] || {};
+    const date     = season.dates?.[0] || {};
+    const naviera  = c.operator_title || '—';
+    const barco    = date.ship_title || c.ship_title || '—';
+    const noches   = c.cruise_nights || '—';
+    const fechaSal = formatDate(date.date_from || c.date_from);
+    const fechaLleg = formatDate(date.date_to || c.date_to);
+    const salida   = (date.starts_at || c.starts_at)?.name || '—';
+    const llegada  = (date.ends_at   || c.ends_at)?.name   || '—';
+    const regiones = (c.regions || []).join(' · ') || '—';
+    const rating   = c.rating || '—';
+    const navBadge = naviera.includes('Norwegian') ? 'NCL'
+                   : naviera.includes('Royal')      ? 'RCI'
+                   : naviera.substring(0,3).toUpperCase();
 
+    // Precios
+    const hp      = date.headline_prices?.cruise?.double || {};
+    const pInt    = hp.from_inside  || c.inside_price;
+    const pExt    = hp.from_outside || c.outside_price;
+    const pBal    = hp.from_balcony || c.balcony_price;
+    const pSui    = hp.from_suite   || c.suite_price;
+    const fmtP    = p => p ? `US$ ${Number(p).toLocaleString('es-AR')}` : '<span style="color:var(--muted)">Consultar</span>';
+
+    // Sidebar del modal
+    document.querySelector('.m-cruise-name').textContent = c.name || barco;
+    document.querySelector('.m-cruise-sub').textContent  = `${naviera} · ${noches} noches`;
+
+    // Tab: El Barco
+    const imgSrc = (c.images?.[0]?.url) || 'https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80';
     document.getElementById('tab-barco').innerHTML = `
       <div class="ship-banner">
-        <img src="${ship.image_url || 'https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80'}" alt="${ship.name}">
-        <div class="ship-banner-overlay">${ship.name || '—'}</div>
+        <img src="${imgSrc}" alt="${barco}" onerror="this.src='https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80'">
+        <div class="ship-banner-overlay">${barco}</div>
       </div>
       <div class="ship-stats">
-        <div class="sc"><span class="sc-v">${ship.size || '—'}</span><span class="sc-l">Tamaño</span></div>
-        <div class="sc"><span class="sc-v">${ship.year_built || '—'}</span><span class="sc-l">Inauguración</span></div>
-        <div class="sc"><span class="sc-v">${ship.last_refurbished || '—'}</span><span class="sc-l">Última reforma</span></div>
-        <div class="sc"><span class="sc-v">${ship.decks || '—'}</span><span class="sc-l">Decks</span></div>
-        <div class="sc"><span class="sc-v">${ship.passengers || '—'}</span><span class="sc-l">Pasajeros</span></div>
-        <div class="sc"><span class="sc-v">${ship.cabins || '—'}</span><span class="sc-l">Cabinas</span></div>
-        <div class="sc"><span class="sc-v">${ship.crew || '—'}</span><span class="sc-l">Tripulantes</span></div>
+        <div class="sc"><span class="sc-v">${noches}</span><span class="sc-l">Noches</span></div>
+        <div class="sc"><span class="sc-v">${rating}</span><span class="sc-l">Categoría</span></div>
+        <div class="sc"><span class="sc-v">${salida === llegada ? salida : salida + ' → ' + llegada}</span><span class="sc-l">Ruta</span></div>
+        <div class="sc"><span class="sc-v">${fechaSal}</span><span class="sc-l">Salida</span></div>
+        <div class="sc"><span class="sc-v">${fechaLleg}</span><span class="sc-l">Regreso</span></div>
+        <div class="sc"><span class="sc-v">${regiones}</span><span class="sc-l">Región</span></div>
+        <div class="sc"><div class="line-chip" style="margin:0 auto;">${navBadge}</div><span class="sc-l">${naviera.split(' ')[0]}</span></div>
       </div>
-      <p class="m-desc">${ship.description || 'Información del barco disponible próximamente.'}</p>`;
+      ${c.description ? `<p class="m-desc">${c.description}</p>` : ''}`;
+
+    // Tab: Itinerario
+    const idays = c.itinerary_days || [];
+    document.getElementById('tab-itin').innerHTML = idays.length ? `
+      <div class="m-section-title">Itinerario — ${noches} noches</div>
+      <div class="itin-list">
+        ${idays.map((d,i) => `
+          <div class="iday">
+            <div class="iday-left">
+              <div class="iday-dot ${d.at_sea ? 'sea' : ''}"></div>
+              ${i < idays.length-1 ? '<div class="iday-line"></div>' : ''}
+            </div>
+            <div class="iday-right">
+              <div class="iday-n">Día ${i+1} · ${d.date ? formatDate(d.date) : ''}</div>
+              <div class="iday-p">${d.port_name || d.name || (d.at_sea ? 'Día de mar' : '—')}</div>
+              ${d.description ? `<div class="iday-d">${d.description}</div>` : ''}
+            </div>
+          </div>`).join('')}
+      </div>` : `
+      <div style="text-align:center;padding:40px 0;color:var(--muted);">
+        <div style="font-size:32px;margin-bottom:12px;">🗺️</div>
+        <p>Itinerario detallado no disponible para este crucero.</p>
+      </div>`;
+
+    // Tab: Precios
+    document.getElementById('tab-precios').innerHTML = `
+      <div class="m-section-title">Tarifas</div>
+      <div class="price-summary">
+        <div class="ps-card"><div class="ps-type">Interior</div><div class="ps-price">${fmtP(pInt)}</div><div class="ps-per">por huésped</div></div>
+        <div class="ps-card"><div class="ps-type">Exterior</div><div class="ps-price">${fmtP(pExt)}</div><div class="ps-per">por huésped</div></div>
+        <div class="ps-card"><div class="ps-type">Balcón</div><div class="ps-price">${fmtP(pBal)}</div><div class="ps-per">por huésped</div></div>
+        <div class="ps-card"><div class="ps-type">Suite</div><div class="ps-price">${fmtP(pSui)}</div><div class="ps-per">por huésped</div></div>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-top:8px;">* Tarifas en USD por persona en base doble. Sujetas a disponibilidad.</p>`;
   }
 
   function renderExampleModal() {
