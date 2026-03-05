@@ -980,8 +980,41 @@
     if (TOKEN) {
       showApp();
       loadFilters();
-      // Mostrar datos de ejemplo hasta que llegue Widgety
-      document.getElementById('resultsBody').innerHTML = getExampleRows();
+      // Mostrar cruceros de prueba reales de Widgety
+      renderCruises([{
+        holiday_ref: 'RCISY07W705-151126HOL',
+        name: '7 Night Western Caribbean Cruise',
+        operator_title: 'Royal Caribbean International',
+        cruise_nights: 7,
+        regions: ['Caribbean', 'Americas'],
+        starts_at: { name: 'Galveston, Texas', country: 'United States' },
+        ends_at:   { name: 'Galveston, Texas', country: 'United States' },
+        date_from: '2026-11-15T00:00:00.000Z',
+        date_to:   '2026-11-22T00:00:00.000Z',
+        inside_price: 899, outside_price: 1099, balcony_price: 1450, suite_price: 2890,
+      },{
+        holiday_ref: 'NCLJAD-20270628-07-WQF-VANHOL',
+        name: 'Alaska: Hubbard Glacier & Skagway',
+        operator_title: 'Norwegian Cruise Line',
+        cruise_nights: 7,
+        regions: ['Alaska', 'Americas'],
+        starts_at: { name: 'Vancouver, Canada', country: 'Canada' },
+        ends_at:   { name: 'Anchorage, Alaska', country: 'United States' },
+        date_from: '2027-06-28T00:00:00.000Z',
+        date_to:   '2027-07-05T00:00:00.000Z',
+        inside_price: null, outside_price: null, balcony_price: null, suite_price: null,
+      },{
+        holiday_ref: 'NCLVIV-20270818-09-IST-CIVHOL',
+        name: 'Greek Isles: Santorini, Athens & Mykonos',
+        operator_title: 'Norwegian Cruise Line',
+        cruise_nights: 9,
+        regions: ['Mediterranean', 'Europe'],
+        starts_at: { name: 'Istanbul, Turkey', country: 'Turkey' },
+        ends_at:   { name: 'Rome (Civitavecchia), Italy', country: 'Italy' },
+        date_from: '2027-08-18T00:00:00.000Z',
+        date_to:   '2027-08-27T00:00:00.000Z',
+        inside_price: 1299, outside_price: null, balcony_price: 2100, suite_price: null,
+      }]);
     }
     // Enter en login
     document.getElementById('loginPass').addEventListener('keydown', e => {
