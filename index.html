@@ -282,7 +282,7 @@
 
   .rt-head {
     display: grid;
-    grid-template-columns: 2.4fr 1.6fr 1fr 0.85fr 0.85fr 0.85fr 0.85fr 90px;
+    grid-template-columns: 2.2fr 1.8fr 0.7fr 1.1fr 1.1fr 90px;
     background: var(--bg2);
     border-bottom: 2px solid var(--border);
   }
@@ -302,7 +302,7 @@
 
   .rt-row {
     display: grid;
-    grid-template-columns: 2.4fr 1.6fr 1fr 0.85fr 0.85fr 0.85fr 0.85fr 90px;
+    grid-template-columns: 2.2fr 1.8fr 0.7fr 1.1fr 1.1fr 90px;
     border-bottom: 1px solid var(--border);
     align-items: center;
     transition: background 0.15s;
@@ -348,6 +348,11 @@
     letter-spacing: 0.08em; padding: 2px 5px; border-radius: 3px; margin-top: 3px;
   }
 
+  .rta-center {
+    text-align: center; font-size: 13px; font-weight: 600; color: var(--text);
+    padding: 13px 10px;
+  }
+  .rth-center { text-align: center; justify-content: center; }
   /* accion cell */
   .rta-action { padding: 13px 12px; display: flex; justify-content: flex-end; }
   .rta-btn {
@@ -530,6 +535,17 @@
   .ft-links a:hover { color: var(--blue); }
 
 
+
+  /* ── SIDEBAR FUNCIONAL ── */
+  .btn-limpiar-sidebar {
+    width: 100%; background: none; border: 1.5px solid var(--border);
+    border-radius: 8px; font-family: inherit; font-size: 12.5px;
+    color: var(--muted); padding: 9px; cursor: pointer;
+    transition: all 0.15s; margin-top: 4px;
+  }
+  .btn-limpiar-sidebar:hover { border-color: var(--blue); color: var(--blue); }
+  .cb.on .cb-sq { background: var(--blue); border-color: var(--blue); color: #fff; }
+
   /* ── DROPDOWNS BARRA DE BÚSQUEDA ── */
   .sb-field { position: relative; cursor: pointer; user-select: none; }
   .sb-drop {
@@ -608,7 +624,6 @@
     <a href="#" class="on">🚢 Cruceros</a>
     <a href="#">Mis reservas</a>
     <a href="#">Mis presupuestos</a>
-    <a href="#">Mis grupos</a>
   </div>
   <div class="n-user">
     <div class="n-av">AG</div>
@@ -764,69 +779,58 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
 
+    <!-- NAVIERA -->
     <div class="fc">
-      <div class="fc-head">Tasas <span class="ic">▾</span></div>
+      <div class="fc-head" onclick="toggleFc(this)">Naviera <span class="ic">▾</span></div>
       <div class="fc-body">
-        <div class="tog-row">
-          <span class="tog-lbl">Incluir tasas</span>
-          <div class="tog"></div>
+        <div id="sidebar-navieras">
+          <!-- se llena dinámicamente desde el backend -->
+          <div class="cb on" onclick="sidebarNaviera('','Todas',this)">
+            <div class="cb-sq on">✓</div>
+            <span class="cb-lbl">Todas las navieras</span>
+          </div>
+          <div class="cb" onclick="sidebarNaviera('norwegian-cruise-line','Norwegian Cruise Line',this)">
+            <div class="cb-sq"></div>
+            <span class="cb-lbl">Norwegian Cruise Line</span>
+            <span class="cb-val">NCL</span>
+          </div>
+          <div class="cb" onclick="sidebarNaviera('royal-caribbean-international','Royal Caribbean',this)">
+            <div class="cb-sq"></div>
+            <span class="cb-lbl">Royal Caribbean</span>
+            <span class="cb-val">RCI</span>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- DURACIÓN -->
     <div class="fc">
-      <div class="fc-head">Precio por <span class="ic">▾</span></div>
+      <div class="fc-head" onclick="toggleFc(this)">Duración <span class="ic">▾</span></div>
       <div class="fc-body">
-        <div class="rad-row">
-          <div class="rad on" onclick="radClick(this)">Huésped</div>
-          <div class="rad" onclick="radClick(this)">Cabina</div>
-        </div>
+        <div class="cb on" onclick="sidebarDuracion('','','Cualquier duración',this)"><div class="cb-sq on">✓</div><span class="cb-lbl">Cualquier duración</span></div>
+        <div class="cb" onclick="sidebarDuracion('1','4','1 a 4 noches',this)"><div class="cb-sq"></div><span class="cb-lbl">1 a 4 noches</span></div>
+        <div class="cb" onclick="sidebarDuracion('5','7','5 a 7 noches',this)"><div class="cb-sq"></div><span class="cb-lbl">5 a 7 noches</span></div>
+        <div class="cb" onclick="sidebarDuracion('8','10','8 a 10 noches',this)"><div class="cb-sq"></div><span class="cb-lbl">8 a 10 noches</span></div>
+        <div class="cb" onclick="sidebarDuracion('11','14','11 a 14 noches',this)"><div class="cb-sq"></div><span class="cb-lbl">11 a 14 noches</span></div>
+        <div class="cb" onclick="sidebarDuracion('15','99','15+ noches',this)"><div class="cb-sq"></div><span class="cb-lbl">15+ noches</span></div>
       </div>
     </div>
 
+    <!-- TIPO DE CABINA -->
     <div class="fc">
-      <div class="fc-head">Tipo de cabina <span class="ic">▾</span></div>
+      <div class="fc-head" onclick="toggleFc(this)">Tipo de cabina <span class="ic">▾</span></div>
       <div class="fc-body">
-        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq"></div><span class="cb-lbl">Interior</span><span class="cb-val">US$ 890</span></div>
-        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq on">✓</div><span class="cb-lbl">Exterior</span><span class="cb-val">US$ 1.221</span></div>
-        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq"></div><span class="cb-lbl">Balcón</span><span class="cb-val">US$ 2.890</span></div>
-        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq"></div><span class="cb-lbl">Suite</span><span class="cb-val">US$ 4.100</span></div>
-        <div class="fa"><button class="fa-c">Limpiar</button><button class="fa-a">Aplicar</button></div>
+        <div class="cb" onclick="sidebarCabina('inside',this)"><div class="cb-sq"></div><span class="cb-lbl">Interior</span></div>
+        <div class="cb" onclick="sidebarCabina('outside',this)"><div class="cb-sq"></div><span class="cb-lbl">Exterior</span></div>
+        <div class="cb" onclick="sidebarCabina('balcony',this)"><div class="cb-sq"></div><span class="cb-lbl">Balcón</span></div>
+        <div class="cb" onclick="sidebarCabina('suite',this)"><div class="cb-sq"></div><span class="cb-lbl">Suite</span></div>
       </div>
     </div>
 
-    <div class="fc">
-      <div class="fc-head">Navieras <span class="ic">▾</span></div>
-      <div class="fc-body">
-        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq on">✓</div><span class="cb-lbl">Norwegian</span><span class="cb-val">3</span></div>
-        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq on">✓</div><span class="cb-lbl">MSC</span><span class="cb-val">4</span></div>
-        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq on">✓</div><span class="cb-lbl">Royal Caribbean</span><span class="cb-val">2</span></div>
-        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq"></div><span class="cb-lbl">Costa</span><span class="cb-val">2</span></div>
-        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq"></div><span class="cb-lbl">Celebrity</span><span class="cb-val">1</span></div>
-        <div class="fa"><button class="fa-c">Limpiar</button><button class="fa-a">Aplicar</button></div>
-      </div>
-    </div>
-
-    <div class="fc">
-      <div class="fc-head">Promociones <span class="ic">▾</span></div>
-      <div class="fc-body">
-        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq on">✓</div><span class="cb-lbl" style="font-size:12px;">NCL 50% + Free At Sea</span></div>
-        <div class="cb" onclick="cbToggle(this)"><div class="cb-sq"></div><span class="cb-lbl" style="font-size:12px;">MSC Early Booking</span></div>
-        <div class="fa"><button class="fa-c">Limpiar</button><button class="fa-a">Aplicar</button></div>
-      </div>
-    </div>
-
-    <div class="fc">
-      <div class="fc-head">Precio <span class="ic">▾</span></div>
-      <div class="fc-body">
-        <div class="pr-row">
-          <input class="pr-in" placeholder="Desde US$" type="number">
-          <span class="pr-sep">—</span>
-          <input class="pr-in" placeholder="Hasta US$" type="number">
-        </div>
-        <div class="fa"><button class="fa-c">Limpiar</button><button class="fa-a">Aplicar</button></div>
-      </div>
-    </div>
+    <!-- LIMPIAR FILTROS -->
+    <button class="btn-limpiar-sidebar" onclick="clearAllFilters(); searchCruises()">
+      Limpiar todos los filtros
+    </button>
 
   </aside>
 
@@ -850,12 +854,10 @@
       <!-- HEAD -->
       <div class="rt-head">
         <div class="rth">Itinerario</div>
-        <div class="rth">Naviera / Barco</div>
-        <div class="rth rth-price" style="border-left:none;">Salida</div>
-        <div class="rth rth-price">Interior</div>
-        <div class="rth rth-price">Exterior</div>
-        <div class="rth rth-price">Balcón</div>
-        <div class="rth rth-price">Suite</div>
+        <div class="rth">Barco / Naviera</div>
+        <div class="rth rth-center">Noches</div>
+        <div class="rth rth-center">Fecha salida</div>
+        <div class="rth rth-center">Tarifa desde</div>
         <div class="rth"></div>
       </div>
 
@@ -1223,7 +1225,7 @@
     try {
 
   // ─── ESTADO BÚSQUEDA ───
-  const searchState = { destino:'', puerto:'', naviera:'', dateFrom:'', dateTo:'', durMin:'', durMax:'' };
+  const searchState = { destino:'', puerto:'', naviera:'', dateFrom:'', dateTo:'', durMin:'', durMax:'', cabina:'' };
 
   // ─── DROPDOWNS ───
   function toggleDrop(id) {
@@ -1322,6 +1324,59 @@
     document.getElementById('chip-clear').style.display = hasFilter ? 'flex' : 'none';
   }
 
+
+  // ── SIDEBAR FILTERS ──
+  function toggleFc(head) {
+    const body = head.nextElementSibling;
+    const open = body.style.display !== 'none';
+    body.style.display = open ? 'none' : 'block';
+    head.querySelector('.ic').textContent = open ? '▸' : '▾';
+  }
+
+  function sidebarNaviera(val, label, el) {
+    searchState.naviera = val;
+    el.closest('.fc-body').querySelectorAll('.cb').forEach(c => {
+      c.classList.remove('on');
+      c.querySelector('.cb-sq').classList.remove('on');
+      c.querySelector('.cb-sq').textContent = '';
+    });
+    el.classList.add('on');
+    el.querySelector('.cb-sq').classList.add('on');
+    el.querySelector('.cb-sq').textContent = '✓';
+    searchCruises();
+  }
+
+  function sidebarDuracion(min, max, label, el) {
+    searchState.durMin = min;
+    searchState.durMax = max;
+    // sync con barra superior
+    document.getElementById('val-duracion').textContent = label;
+    el.closest('.fc-body').querySelectorAll('.cb').forEach(c => {
+      c.classList.remove('on');
+      c.querySelector('.cb-sq').classList.remove('on');
+      c.querySelector('.cb-sq').textContent = '';
+    });
+    el.classList.add('on');
+    el.querySelector('.cb-sq').classList.add('on');
+    el.querySelector('.cb-sq').textContent = '✓';
+    searchCruises();
+  }
+
+  function sidebarCabina(tipo, el) {
+    searchState.cabina = searchState.cabina === tipo ? '' : tipo;
+    el.closest('.fc-body').querySelectorAll('.cb').forEach(c => {
+      c.classList.remove('on');
+      c.querySelector('.cb-sq').classList.remove('on');
+      c.querySelector('.cb-sq').textContent = '';
+    });
+    if (searchState.cabina) {
+      el.classList.add('on');
+      el.querySelector('.cb-sq').classList.add('on');
+      el.querySelector('.cb-sq').textContent = '✓';
+    }
+    searchCruises();
+  }
+
   // ─── CARGAR FILTROS DEL BACKEND ───
   async function loadFilters() {
     try {
@@ -1353,15 +1408,18 @@
         });
       }
 
-      // Poblar NAVIERAS
+      // Poblar NAVIERAS (barra superior)
       const navList = document.getElementById('drop-naviera-list');
-      if (f.operators?.length) {
-        f.operators.forEach(op => {
+      const operators = f.operators?.operators || f.operators || [];
+      if (operators.length) {
+        operators.forEach(op => {
+          const name = op.name || op;
+          const slug = name.toLowerCase().replace(/\s+/g,'-');
           const el = document.createElement('div');
           el.className = 'drop-item';
-          el.textContent = op.name || op;
-          el.onclick = (e) => { selectDrop('naviera', op.code || op.name || op, op.name || op, el); e.stopPropagation(); };
-          navList.appendChild(el);
+          el.textContent = name;
+          el.onclick = (e) => { selectDrop('naviera', slug, name, el); e.stopPropagation(); };
+          navList?.appendChild(el);
         });
       }
     } catch(e) {
@@ -1392,6 +1450,7 @@
       if (searchState.dateTo)   p.date_to        = searchState.dateTo;
       if (searchState.durMin)   p.duration_min   = searchState.durMin;
       if (searchState.durMax)   p.duration_max   = searchState.durMax;
+      if (searchState.cabina)   p.cabin_type     = searchState.cabina;
       p.page     = 1;
       p.per_page = 20;
 
@@ -1428,44 +1487,46 @@
     if (total) total.innerHTML = `<strong>${cruises.length} cruceros</strong> encontrados`;
 
     tbody.innerHTML = cruises.map(c => {
-      // Mapeo campos reales de Widgety
-      const ref        = c.holiday_ref || c.ref || '';
-      const nombre     = c.name || '—';
-      const naviera    = c.operator_title || c.operator_name || '—';
-      const noches     = c.cruise_nights || c.duration || '—';
-      const salida     = c.starts_at?.name || c.departure_port_name || '—';
-      const llegada    = c.ends_at?.name   || c.arrival_port_name   || '—';
-      const regiones   = (c.regions || []).slice(0,2).join(' · ') || '—';
-      const fechaSal   = formatDate(c.date_from || c.departure_date);
+      const ref     = c.holiday_ref || c.ref || '';
+      const nombre  = c.name || '—';
+      const naviera = c.operator_title || c.operator_name || '—';
+      const noches  = c.cruise_nights || c.duration || '—';
+      const salida  = c.starts_at?.name || c.departure_port_name || '—';
+      const llegada = c.ends_at?.name   || c.arrival_port_name   || '—';
+      const fecha   = formatDate(c.date_from || c.departure_date);
 
-      // Precios — pueden venir null si Widgety no tiene pricing cargado
-      const pInt  = c.inside_price   || c.interior_price || null;
-      const pExt  = c.outside_price  || c.exterior_price || null;
-      const pBal  = c.balcony_price  || null;
-      const pSui  = c.suite_price    || null;
+      // Barco: extraer del ref o del nombre
+      const barco = c.ship_name || c.ship?.name || '—';
 
-      // Badge naviera corto
+      // Precio mínimo disponible
+      const precios = [c.inside_price, c.outside_price, c.balcony_price, c.suite_price].filter(p => p && p > 0);
+      const minPrecio = precios.length ? Math.min(...precios) : null;
+
       const navBadge = naviera.includes('Norwegian') ? 'NCL'
                      : naviera.includes('Royal')      ? 'RCI'
                      : naviera.substring(0,3).toUpperCase();
 
+      const puertoText = salida === llegada
+        ? salida
+        : `${salida} → ${llegada}`;
+
       return `
         <div class="rt-row" onclick="openCruiseDetail('${ref}')">
           <div class="rta rta-itin">
-            <div class="rta-route">${salida} <span class="rta-arr">→</span> ${llegada}</div>
+            <div class="rta-route">${puertoText}</div>
             <div class="rta-stops">${nombre}</div>
-            <div class="rta-stops" style="color:var(--muted);font-size:11px;">${regiones}</div>
           </div>
           <div class="rta rta-line">
             <div class="line-chip">${navBadge}</div>
-            <div class="rta-ship">${naviera}</div>
-            <div class="rta-nights">${noches} noches</div>
+            <div class="rta-ship">${barco !== '—' ? barco : naviera}</div>
           </div>
-          <div class="rta rta-date">${fechaSal}</div>
-          <div class="rta rta-price">${priceCell(pInt, false)}</div>
-          <div class="rta rta-price">${priceCell(pExt, false)}</div>
-          <div class="rta rta-price">${priceCell(pBal, false)}</div>
-          <div class="rta rta-price">${priceCell(pSui, false)}</div>
+          <div class="rta rta-center">${noches}<span style="font-size:10px;color:var(--muted);display:block;">noches</span></div>
+          <div class="rta rta-center">${fecha}</div>
+          <div class="rta rta-center">
+            ${minPrecio
+              ? `<span class="price-val">US$ ${Number(minPrecio).toLocaleString('es-AR')}</span><span style="font-size:10px;color:var(--muted);display:block;">por huésped</span>`
+              : `<span style="color:var(--muted);font-size:12px;">Consultar</span>`}
+          </div>
           <div class="rta rta-action"><button class="rta-btn">Ver →</button></div>
         </div>`;
     }).join('');
