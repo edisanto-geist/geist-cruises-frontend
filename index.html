@@ -1662,14 +1662,24 @@
       const data = await apiFetch(`/cruises/${ref}`);
       if (!data?.success) throw new Error();
       currentCruise = data.data;
-      renderCruiseModal(data.data);
+
+      // Fetch ship data in parallel
+      const shipUrl  = data.data.operating_seasons?.[0]?.dates?.[0]?.ship || '';
+      const shipSlug = shipUrl.split('/ships/')[1]?.replace('.json','') || '';
+      let shipData = null;
+      if (shipSlug) {
+        try {
+          const sr = await apiFetch(`/ships/${encodeURIComponent(shipSlug)}`);
+          if (sr?.success) shipData = sr.data;
+        } catch(e) {}
+      }
+      renderCruiseModal(data.data, shipData);
     } catch(e) {
-      // Mostrar datos de ejemplo si Widgety no está listo
       renderExampleModal();
     }
   }
 
-  function renderCruiseModal(c) {
+  function renderCruiseModal(c, ship) {
     // Extraer datos de la estructura real de Widgety
     const season   = c.operating_seasons?.[0] || {};
     const date     = season.dates?.[0] || {};
@@ -1699,7 +1709,8 @@
     document.querySelector('.m-cruise-sub').textContent  = `${naviera} · ${noches} noches`;
 
     // Tab: El Barco
-    const imgSrc = (c.images?.[0]?.url) || 'https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80';
+    const imgSrc = ship?.image || (c.images?.[0]?.url) || 'https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80';
+    const shipDesc = ship?.description || c.description || '';
     document.getElementById('tab-barco').innerHTML = `
       <div class="ship-banner">
         <img src="${imgSrc}" alt="${barco}" onerror="this.src='https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80'">
@@ -1708,13 +1719,17 @@
       <div class="ship-stats">
         <div class="sc"><span class="sc-v">${noches}</span><span class="sc-l">Noches</span></div>
         <div class="sc"><span class="sc-v">${rating}</span><span class="sc-l">Categoría</span></div>
-        <div class="sc"><span class="sc-v">${salida === llegada ? salida : salida + ' → ' + llegada}</span><span class="sc-l">Ruta</span></div>
+        <div class="sc"><span class="sc-v">${salida === llegada ? salida : salida+' → '+llegada}</span><span class="sc-l">Ruta</span></div>
         <div class="sc"><span class="sc-v">${fechaSal}</span><span class="sc-l">Salida</span></div>
         <div class="sc"><span class="sc-v">${fechaLleg}</span><span class="sc-l">Regreso</span></div>
-        <div class="sc"><span class="sc-v">${regiones}</span><span class="sc-l">Región</span></div>
-        <div class="sc"><div class="line-chip" style="margin:0 auto;">${navBadge}</div><span class="sc-l">${naviera.split(' ')[0]}</span></div>
+        ${ship?.year_built ? `<div class="sc"><span class="sc-v">${ship.year_built}${ship.refit_year?' / '+ship.refit_year:''}</span><span class="sc-l">Año / Refurb</span></div>` : `<div class="sc"><span class="sc-v">${regiones}</span><span class="sc-l">Región</span></div>`}
+        ${ship?.passengers ? `<div class="sc"><span class="sc-v">${Number(ship.passengers).toLocaleString('es-AR')}</span><span class="sc-l">Pasajeros</span></div>` : `<div class="sc"><div class="line-chip" style="margin:0 auto;">${navBadge}</div><span class="sc-l">${naviera.split(' ')[0]}</span></div>`}
+        ${ship?.crew ? `<div class="sc"><span class="sc-v">${Number(ship.crew).toLocaleString('es-AR')}</span><span class="sc-l">Tripulación</span></div>` : ''}
+        ${ship?.decks ? `<div class="sc"><span class="sc-v">${ship.decks}</span><span class="sc-l">Decks</span></div>` : ''}
+        ${ship?.tonnage ? `<div class="sc"><span class="sc-v">${Number(ship.tonnage).toLocaleString('es-AR')} GT</span><span class="sc-l">Tonelaje</span></div>` : ''}
+        ${ship?.ship_class ? `<div class="sc"><span class="sc-v">${ship.ship_class}</span><span class="sc-l">Clase</span></div>` : ''}
       </div>
-      ${c.description ? `<p class="m-desc">${c.description}</p>` : ''}`;
+      ${shipDesc ? `<p class="m-desc">${shipDesc}</p>` : ''}`;
 
     // Tab: Itinerario — agrupar por día, rellenar días de mar faltantes
     const idays = c.itinerary_days || [];
@@ -1933,9 +1948,39 @@
     });
   }
 
+  let _cotizarRef = '';
+
   function cotizar(ref, nombre) {
+    _cotizarRef = ref;
+    // Reset pax modal
+    document.getElementById('pm-adults').textContent = '2';
+    document.getElementById('pm-children').textContent = '0';
+    document.getElementById('pm-nombre').textContent = nombre || 'este crucero';
+    const pmEl = document.getElementById('pax-modal-ov'); pmEl.style.display='flex'; pmEl.classList.add('open');
+  }
+
+  function closePaxModal() {
+    const pmEl2 = document.getElementById('pax-modal-ov'); pmEl2.style.display='none'; pmEl2.classList.remove('open');
+  }
+
+  function changePaxModal(type, delta) {
+    const el = document.getElementById(type === 'a' ? 'pm-adults' : 'pm-children');
+    const max = type === 'a' ? 4 : 3;
+    const min = type === 'a' ? 1 : 0;
+    el.textContent = Math.max(min, Math.min(max, parseInt(el.textContent) + delta));
+    // Cap total at 4
+    const total = parseInt(document.getElementById('pm-adults').textContent) + parseInt(document.getElementById('pm-children').textContent);
+    if (total > 4) {
+      const other = type === 'a' ? 'pm-children' : 'pm-adults';
+      document.getElementById(other).textContent = Math.max(0, parseInt(document.getElementById(other).textContent) - (total - 4));
+    }
+  }
+
+  function confirmPaxAndCotizar() {
+    const adults   = parseInt(document.getElementById('pm-adults').textContent);
+    const children = parseInt(document.getElementById('pm-children').textContent);
     const base = window.location.href.replace('index.html','').replace(/\/$/, '');
-    window.location.href = `${base}/detalle.html?ref=${encodeURIComponent(ref)}&nombre=${encodeURIComponent(nombre)}`;
+    window.location.href = `${base}/detalle.html?ref=${encodeURIComponent(_cotizarRef)}&adults=${adults}&children=${children}`;
   }
 
   function openModal() {
@@ -1992,6 +2037,44 @@
     <div class="itin-modal-foot">
       <button class="btn-copy-sec" onclick="closeItinModal()">Cerrar</button>
       <button class="btn-copy" onclick="copyItinerario()">📋 Copiar itinerario</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAX MODAL -->
+<div id="pax-modal-ov" onclick="if(event.target===this)closePaxModal()" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(13,31,60,0.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:18px;width:380px;max-width:95vw;box-shadow:0 20px 60px rgba(13,31,60,0.25);animation:dropIn 0.2s ease;overflow:hidden;">
+    <div style="padding:22px 24px 0;">
+      <div style="font-size:18px;font-weight:800;color:var(--navy);margin-bottom:4px;">¿Cuántos viajan?</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:22px;">Máximo 4 pasajeros · <span id="pm-nombre">este crucero</span></div>
+      <!-- Adultos -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);">Adultos</div>
+          <div style="font-size:12px;color:var(--muted);">Mayor de 18 años</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <button onclick="changePaxModal('a',-1)" style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:18px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-weight:300;">−</button>
+          <span id="pm-adults" style="font-size:20px;font-weight:800;min-width:24px;text-align:center;color:var(--navy);">2</span>
+          <button onclick="changePaxModal('a',1)" style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:18px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-weight:300;">+</button>
+        </div>
+      </div>
+      <!-- Niños -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;margin-bottom:8px;">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);">Niños</div>
+          <div style="font-size:12px;color:var(--muted);">Hasta 17 años</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <button onclick="changePaxModal('k',-1)" style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:18px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-weight:300;">−</button>
+          <span id="pm-children" style="font-size:20px;font-weight:800;min-width:24px;text-align:center;color:var(--navy);">0</span>
+          <button onclick="changePaxModal('k',1)" style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:18px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-weight:300;">+</button>
+        </div>
+      </div>
+    </div>
+    <div style="padding:16px 24px;background:var(--bg2);border-top:1px solid var(--border);display:flex;gap:10px;">
+      <button onclick="closePaxModal()" style="flex:1;background:#fff;color:var(--text2);border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:13px;font-weight:600;padding:12px;cursor:pointer;">Cancelar</button>
+      <button onclick="confirmPaxAndCotizar()" style="flex:2;background:var(--blue);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;padding:12px;cursor:pointer;box-shadow:0 4px 14px rgba(30,94,255,0.28);">Ver cotización →</button>
     </div>
   </div>
 </div>

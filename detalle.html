@@ -67,6 +67,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
 .ct-sel-btn{display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:#fff;border:none;font-family:inherit;font-size:12px;font-weight:600;padding:7px 14px;border-radius:7px;cursor:pointer;margin-top:6px;transition:background 0.15s;}
 .cabin-table tr.on .ct-sel-btn{background:var(--green);}
 .loading-card{display:flex;align-items:center;justify-content:center;padding:60px;gap:14px;color:var(--muted);}
+  .ship-card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px;}
+  .ship-banner-img{width:100%;height:180px;object-fit:cover;display:block;}
+  .ship-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-bottom:1px solid var(--border);}
+  .ship-stat{padding:12px 14px;border-right:1px solid var(--border);text-align:center;}
+  .ship-stat:last-child{border-right:none;}
+  .ship-stat-v{font-size:14px;font-weight:700;color:var(--navy);}
+  .ship-stat-l{font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.06em;}
+  .ship-desc{padding:14px 18px;font-size:13px;color:var(--text2);line-height:1.6;border-top:1px solid var(--border);}
 .spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .sidebar{position:sticky;top:80px;display:flex;flex-direction:column;gap:12px;}
@@ -179,6 +187,21 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       <div class="loading-card"><div class="spinner"></div><span>Cargando información del crucero...</span></div>
     </div>
 
+    <!-- BARCO -->
+    <div class="ship-card" id="cardBarco" style="display:none;">
+      <img class="ship-banner-img" id="shipImg" src="" alt="">
+      <div class="ship-stats-grid">
+        <div class="ship-stat"><div class="ship-stat-v" id="shipClass">—</div><div class="ship-stat-l">Clase</div></div>
+        <div class="ship-stat"><div class="ship-stat-v" id="shipBuilt">—</div><div class="ship-stat-l">Año / Refurb</div></div>
+        <div class="ship-stat"><div class="ship-stat-v" id="shipPax">—</div><div class="ship-stat-l">Pasajeros</div></div>
+        <div class="ship-stat"><div class="ship-stat-v" id="shipCrew">—</div><div class="ship-stat-l">Tripulación</div></div>
+        <div class="ship-stat"><div class="ship-stat-v" id="shipDecks">—</div><div class="ship-stat-l">Decks</div></div>
+        <div class="ship-stat"><div class="ship-stat-v" id="shipTonnage">—</div><div class="ship-stat-l">Tonelaje</div></div>
+        <div class="ship-stat" style="grid-column:span 2;border-right:none;"><div class="ship-stat-v" id="shipName" style="font-size:13px;">—</div><div class="ship-stat-l">Barco</div></div>
+      </div>
+      <div class="ship-desc" id="shipDesc"></div>
+    </div>
+
     <div class="card" id="cardTipo" style="display:none;">
       <div class="card-head">
         <div class="card-title"><div class="step-badge">1</div> Tipo de cabina</div>
@@ -210,6 +233,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
         <div class="sum-cruise-name" id="sumName">Cargando...</div>
         <div class="sum-cruise-sub" id="sumSub">—</div>
       </div>
+      <div id="shipBannerCard" style="padding:14px 18px;border-bottom:1px solid var(--border);"></div>
       <div class="itin-trigger" onclick="toggleItin()">
         <div class="itin-trigger-label">🗓 Ver itinerario completo</div>
         <div class="itin-trigger-arrow" id="itinArr">▾</div>
@@ -228,7 +252,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
         <div class="sm-row">
           <span class="sm-lbl">👥 Pasajeros</span>
           <span class="sm-val" style="display:flex;align-items:center;gap:8px;">
-            <span id="paxSumVal">2 adultos</span>
+            <span id="paxSumVal">— pasajeros</span>
             <button onclick="togglePaxEditor()" style="background:none;border:none;color:var(--blue);font-size:11.5px;font-weight:600;font-family:inherit;cursor:pointer;text-decoration:underline;">Editar</button>
           </span>
         </div>
@@ -324,22 +348,45 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       document.getElementById('navAv').textContent   = initials;
       document.getElementById('navName').textContent = (p.name||'Agencia') + ' ▾';
     } catch(e){}
-    const params = new URLSearchParams(window.location.search);
-    const ref = params.get('ref');
+    const params   = new URLSearchParams(window.location.search);
+    const ref      = params.get('ref');
+    const adults   = parseInt(params.get('adults')   || '2');
+    const children = parseInt(params.get('children') || '0');
     if (!ref) { window.location.href = 'index.html'; return; }
-    loadCruise(ref);
+    S.adults = adults;
+    S.kids   = children;
+    document.getElementById('paxA').textContent = adults;
+    document.getElementById('paxK').textContent = children;
+    loadCruise(ref, adults, children);
   });
 
-  async function loadCruise(ref) {
+  async function loadCruise(ref, adults, children) {
     try {
-      const res = await fetch(`${API}/cruises/${encodeURIComponent(ref)}`, {
-        headers: { 'Authorization': `Bearer ${TOKEN}` }
-      });
-      if (res.status === 401) { localStorage.removeItem('geist_token'); window.location.href = 'index.html'; return; }
-      const data = await res.json();
+      const paxQuery = `?adults=${adults}&children=${children}`;
+      const [cruiseRes] = await Promise.all([
+        fetch(`${API}/cruises/${encodeURIComponent(ref)}${paxQuery}`, {
+          headers: { 'Authorization': `Bearer ${TOKEN}` }
+        })
+      ]);
+      if (cruiseRes.status === 401) { localStorage.removeItem('geist_token'); window.location.href = 'index.html'; return; }
+      const data = await cruiseRes.json();
       if (!data.success) throw new Error(data.error || 'Error');
       S.cruise = data.data;
-      populatePage(data.data);
+
+      // Fetch ship data in parallel after we have the ship slug
+      const shipUrl = data.data.operating_seasons?.[0]?.dates?.[0]?.ship || '';
+      const shipSlug = shipUrl.split('/ships/')[1]?.replace('.json','') || '';
+      let shipData = null;
+      if (shipSlug) {
+        try {
+          const sr = await fetch(`${API}/ships/${encodeURIComponent(shipSlug)}`, {
+            headers: { 'Authorization': `Bearer ${TOKEN}` }
+          });
+          const sd = await sr.json();
+          if (sd.success) shipData = sd.data;
+        } catch(e) {}
+      }
+      populatePage(data.data, shipData, adults, children);
     } catch(e) {
       document.getElementById('loadingState').innerHTML = `<div class="loading-card" style="color:var(--promo);">⚠️ Error cargando el crucero. <a href="index.html" style="color:var(--blue);margin-left:8px;">← Volver</a></div>`;
     }
@@ -350,7 +397,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     return new Date(d).toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
   }
 
-  function populatePage(c) {
+  function populatePage(c, ship, adults, children) {
     const season  = c.operating_seasons?.[0] || {};
     const date    = season.dates?.[0] || {};
     const naviera = c.operator_title || '—';
@@ -374,16 +421,27 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     const idays = c.itinerary_days || [];
     const startDate = desde ? new Date(desde) : null;
     if (idays.length) {
-      document.getElementById('itinContent').innerHTML = idays.map((d, i) => {
-        const isLast = i === idays.length - 1;
+      // Rellenar días faltantes (días de mar que Widgety omite)
+      const totalNights = c.cruise_nights || idays[idays.length-1]?.day || idays.length;
+      const dayMap = {};
+      idays.forEach(d => { dayMap[d.day] = d; });
+      const fullDays = [];
+      for (let n = 1; n <= totalNights + 1; n++) {
+        if (dayMap[n]) fullDays.push(dayMap[n]);
+        else if (n <= totalNights) fullDays.push({ day: n, port_name: null, at_sea: true, arrival_time: null, departure_time: null });
+      }
+      document.getElementById('itinContent').innerHTML = fullDays.map((d, i) => {
+        const isLast  = i === fullDays.length - 1;
+        const isSea   = d.at_sea || !d.port_name;
+        const dotCls  = isLast ? 'iday-dot end' : isSea ? 'iday-dot sea' : 'iday-dot';
         const fecha = startDate ? (() => { const dd = new Date(startDate); dd.setDate(dd.getDate() + d.day - 1); return dd.toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'short' }); })() : `Día ${d.day}`;
-        const dotCls = isLast ? 'iday-dot end' : d.at_sea ? 'iday-dot sea' : 'iday-dot';
+        const horas = isSea ? '' : [d.arrival_time?'⬇️ '+d.arrival_time:'', d.departure_time?'⬆️ '+d.departure_time:''].filter(Boolean).join(' · ');
         return `<div class="iday">
           <div class="iday-left"><div class="${dotCls}"></div>${!isLast ? '<div class="iday-line"></div>' : ''}</div>
           <div class="iday-right">
             <div class="iday-n">${fecha}</div>
-            <div class="iday-p">${d.at_sea ? '🌊 Navegación' : (d.port_name||'—')}${i===0?'<span class="iday-badge emb">Embarque</span>':''}${isLast?'<span class="iday-badge des">Desembarque</span>':''}</div>
-            ${(d.arrival_time||d.departure_time)?`<div class="iday-t">${d.arrival_time?'⬇️ '+d.arrival_time:''}${d.arrival_time&&d.departure_time?' · ':''}${d.departure_time?'⬆️ '+d.departure_time:''}</div>`:''}
+            <div class="iday-p">${isSea ? '🌊 Disfrutando del mar' : (d.port_name||'—')}${i===0?'<span class="iday-badge emb">Embarque</span>':''}${isLast?'<span class="iday-badge des">Desembarque</span>':''}</div>
+            ${horas?`<div class="iday-t">${horas}</div>`:''}
           </div>
         </div>`;
       }).join('');
@@ -391,41 +449,63 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       document.getElementById('itinContent').innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:12px;">Itinerario no disponible</div>';
     }
 
-    // Cabinas: precios de headline
+    // ── Barco: imagen y datos técnicos ──
+    if (ship) {
+      S.ship = ship;
+      // Mostrar imagen del barco en card "El Barco" si existe
+      const shipCard = document.getElementById('cardBarco');
+      if (shipCard && ship.image) {
+        shipCard.style.display = 'block';
+        document.getElementById('shipImg').src = ship.image;
+        document.getElementById('shipName').textContent = ship.name || barco;
+        document.getElementById('shipClass').textContent = ship.ship_class || '—';
+        document.getElementById('shipBuilt').textContent = ship.year_built ? `${ship.year_built}${ship.refit_year?' · Refurb '+ship.refit_year:''}` : '—';
+        document.getElementById('shipPax').textContent = ship.passengers ? ship.passengers.toLocaleString('es-AR') : '—';
+        document.getElementById('shipCrew').textContent = ship.crew ? ship.crew.toLocaleString('es-AR') : '—';
+        document.getElementById('shipDecks').textContent = ship.decks || '—';
+        document.getElementById('shipTonnage').textContent = ship.tonnage ? ship.tonnage.toLocaleString('es-AR')+' GT' : '—';
+        document.getElementById('shipDesc').textContent = ship.description || '';
+      }
+    }
+
+    // ── Cabinas desde pricing real ──
+    const pricing = date.pricing || c.pricing || [];
+    S.pricing = pricing;
+
+    // Agrupar precios por tipo de cabina
+    const TIPO_MAP = { inside:'Interior', outside:'Exterior', balcony:'Balcón', suite:'Suite' };
+    const TIPO_KEY = { inside:'Inside', outside:'Outside', balcony:'Balcony', suite:'Suite' };
+    const tipoMin = {}; // precio mínimo por tipo
+    pricing.forEach(p => {
+      const t = p.cabin_type;
+      if (!tipoMin[t] || p.double_price_pp < tipoMin[t]) tipoMin[t] = p.double_price_pp;
+    });
+
+    // Fallback headline si no hay pricing
     const hp = date.headline_prices?.cruise?.double || {};
-    const typeMap = [
-      { key:'Inside',  label:'Interior', hpKey:'from_inside'  },
-      { key:'Outside', label:'Exterior', hpKey:'from_outside' },
-      { key:'Balcony', label:'Balcón',   hpKey:'from_balcony' },
-      { key:'Suite',   label:'Suite',    hpKey:'from_suite'   },
-    ];
-    const prices = {};
-    typeMap.forEach(t => { prices[t.key] = parseFloat(hp[t.hpKey]) || 0; });
+    if (!tipoMin.inside  && hp.from_inside)  tipoMin.inside  = parseFloat(hp.from_inside);
+    if (!tipoMin.outside && hp.from_outside) tipoMin.outside = parseFloat(hp.from_outside);
+    if (!tipoMin.balcony && hp.from_balcony) tipoMin.balcony = parseFloat(hp.from_balcony);
+    if (!tipoMin.suite   && hp.from_suite)   tipoMin.suite   = parseFloat(hp.from_suite);
 
-    // Fallback to top-level prices
-    if (!prices.Inside)  prices.Inside  = parseFloat(c.inside_price)  || 0;
-    if (!prices.Outside) prices.Outside = parseFloat(c.outside_price) || 0;
-    if (!prices.Balcony) prices.Balcony = parseFloat(c.balcony_price) || 0;
-    if (!prices.Suite)   prices.Suite   = parseFloat(c.suite_price)   || 0;
-
+    const typeOrder = ['inside','outside','balcony','suite'];
     const typeRow = document.getElementById('typeRow');
-    let firstType = null;
-    typeRow.innerHTML = typeMap.map((t, idx) => {
-      const p = prices[t.key];
+    typeRow.innerHTML = typeOrder.map((t, idx) => {
+      const p    = tipoMin[t] || 0;
       const pStr = p > 0 ? `US$ ${p.toLocaleString('es-AR')}` : 'Consultar';
-      if (!firstType) firstType = t;
-      return `<div class="tcard${idx===0?' on':''}" onclick="selectType(this,'${t.label}','${t.key}',${p})">
+      return `<div class="tcard${idx===0?' on':''}" onclick="selectType(this,'${TIPO_MAP[t]}','${TIPO_KEY[t]}','${t}')">
         <div class="tc-check">✓</div>
-        <div class="tc-img"><img src="${CABIN_IMGS[t.key]}" alt="${t.label}" loading="lazy"></div>
+        <div class="tc-img"><img src="${CABIN_IMGS[TIPO_KEY[t]]}" alt="${TIPO_MAP[t]}" loading="lazy"></div>
         <div class="tc-foot">
-          <div class="tc-type">${t.label}</div>
+          <div class="tc-type">${TIPO_MAP[t]}</div>
           <div class="tc-price">Desde <strong>${pStr}</strong></div>
         </div>
       </div>`;
     }).join('');
 
-    const defaultType = typeMap[0];
-    renderCabinRows(defaultType.key, defaultType.label, prices[defaultType.key]);
+    // Mostrar cabinas del primer tipo (inside)
+    const firstKey = typeOrder.find(t => tipoMin[t]) || 'inside';
+    renderCabinRowsFromPricing(TIPO_KEY[firstKey], TIPO_MAP[firstKey], firstKey, pricing);
 
     document.getElementById('loadingState').style.display  = 'none';
     document.getElementById('cardTipo').style.display      = 'block';
@@ -433,46 +513,102 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     document.getElementById('bottomBar').style.display     = 'flex';
   }
 
-  function renderCabinRows(typeKey, typeLabel, basePrice) {
+  function renderCabinRowsFromPricing(typeKey, typeLabel, typeKeyLower, pricing) {
     document.getElementById('typeLabel').textContent = typeLabel;
-    const rows = basePrice > 0
-      ? [
-          { code: typeKey[0], name: typeLabel + ' Estándar',  price: basePrice },
-          { code: typeKey[0]+'G', name: typeLabel + ' Garantía', price: Math.round(basePrice * 0.95) },
-        ]
-      : [{ code: '—', name: typeLabel, price: 0 }];
 
-    document.getElementById('cabinRows').innerHTML = rows.map((r, i) => `
-      <tr class="${i===0?'on':''}" onclick="selectCabin(this,'${r.name}','${typeLabel}',${r.price})">
-        <td class="ct-img"><img src="${CABIN_IMGS[typeKey]||CABIN_IMGS.Inside}" alt="${r.name}" loading="lazy"></td>
-        <td class="ct-info">
-          <div class="ct-cat">Código: ${r.code}</div>
-          <div class="ct-name">${r.name}</div>
-          <div class="ct-amenities"><span class="ct-am">${r.price>0?'✅ Disponible':'📋 Consultar'}</span></div>
-        </td>
-        <td class="ct-price-col">
-          ${r.price>0?`<span class="ct-price">US$ ${r.price.toLocaleString('es-AR')}</span><span class="ct-per">por huésped</span>`:`<span class="ct-price" style="font-size:14px;">Consultar</span>`}
-          <button class="ct-sel-btn">${i===0?'✓ Seleccionada':'Seleccionar'}</button>
-        </td>
-      </tr>`).join('');
+    // Filtrar cabinas del tipo seleccionado
+    const cabins = pricing.filter(p => p.cabin_type === typeKeyLower);
 
+    if (!cabins.length) {
+      // Sin datos de pricing — mostrar fila genérica
+      const hp = S.cruise?.operating_seasons?.[0]?.dates?.[0]?.headline_prices?.cruise?.double || {};
+      const hpKey = {Inside:'from_inside',Outside:'from_outside',Balcony:'from_balcony',Suite:'from_suite'}[typeKey];
+      const basePrice = parseFloat(hp[hpKey]) || 0;
+      document.getElementById('cabinRows').innerHTML = `
+        <tr class="on" onclick="selectCabin(this,'${typeLabel}','${typeLabel}',${basePrice})">
+          <td class="ct-img"><img src="${CABIN_IMGS[typeKey]}" alt="${typeLabel}" loading="lazy"></td>
+          <td class="ct-info">
+            <div class="ct-name">${typeLabel} Estándar</div>
+            <div class="ct-amenities"><span class="ct-am">📋 Consultar disponibilidad</span></div>
+          </td>
+          <td class="ct-price-col">
+            ${basePrice>0?`<span class="ct-price">US$ ${basePrice.toLocaleString('es-AR')}</span><span class="ct-per">por huésped</span>`:'<span class="ct-price" style="font-size:14px;">Consultar</span>'}
+            <button class="ct-sel-btn">✓ Seleccionada</button>
+          </td>
+        </tr>`;
+      S.cabinType = typeLabel; S.cabinName = typeLabel+' Estándar'; S.price = basePrice;
+      updateUI(); return;
+    }
+
+    // Agrupar por fare_name (promoción) para mostrar promos
+    const fareGroups = {};
+    cabins.forEach(p => {
+      const fare = p.fare_name || 'Tarifa estándar';
+      if (!fareGroups[fare]) fareGroups[fare] = [];
+      fareGroups[fare].push(p);
+    });
+
+    let html = '';
+    Object.entries(fareGroups).forEach(([fareName, fares]) => {
+      // Encabezado de promo si hay más de un fare o tiene nombre especial
+      const isPromo = fareName !== 'Tarifa estándar';
+      if (isPromo) {
+        html += `<tr style="background:var(--blue-soft);"><td colspan="3" style="padding:8px 16px;font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;">🏷️ ${fareName}</td></tr>`;
+      }
+      fares.forEach((p, i) => {
+        const price    = p.double_price_pp || 0;
+        const total    = p.total_price || (price * S.adults);
+        const avail    = p.availability === 'available' ? '✅ Disponible' : p.availability === 'closed' ? '🔒 No disponible' : '📋 Consultar';
+        const safeName = (p.grade_name||typeLabel).replace(/'/g,"\'");
+        html += `
+          <tr onclick="selectCabin(this,'${safeName}','${typeLabel}',${price},${total})">
+            <td class="ct-img"><img src="${CABIN_IMGS[typeKey]}" alt="${p.grade_name||typeLabel}" loading="lazy"></td>
+            <td class="ct-info">
+              <div class="ct-cat">Cód: ${p.grade_code||'—'}</div>
+              <div class="ct-name">${p.grade_name||typeLabel}</div>
+              <div class="ct-amenities">
+                <span class="ct-am">${avail}</span>
+                ${p.taxes_fees ? `<span class="ct-am">+US$ ${parseFloat(p.taxes_fees).toLocaleString('es-AR')} tasas</span>` : ''}
+              </div>
+            </td>
+            <td class="ct-price-col">
+              <span class="ct-price">US$ ${price.toLocaleString('es-AR')}</span>
+              <span class="ct-per">por huésped</span>
+              ${total > 0 ? `<div style="font-size:11px;color:var(--blue);font-weight:600;margin-top:2px;">Total: US$ ${total.toLocaleString('es-AR')}</div>` : ''}
+              <button class="ct-sel-btn">Seleccionar</button>
+            </td>
+          </tr>`;
+      });
+    });
+
+    document.getElementById('cabinRows').innerHTML = html;
+    // Select first available row
+    const firstRow = document.querySelector('#cabinRows tr:not([style*="background"])');
+    if (firstRow) { firstRow.classList.add('on'); firstRow.querySelector('.ct-sel-btn').textContent = '✓ Seleccionada'; }
+    const firstCabin = cabins[0];
     S.cabinType = typeLabel;
-    S.cabinName = rows[0].name;
-    S.price     = rows[0].price;
+    S.cabinName = firstCabin.grade_name || typeLabel;
+    S.price     = firstCabin.double_price_pp || 0;
+    S.totalPrice = firstCabin.total_price || (S.price * S.adults);
     updateUI();
   }
 
-  function selectType(el, label, key, price) {
-    document.querySelectorAll('.tcard').forEach(c => c.classList.remove('on'));
-    el.classList.add('on');
-    renderCabinRows(key, label, price);
+  function renderCabinRows(typeKey, typeLabel, basePrice) {
+    // fallback for no pricing
+    renderCabinRowsFromPricing(typeKey, typeLabel, typeKey.toLowerCase(), []);
   }
 
-  function selectCabin(row, name, type, price) {
+  function selectType(el, label, key, keyLower) {
+    document.querySelectorAll('.tcard').forEach(c => c.classList.remove('on'));
+    el.classList.add('on');
+    renderCabinRowsFromPricing(key, label, keyLower, S.pricing || []);
+  }
+
+  function selectCabin(row, name, type, price, totalPrice) {
     document.querySelectorAll('#cabinRows tr').forEach(r => { r.classList.remove('on'); r.querySelector('.ct-sel-btn').textContent = 'Seleccionar'; });
     row.classList.add('on');
     row.querySelector('.ct-sel-btn').textContent = '✓ Seleccionada';
-    S.cabinName = name; S.cabinType = type; S.price = price;
+    S.cabinName = name; S.cabinType = type; S.price = price; S.totalPrice = totalPrice || (price * S.adults);
     updateUI();
   }
 
@@ -496,14 +632,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     const total  = S.price * S.adults;
     const paxStr = `${S.adults} adulto${S.adults>1?'s':''}${S.kids>0?' + '+S.kids+' niño'+(S.kids>1?'s':''):''}`;
     document.getElementById('paxSumVal').textContent = paxStr;
+    const displayTotal = S.totalPrice || total;
     if (S.price > 0) {
       document.getElementById('scEmpty').style.display  = 'none';
       document.getElementById('scFilled').style.display = 'block';
       document.getElementById('scType').textContent  = S.cabinType || '—';
       document.getElementById('scName').textContent  = S.cabinName || '—';
       document.getElementById('scPrice').textContent = `US$ ${S.price.toLocaleString('es-AR')}`;
-      document.getElementById('scTotal').textContent = `Total ${paxStr}: US$ ${total.toLocaleString('es-AR')}`;
-      document.getElementById('stPrice').textContent = `US$ ${total.toLocaleString('es-AR')}`;
+      document.getElementById('scTotal').textContent = `Total ${paxStr}: US$ ${displayTotal.toLocaleString('es-AR')}`;
+      document.getElementById('stPrice').textContent = `US$ ${displayTotal.toLocaleString('es-AR')}`;
     } else {
       document.getElementById('scEmpty').style.display  = 'block';
       document.getElementById('scFilled').style.display = 'none';
