@@ -684,6 +684,59 @@
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  /* ══════════════════════════════════════
+     RESPONSIVE — TABLET (≤900px)
+  ══════════════════════════════════════ */
+  @media (max-width: 900px) {
+    .hero-inner { flex-direction: column; align-items: stretch; padding: 20px 16px 0; gap: 16px; }
+    .hero-title-block { padding-bottom: 0; min-width: 0; }
+    .hero-title { font-size: 22px; }
+    .search-panel { border-radius: 12px 12px 0 0; padding: 14px 14px 16px; }
+    .search-bar { flex-wrap: wrap; height: auto; border-radius: 10px; }
+    .sb-field { flex: 1 1 45%; border-right: none; border-bottom: 1px solid var(--border); min-height: 52px; }
+    .sb-field.sb-destination { flex: 1 1 100%; }
+    .sb-btn { width: 100%; border-radius: 0 0 10px 10px; padding: 14px; justify-content: center; font-size: 15px; }
+    .main { grid-template-columns: 1fr; padding: 16px; gap: 14px; }
+    .sidebar { position: static; display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; }
+    .rt-head { grid-template-columns: 2fr 1.4fr 0.5fr 1fr 90px; }
+    .rt-row  { grid-template-columns: 2fr 1.4fr 0.5fr 1fr 90px; }
+    .rta:nth-child(4) { display: none; } /* Fecha salida hidden on tablet */
+    .modal { flex-direction: column; max-height: 95vh; }
+    .m-sidebar { width: 100%; flex-direction: row; align-items: center; flex-wrap: wrap; }
+    .m-nav { display: flex; flex-direction: row; flex: 1; overflow-x: auto; padding: 0 8px; }
+    .mni { padding: 10px 12px; white-space: nowrap; border-left: none; border-bottom: 2px solid transparent; }
+    .mni.on { border-left: none; border-bottom-color: var(--blue); }
+    .m-actions { flex-direction: row; padding: 8px 12px; border-top: none; border-left: 1px solid var(--border); }
+    .m-cruise-info { padding: 12px 14px 10px; }
+  }
+
+  /* ══════════════════════════════════════
+     RESPONSIVE — MOBILE (≤600px)
+  ══════════════════════════════════════ */
+  @media (max-width: 600px) {
+    nav { padding: 0 14px; }
+    .n-links { display: none; }
+    .hero-inner { padding: 14px 12px 0; }
+    .hero-stats { display: none; }
+    .search-advanced { display: none; }
+    .main { padding: 12px; }
+    .sidebar { grid-template-columns: 1fr; }
+    .rt-head { grid-template-columns: 1fr 1fr 120px; }
+    .rt-row  { grid-template-columns: 1fr 1fr 120px; }
+    .rta:nth-child(3), .rta:nth-child(4), .rta:nth-child(5) { display: none; }
+    .rta-action { flex-direction: column; gap: 4px; padding: 8px; }
+    .rta-btn, .rta-btn-info { width: 100%; text-align: center; font-size: 11.5px; padding: 7px 8px; }
+    .itin-modal { max-height: 92vh; border-radius: 12px 12px 0 0; width: 100%; }
+    #itin-modal-ov { align-items: flex-end; }
+    .itin-table th:nth-child(2), .itin-table td:nth-child(2) { display: none; }
+    .modal { border-radius: 12px 12px 0 0; }
+    .price-summary { grid-template-columns: repeat(2,1fr); }
+    .ship-stats { grid-template-columns: repeat(3,1fr); }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 16px; }
+    .ft-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+    .pax-modal-inner { width: 95vw !important; }
+  }
+
 </style>
 </head>
 <body>
@@ -696,8 +749,8 @@
   </a>
   <div class="n-links">
     <a href="#" class="on">🚢 Cruceros</a>
-    <a href="#">Mis reservas</a>
-    <a href="#">Mis presupuestos</a>
+    <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente">Mis reservas</a>
+    <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente">Mis presupuestos</a>
   </div>
   <div class="n-user">
     <div class="n-av">AG</div>
@@ -914,12 +967,12 @@
     <div class="r-header">
       <div class="r-count" id="resultsCount"><strong>12 cruceros</strong> encontrados</div>
       <div class="r-controls">
-        <select class="r-sel">
-          <option>⭐ Recomendado</option>
-          <option>↑ Menor precio</option>
-          <option>↓ Mayor precio</option>
-          <option>📅 Fecha más próxima</option>
-          <option>🌙 Duración</option>
+        <select class="r-sel" onchange="handleSortSelect(this)">
+          <option value="">⭐ Recomendado</option>
+          <option value="precio-asc">↑ Menor precio</option>
+          <option value="precio-desc">↓ Mayor precio</option>
+          <option value="fecha-asc">📅 Fecha más próxima</option>
+          <option value="noches-asc">🌙 Duración</option>
         </select>
       </div>
     </div>
@@ -1255,6 +1308,8 @@
       // Actualizar nombre de agencia en nav
       if (data.agency?.name) {
         document.querySelector('.n-uname').textContent = `${data.agency.name} ▾`;
+        const initials = data.agency.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+        document.querySelector('.n-av').textContent = initials;
       }
 
       showApp();
@@ -1311,14 +1366,14 @@
     }
   });
 
-  function selectDrop(field, value, label, el) {
+  function selectDrop(field, value, label, el, evt) {
     searchState[field] = value;
     document.getElementById('val-' + field).textContent = label;
     el.closest('.drop-list')?.querySelectorAll('.drop-item').forEach(i => i.classList.remove('on'));
     el.classList.add('on');
     el.closest('.sb-drop')?.classList.remove('open');
     updateClearChip();
-    event.stopPropagation();
+    if (evt) evt.stopPropagation();
   }
 
   function selectDuracion(val, label, el) {
@@ -1383,6 +1438,7 @@
   function clearAllFilters() {
     searchState.destino=''; searchState.puerto=''; searchState.naviera='';
     searchState.dateFrom=''; searchState.dateTo=''; searchState.durMin=''; searchState.durMax='';
+    searchState.cabina = '';
     document.getElementById('val-destino').textContent  = 'Cualquier destino';
     document.getElementById('val-fechas').textContent   = 'Cualquier fecha';
     document.getElementById('val-puerto').textContent   = 'Cualquier puerto';
@@ -1390,6 +1446,14 @@
     clearFechas();
     document.querySelectorAll('.drop-item.on').forEach(i => i.classList.remove('on'));
     document.querySelector('#drop-destino-list .drop-item')?.classList.add('on');
+    // Reset sidebar checkboxes visually
+    document.querySelectorAll('.sidebar .cb').forEach(c => {
+      c.classList.remove('on');
+      const sq = c.querySelector('.cb-sq'); if (sq) { sq.classList.remove('on'); sq.textContent=''; }
+    });
+    document.querySelector('#sidebar-navieras .cb')?.classList.add('on');
+    const firstSq = document.querySelector('#sidebar-navieras .cb .cb-sq');
+    if (firstSq) { firstSq.classList.add('on'); firstSq.textContent='✓'; }
     document.querySelector('#drop-puerto-list .drop-item')?.classList.add('on');
     updateClearChip();
   }
@@ -1575,6 +1639,19 @@
     renderCruises(sorted, false);
   }
 
+  function handleSortSelect(sel) {
+    const [field, dir] = sel.value.split('-');
+    if (!field) { renderCruises(_cruisesData); return; }
+    _sortField = field; _sortDir = dir === 'desc' ? -1 : 1;
+    const sorted = [..._cruisesData].sort((a, b) => {
+      if (field === 'precio') { const va = a.min_price||999999, vb = b.min_price||999999; return (va-vb)*_sortDir; }
+      if (field === 'fecha')  { return (new Date(a.date_from||0) - new Date(b.date_from||0))*_sortDir; }
+      if (field === 'noches') { return ((a.cruise_nights||0)-(b.cruise_nights||0))*_sortDir; }
+      return 0;
+    });
+    renderCruises(sorted, false);
+  }
+
   function renderCruises(cruises, save = true) {
     if (save) _cruisesData = cruises;
     const tbody = document.getElementById('resultsBody');
@@ -1663,14 +1740,14 @@
       if (!data?.success) throw new Error();
       currentCruise = data.data;
 
-      // Fetch ship data in parallel
+      // Fetch ship data in parallel (real Promise.all)
       const shipUrl  = data.data.operating_seasons?.[0]?.dates?.[0]?.ship || '';
       const shipSlug = shipUrl.split('/ships/')[1]?.replace('.json','') || '';
       let shipData = null;
       if (shipSlug) {
         try {
-          const sr = await apiFetch(`/ships/${encodeURIComponent(shipSlug)}`);
-          if (sr?.success) shipData = sr.data;
+          const [shipRes] = await Promise.all([apiFetch(`/ships/${encodeURIComponent(shipSlug)}`)]);
+          if (shipRes?.success) shipData = shipRes.data;
         } catch(e) {}
       }
       renderCruiseModal(data.data, shipData);
@@ -1818,37 +1895,6 @@
         <div class="sc"><span class="sc-v">1.072</span><span class="sc-l">Tripulantes</span></div>
       </div>
       <p class="m-desc">Datos de ejemplo — se reemplazarán con datos reales de Widgety cuando lleguen las keys.</p>`;
-  }
-
-  // ─────────────────────────────────────────
-  // DATOS DE EJEMPLO (mientras llega Widgety)
-  // ─────────────────────────────────────────
-  function getExampleRows() {
-    const rows = [
-      { from:'Atenas', to:'Ravena', stops:'Mykonos · Corfú · Kotor · Split', line:'NORWEGIAN', ship:'Norwegian Pearl', nights:7, date:'10 may 2026', int:'1.221', ext:'1.661', bal:'3.073', sui:'3.136', pi:true, pe:true, ps:true },
-      { from:'Barcelona', to:'Pireo', stops:'Marsella · Génova · Nápoles · Mykonos', line:'MSC', ship:'MSC Bellissima', nights:10, date:'18 jun 2026', int:'1.480', ext:'1.890', bal:'3.450', sui:'5.200', pe:true },
-      { from:'Miami', to:'Miami', stops:'Nassau · St. Thomas · San Juan', line:'ROYAL C.', ship:'Wonder of the Seas', nights:7, date:'5 jul 2026', int:'989', ext:'1.340', bal:'2.780', sui:'6.100', pi:true },
-      { from:'Roma', to:'Barcelona', stops:'Nápoles · Palermo · Ibiza · Mykonos', line:'COSTA', ship:'Costa Smeralda', nights:7, date:'22 ago 2026', int:'1.100', ext:'1.420', bal:'2.600', sui:'4.800', pb:true },
-      { from:'Venecia', to:'Atenas', stops:'Dubrovnik · Mykonos · Santorini', line:'MSC', ship:'MSC Musica', nights:8, date:'15 sep 2026', int:'1.320', ext:'1.750', bal:'3.200', sui:'5.600', pi:true },
-    ];
-    return rows.map(r => `
-      <div class="rt-row" onclick="openModal()">
-        <div class="rta rta-itin">
-          <div class="rta-route">${r.from} <span class="rta-arr">→</span> ${r.to}</div>
-          <div class="rta-stops">${r.stops}</div>
-        </div>
-        <div class="rta rta-line">
-          <div class="line-chip">${r.line}</div>
-          <div class="rta-ship">${r.ship}</div>
-          <div class="rta-nights">${r.nights} noches</div>
-        </div>
-        <div class="rta rta-date">${r.date}</div>
-        <div class="rta rta-price"><span class="price-val ${r.pi?'price-promo':''}">$${r.int}</span>${r.pi?'<span class="price-badge">PROMO</span>':''}</div>
-        <div class="rta rta-price"><span class="price-val ${r.pe?'price-promo':''}">$${r.ext}</span>${r.pe?'<span class="price-badge">PROMO</span>':''}</div>
-        <div class="rta rta-price"><span class="price-val ${r.pb?'price-promo':''}">$${r.bal}</span>${r.pb?'<span class="price-badge">PROMO</span>':''}</div>
-        <div class="rta rta-price"><span class="price-val ${r.ps?'price-promo':''}">$${r.sui}</span>${r.ps?'<span class="price-badge">PROMO</span>':''}</div>
-        <div class="rta rta-action"><button class="rta-btn">Ver →</button></div>
-      </div>`).join('');
   }
 
   // ─────────────────────────────────────────
