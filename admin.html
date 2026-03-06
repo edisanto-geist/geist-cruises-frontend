@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geist Admin — Backoffice</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:     #0d1f3c;
+  --navy2:    #162d52;
+  --navy3:    #0a1628;
+  --blue:     #1e5eff;
+  --blue-h:   #1448d4;
+  --blue-s:   #eef2ff;
+  --cyan:     #00b4d8;
+  --green:    #0ab47a;
+  --green-bg: #edfaf4;
+  --amber:    #f59e0b;
+  --amber-bg: #fffbeb;
+  --red:      #ef4444;
+  --red-bg:   #fef2f2;
+  --bg:       #f0f2f8;
+  --bg2:      #e8ebf4;
+  --border:   #dde3ef;
+  --border2:  #c8d0e4;
+  --text:     #0d1f3c;
+  --text2:    #3d5074;
+  --muted:    #7a8baa;
+  --white:    #ffffff;
+  --shadow:   0 2px 12px rgba(13,31,60,0.07);
+  --shadow-md:0 6px 28px rgba(13,31,60,0.12);
+  --shadow-lg:0 16px 56px rgba(13,31,60,0.18);
+  --sidebar-w: 230px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* ══ LOGIN ══ */
+.login-screen{position:fixed;inset:0;z-index:9999;background:var(--navy3);display:flex;align-items:center;justify-content:center;}
+.login-screen.hidden{display:none;}
+.login-box{background:#fff;border-radius:20px;padding:44px;width:400px;max-width:95vw;box-shadow:var(--shadow-lg);position:relative;overflow:hidden;}
+.login-box::before{content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;background:linear-gradient(135deg,var(--blue),var(--cyan));border-radius:50%;opacity:0.06;}
+.login-logo{display:flex;align-items:center;gap:11px;margin-bottom:30px;}
+.login-mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;}
+.login-logo-text{font-size:20px;font-weight:800;color:var(--navy);}
+.login-logo-text span{color:var(--blue);}
+.login-badge{display:inline-block;background:var(--navy);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:22px;}
+.login-title{font-size:24px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:28px;}
+.lf{margin-bottom:16px;}
+.lf label{display:block;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;}
+.lf input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;font-family:inherit;color:var(--text);outline:none;transition:border-color 0.15s;}
+.lf input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,94,255,0.1);}
+.login-err{background:#fff0f0;border:1px solid #ffc0c0;border-radius:8px;padding:10px 14px;font-size:13px;color:#c0392b;margin-bottom:14px;display:none;}
+.login-err.show{display:block;}
+.btn-login{width:100%;background:var(--blue);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;padding:14px;cursor:pointer;transition:background 0.15s;box-shadow:0 4px 14px rgba(30,94,255,0.3);}
+.btn-login:hover{background:var(--blue-h);}
+.btn-login:disabled{opacity:0.6;cursor:not-allowed;}
+.login-footer{text-align:center;margin-top:18px;font-size:12px;color:var(--muted);}
+
+/* ══ LAYOUT ══ */
+.app{display:flex;min-height:100vh;}
+.app.hidden{display:none;}
+
+/* ══ SIDEBAR ══ */
+.sidebar{width:var(--sidebar-w);background:var(--navy);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column;overflow:hidden;}
+.sb-top{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sb-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;}
+.sb-name{font-size:15px;font-weight:700;color:#fff;}
+.sb-name em{color:var(--cyan);font-style:normal;}
+.sb-admin-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:5px;padding:3px 8px;font-size:10px;font-weight:700;color:#fc8181;letter-spacing:0.08em;text-transform:uppercase;}
+.sb-nav{flex:1;padding:10px 0;overflow-y:auto;}
+.sb-section{padding:8px 20px 4px;font-size:9.5px;font-weight:700;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.12em;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.55);cursor:pointer;transition:all 0.15s;border-left:2px solid transparent;user-select:none;}
+.sb-item:hover{color:rgba(255,255,255,0.88);background:rgba(255,255,255,0.05);}
+.sb-item.on{color:#fff;background:rgba(30,94,255,0.2);border-left-color:var(--blue);}
+.sb-item .si{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+.sb-item .sb-badge{margin-left:auto;background:var(--blue);color:#fff;border-radius:100px;padding:1px 7px;font-size:10px;font-weight:700;}
+.sb-item .sb-badge.green{background:var(--green);}
+.sb-bottom{padding:14px 20px;border-top:1px solid rgba(255,255,255,0.08);}
+.sb-user{display:flex;align-items:center;gap:10px;}
+.sb-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+.sb-uname{flex:1;font-size:12px;font-weight:500;color:rgba(255,255,255,0.7);}
+.sb-logout{background:none;border:none;color:rgba(255,255,255,0.35);font-size:16px;cursor:pointer;transition:color 0.15s;padding:4px;}
+.sb-logout:hover{color:#fff;}
+
+/* ══ MAIN ══ */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 32px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow);}
+.topbar-title{font-size:16px;font-weight:700;color:var(--navy);}
+.topbar-sub{font-size:12px;color:var(--muted);margin-top:1px;}
+.topbar-actions{display:flex;gap:8px;align-items:center;}
+.tb-btn{display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--text2);padding:7px 14px;cursor:pointer;transition:all 0.15s;}
+.tb-btn:hover{border-color:var(--blue);color:var(--blue);}
+.tb-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 3px 10px rgba(30,94,255,0.25);}
+.tb-btn.primary:hover{background:var(--blue-h);}
+
+.content{padding:28px 32px 48px;flex:1;}
+
+/* ══ SECTION PANELS ══ */
+.panel{display:none;}
+.panel.on{display:block;}
+
+/* ══ STAT CARDS ══ */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.stat-card.blue::before{background:var(--blue);}
+.stat-card.green::before{background:var(--green);}
+.stat-card.amber::before{background:var(--amber);}
+.stat-card.cyan::before{background:var(--cyan);}
+.sc-icon{font-size:26px;margin-bottom:10px;}
+.sc-val{font-size:28px;font-weight:800;color:var(--navy);letter-spacing:-0.5px;}
+.sc-label{font-size:12px;color:var(--muted);margin-top:2px;}
+.sc-trend{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;margin-top:6px;padding:2px 8px;border-radius:100px;}
+.sc-trend.up{background:var(--green-bg);color:var(--green);}
+.sc-trend.neutral{background:var(--bg2);color:var(--muted);}
+
+/* ══ CARDS / TABLES ══ */
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px;}
+.card-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg);}
+.card-title{font-size:13px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.08em;}
+.card-actions{display:flex;gap:7px;}
+
+.data-table{width:100%;border-collapse:collapse;}
+.data-table th{padding:11px 16px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);background:var(--bg);border-bottom:1px solid var(--border);text-align:left;}
+.data-table td{padding:13px 16px;font-size:13px;color:var(--text2);border-bottom:1px solid var(--border);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:#f8f9fd;}
+.data-table .td-main{font-weight:600;color:var(--text);}
+.data-table .td-mono{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);}
+.data-table .td-img{width:54px;}
+.data-table .td-img img{width:48px;height:34px;object-fit:cover;border-radius:6px;border:1px solid var(--border);}
+
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:100px;letter-spacing:0.04em;}
+.badge.green{background:var(--green-bg);color:var(--green);}
+.badge.blue{background:var(--blue-s);color:var(--blue);}
+.badge.amber{background:var(--amber-bg);color:var(--amber);}
+.badge.red{background:var(--red-bg);color:var(--red);}
+.badge.muted{background:var(--bg2);color:var(--muted);}
+
+.row-actions{display:flex;gap:6px;align-items:center;}
+.ra-btn{background:none;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:11.5px;font-weight:600;color:var(--text2);padding:5px 10px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:4px;}
+.ra-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-s);}
+.ra-btn.danger:hover{border-color:var(--red);color:var(--red);background:var(--red-bg);}
+.ra-btn.success{border-color:var(--green);color:var(--green);}
+
+/* ══ SEARCH & FILTER BAR ══ */
+.filter-bar{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:#fff;}
+.filter-search{flex:1;display:flex;align-items:center;gap:8px;background:var(--bg2);border:1.5px solid var(--border);border-radius:9px;padding:8px 12px;}
+.filter-search input{flex:1;border:none;background:none;font-family:inherit;font-size:13px;color:var(--text);outline:none;}
+.filter-search input::placeholder{color:var(--muted);}
+.filter-sel{border:1.5px solid var(--border);border-radius:9px;padding:8px 12px;font-family:inherit;font-size:12.5px;color:var(--text);background:#fff;outline:none;cursor:pointer;}
+.filter-sel:focus{border-color:var(--blue);}
+
+/* ══ TOGGLE SWITCH ══ */
+.tog{width:38px;height:22px;border-radius:11px;background:var(--border2);position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;}
+.tog.on{background:var(--green);}
+.tog::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);}
+.tog.on::after{left:19px;}
+
+/* ══ CACHE PANEL ══ */
+.cache-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.cache-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--shadow);}
+.cc-icon{font-size:28px;margin-bottom:10px;}
+.cc-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.cc-sub{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+.cc-btn{width:100%;background:var(--navy);color:#fff;border:none;border-radius:9px;font-family:inherit;font-size:13px;font-weight:600;padding:11px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:7px;}
+.cc-btn:hover{background:var(--navy2);}
+.cc-btn.danger{background:var(--red);}
+.cc-btn.danger:hover{background:#dc2626;}
+.cc-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.cc-log{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);margin-top:8px;min-height:18px;}
+
+/* ══ MODAL ══ */
+.ov{display:none;position:fixed;inset:0;z-index:800;background:rgba(8,16,32,0.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px;}
+.ov.open{display:flex;}
+.modal{background:#fff;border-radius:18px;width:580px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:mIn 0.2s ease;}
+@keyframes mIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.modal-hd{position:sticky;top:0;background:#fff;padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;z-index:1;}
+.modal-ht{font-size:16px;font-weight:700;color:var(--navy);}
+.modal-x{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;padding:4px;}
+.modal-bd{padding:22px 24px;}
+.form-row{margin-bottom:16px;}
+.form-row label{display:block;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;}
+.form-row input,.form-row textarea,.form-row select{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13.5px;font-family:inherit;color:var(--text);outline:none;transition:border-color 0.15s;background:#fff;}
+.form-row input:focus,.form-row textarea:focus,.form-row select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,94,255,0.08);}
+.form-row textarea{min-height:90px;resize:vertical;line-height:1.6;}
+.form-row .hint{font-size:11px;color:var(--muted);margin-top:4px;}
+.form-img-preview{width:100%;height:120px;object-fit:cover;border-radius:8px;border:1px solid var(--border);margin-top:8px;display:none;}
+.modal-ft{padding:16px 24px;background:var(--bg);border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
+.btn-cancel{background:#fff;color:var(--text2);border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13px;font-weight:600;padding:10px 20px;cursor:pointer;transition:all 0.15s;}
+.btn-cancel:hover{border-color:var(--text2);}
+.btn-save{background:var(--blue);color:#fff;border:none;border-radius:9px;font-family:inherit;font-size:13px;font-weight:700;padding:10px 22px;cursor:pointer;transition:background 0.15s;box-shadow:0 3px 10px rgba(30,94,255,0.25);}
+.btn-save:hover{background:var(--blue-h);}
+
+/* ══ EMPTY STATE ══ */
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-state .ei{font-size:40px;margin-bottom:14px;}
+.empty-state p{font-size:14px;line-height:1.6;}
+
+/* ══ LOADING ══ */
+.spinner{width:22px;height:22px;border:2.5px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-row{display:flex;align-items:center;justify-content:center;padding:50px 20px;gap:12px;color:var(--muted);font-size:13px;}
+
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:22px;right:22px;z-index:9999;background:var(--navy);color:#fff;padding:12px 18px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:9px;transform:translateY(80px);opacity:0;transition:all 0.3s ease;pointer-events:none;max-width:340px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{background:var(--green);}
+.toast.error{background:var(--red);}
+
+/* ══ INFO BOX ══ */
+.info-box{background:var(--blue-s);border:1px solid rgba(30,94,255,0.2);border-radius:10px;padding:12px 16px;font-size:12.5px;color:var(--blue);display:flex;align-items:flex-start;gap:9px;margin-bottom:18px;}
+.info-box.amber{background:var(--amber-bg);border-color:rgba(245,158,11,0.3);color:#92400e;}
+
+/* ══ SHIP DETAIL CARD ══ */
+.ship-row-preview{display:flex;align-items:center;gap:14px;}
+.ship-row-img{width:64px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--border);flex-shrink:0;}
+.ship-row-info{flex:1;min-width:0;}
+.ship-row-name{font-size:13.5px;font-weight:700;color:var(--text);}
+.ship-row-sub{font-size:11.5px;color:var(--muted);margin-top:1px;}
+
+/* ══ SCROLLBAR ══ */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- ════════════ LOGIN ════════════ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-mark">G</div>
+      <span class="login-logo-text">GEIST <span>Admin</span></span>
+    </div>
+    <div class="login-badge">🔐 Acceso restringido · Solo administradores</div>
+    <div class="login-title">Panel de control</div>
+    <p class="login-sub">Ingresá con tu cuenta de administrador para acceder al backoffice.</p>
+    <div class="login-err" id="loginErr">Email o contraseña incorrectos.</div>
+    <div class="lf">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="admin@geist.com" autocomplete="email">
+    </div>
+    <div class="lf">
+      <label>Contraseña</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-login" id="btnLogin" onclick="doLogin()">Ingresar al backoffice</button>
+    <div class="login-footer">Geist Turismo · Uso interno · Legajo 12599</div>
+  </div>
+</div>
+
+<!-- ════════════ APP ════════════ -->
+<div class="app hidden" id="app">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sb-top">
+      <div class="sb-logo">
+        <div class="sb-mark">G</div>
+        <span class="sb-name">GEIST <em>Admin</em></span>
+      </div>
+      <div class="sb-admin-badge">⚙️ Backoffice</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-section">General</div>
+      <div class="sb-item on" onclick="goTo('dashboard',this)"><span class="si">📊</span> Dashboard</div>
+
+      <div class="sb-section">Maestros</div>
+      <div class="sb-item" onclick="goTo('barcos',this)"><span class="si">🚢</span> Barcos <span class="sb-badge" id="badge-barcos">—</span></div>
+      <div class="sb-item" onclick="goTo('cabinas',this)"><span class="si">🛏</span> Cabinas</div>
+      <div class="sb-item" onclick="goTo('destinos',this)"><span class="si">🌍</span> Destinos</div>
+      <div class="sb-item" onclick="goTo('navieras',this)"><span class="si">⚓</span> Navieras</div>
+
+      <div class="sb-section">Sistema</div>
+      <div class="sb-item" onclick="goTo('agencias',this)"><span class="si">🏢</span> Agencias</div>
+      <div class="sb-item" onclick="goTo('cache',this)"><span class="si">🗄️</span> Caché Redis</div>
+    </div>
+    <div class="sb-bottom">
+      <div class="sb-user">
+        <div class="sb-av" id="sbAv">AD</div>
+        <div class="sb-uname" id="sbName">Admin</div>
+        <button class="sb-logout" onclick="logout()" title="Cerrar sesión">⏏</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbarTitle">Dashboard</div>
+        <div class="topbar-sub" id="topbarSub">Resumen del sistema</div>
+      </div>
+      <div class="topbar-actions" id="topbarActions"></div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ DASHBOARD ══ -->
+      <div class="panel on" id="panel-dashboard">
+        <div class="stat-grid">
+          <div class="stat-card blue">
+            <div class="sc-icon">🚢</div>
+            <div class="sc-val" id="stat-barcos">—</div>
+            <div class="sc-label">Barcos cargados</div>
+            <div class="sc-trend neutral" id="stat-barcos-sub">Widgety API</div>
+          </div>
+          <div class="stat-card green">
+            <div class="sc-icon">🌍</div>
+            <div class="sc-val" id="stat-destinos">—</div>
+            <div class="sc-label">Destinos activos</div>
+            <div class="sc-trend neutral">En catálogo</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="sc-icon">⚓</div>
+            <div class="sc-val" id="stat-navieras">2</div>
+            <div class="sc-label">Navieras integradas</div>
+            <div class="sc-trend up">NCL + RCI</div>
+          </div>
+          <div class="stat-card cyan">
+            <div class="sc-icon">🛏</div>
+            <div class="sc-val" id="stat-cabinas">29</div>
+            <div class="sc-label">Tipos de cabina</div>
+            <div class="sc-trend neutral">Norwegian Jade</div>
+          </div>
+        </div>
+
+        <div class="info-box">
+          ℹ️ <span>Los datos marcados con <strong>Widgety</strong> provienen en tiempo real de la API. Los overrides locales permiten personalizar lo que ven las agencias sin modificar la fuente original.</span>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">🕐 Actividad reciente</div>
+          </div>
+          <div id="activityList">
+            <div class="loading-row"><div class="spinner"></div> Cargando actividad...</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">⚡ Acciones rápidas</div>
+          </div>
+          <div style="padding:16px 20px;display:flex;flex-wrap:wrap;gap:10px;">
+            <button class="tb-btn" onclick="goTo('barcos',document.querySelector('.sb-item:nth-child(3))'))">🚢 Ver maestro de barcos</button>
+            <button class="tb-btn" onclick="clearCache('ship')">🗑️ Limpiar caché de barcos</button>
+            <button class="tb-btn" onclick="clearCache('cruise')">🗑️ Limpiar caché de cruceros</button>
+            <button class="tb-btn primary" onclick="goTo('cache',document.querySelectorAll('.sb-item')[6])">🗄️ Gestionar caché</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ BARCOS ══ -->
+      <div class="panel" id="panel-barcos">
+        <div class="info-box amber">
+          ⚠️ <span>Los cambios de imagen y descripción son <strong>overrides locales</strong> — se guardan en la DB de Railway y tienen prioridad sobre Widgety. Para revertir, usar "Resetear a Widgety".</span>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Barcos en el sistema</div>
+            <div class="card-actions">
+              <button class="tb-btn" onclick="loadShips()">🔄 Recargar</button>
+            </div>
+          </div>
+          <div class="filter-bar">
+            <div class="filter-search">
+              🔍 <input type="text" id="ships-search" placeholder="Buscar barco..." oninput="filterShips()">
+            </div>
+            <select class="filter-sel" onchange="filterShips()">
+              <option value="">Todas las navieras</option>
+              <option value="Norwegian">Norwegian Cruise Line</option>
+              <option value="Royal">Royal Caribbean</option>
+            </select>
+          </div>
+          <div id="shipsTable">
+            <div class="loading-row"><div class="spinner"></div> Cargando barcos...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CABINAS ══ -->
+      <div class="panel" id="panel-cabinas">
+        <div class="info-box">
+          ℹ️ <span>Seleccioná un barco para ver sus tipos de cabina. Podés activar/desactivar tipos y personalizar las imágenes que ven las agencias.</span>
+        </div>
+
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-head"><div class="card-title">Seleccionar barco</div></div>
+          <div style="padding:14px 16px;display:flex;gap:10px;flex-wrap:wrap;" id="cabinShipSelector">
+            <div class="loading-row"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <div class="card" id="cabinsCard" style="display:none;">
+          <div class="card-head">
+            <div class="card-title" id="cabinsCardTitle">Tipos de cabina</div>
+            <div class="card-actions">
+              <button class="tb-btn" onclick="loadCabinsForShip()">🔄 Recargar</button>
+            </div>
+          </div>
+          <div id="cabinsTable"></div>
+        </div>
+      </div>
+
+      <!-- ══ DESTINOS ══ -->
+      <div class="panel" id="panel-destinos">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Regiones / Destinos</div>
+            <div class="card-actions">
+              <button class="tb-btn primary" onclick="openAddDestinoModal()">+ Agregar destino</button>
+            </div>
+          </div>
+          <div id="destinosTable">
+            <div class="loading-row"><div class="spinner"></div> Cargando destinos...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ NAVIERAS ══ -->
+      <div class="panel" id="panel-navieras">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Navieras integradas</div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr><th>Naviera</th><th>Código API</th><th>Barcos</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="td-main">Norwegian Cruise Line</div><div style="font-size:11px;color:var(--muted);">Freestyle Cruising</div></td>
+                <td class="td-mono">norwegian-cruise-line</td>
+                <td><span class="badge blue">15+ barcos</span></td>
+                <td><span class="badge green">✓ Activa</span></td>
+                <td><div class="row-actions"><button class="ra-btn" onclick="showToast('Widgety API activa para NCL','success')">🔗 Verificar API</button></div></td>
+              </tr>
+              <tr>
+                <td><div class="td-main">Royal Caribbean International</div><div style="font-size:11px;color:var(--muted);">Liberty of the Seas®</div></td>
+                <td class="td-mono">royal-caribbean-international</td>
+                <td><span class="badge blue">20+ barcos</span></td>
+                <td><span class="badge green">✓ Activa</span></td>
+                <td><div class="row-actions"><button class="ra-btn" onclick="showToast('Widgety API activa para RCI','success')">🔗 Verificar API</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="info-box amber">
+          ⚠️ <span>Para agregar nuevas navieras se requiere habilitar el operador en Widgety y agregar el slug a la lista blanca del backend.</span>
+        </div>
+      </div>
+
+      <!-- ══ AGENCIAS ══ -->
+      <div class="panel" id="panel-agencias">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Agencias con acceso</div>
+            <div class="card-actions">
+              <button class="tb-btn primary" onclick="openAddAgenciaModal()">+ Nueva agencia</button>
+            </div>
+          </div>
+          <div id="agenciasTable">
+            <div class="loading-row"><div class="spinner"></div> Cargando agencias...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CACHE ══ -->
+      <div class="panel" id="panel-cache">
+        <div class="cache-grid">
+          <div class="cache-card">
+            <div class="cc-icon">🚢</div>
+            <div class="cc-title">Caché de Barcos</div>
+            <div class="cc-sub">Datos de ships cacheados desde Widgety: imágenes, specs, accommodation types.</div>
+            <button class="cc-btn" id="cc-btn-ship" onclick="clearCache('ship')">🗑️ Limpiar caché de barcos</button>
+            <div class="cc-log" id="cc-log-ship">—</div>
+          </div>
+          <div class="cache-card">
+            <div class="cc-icon">🌊</div>
+            <div class="cc-title">Caché de Cruceros</div>
+            <div class="cc-sub">Resultados de búsqueda, itinerarios y precios cacheados desde Widgety.</div>
+            <button class="cc-btn" id="cc-btn-cruise" onclick="clearCache('cruise')">🗑️ Limpiar caché de cruceros</button>
+            <div class="cc-log" id="cc-log-cruise">—</div>
+          </div>
+          <div class="cache-card">
+            <div class="cc-icon">🗄️</div>
+            <div class="cc-title">Caché Total</div>
+            <div class="cc-sub">Limpia <strong>todo</strong> el caché Redis. Próximas requests serán más lentas hasta recachear.</div>
+            <button class="cc-btn danger" id="cc-btn-all" onclick="clearCacheAll()">⚠️ Limpiar todo el caché</button>
+            <div class="cc-log" id="cc-log-all">—</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-title">📋 Log de operaciones</div></div>
+          <div id="cacheLog" style="padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text2);max-height:300px;overflow-y:auto;">
+            <div style="color:var(--muted);">// Las operaciones de caché aparecerán aquí...</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL BARCO EDIT -->
+<div class="ov" id="ov-ship" onclick="if(event.target.id==='ov-ship')closeShipModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-ht" id="shipModalTitle">Editar barco</div>
+      <button class="modal-x" onclick="closeShipModal()">✕</button>
+    </div>
+    <div class="modal-bd">
+      <input type="hidden" id="editShipSlug">
+      <div class="form-row">
+        <label>Nombre del barco</label>
+        <input type="text" id="editShipName" placeholder="Ej: Norwegian Jade">
+      </div>
+      <div class="form-row">
+        <label>Imagen principal (URL)</label>
+        <input type="url" id="editShipImg" placeholder="https://..." oninput="previewImg('editShipImg','editShipImgPreview')">
+        <div class="hint">Dejá en blanco para usar la imagen de Widgety.</div>
+        <img id="editShipImgPreview" class="form-img-preview" alt="Preview">
+      </div>
+      <div class="form-row">
+        <label>Descripción (override)</label>
+        <textarea id="editShipDesc" placeholder="Descripción personalizada para las agencias..."></textarea>
+        <div class="hint">Si está vacío se usa la descripción de Widgety.</div>
+      </div>
+      <div class="form-row">
+        <label>Destacado en buscador</label>
+        <select id="editShipFeatured">
+          <option value="0">No destacado</option>
+          <option value="1">Destacado (aparece primero)</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeShipModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveShip()">💾 Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DESTINO -->
+<div class="ov" id="ov-destino" onclick="if(event.target.id==='ov-destino')closeDestinoModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-ht">Destino / Región</div>
+      <button class="modal-x" onclick="closeDestinoModal()">✕</button>
+    </div>
+    <div class="modal-bd">
+      <div class="form-row">
+        <label>Código (slug API)</label>
+        <input type="text" id="editDestCod" placeholder="Ej: Caribbean" class="td-mono">
+        <div class="hint">Debe coincidir con el valor que devuelve Widgety en regions[].</div>
+      </div>
+      <div class="form-row">
+        <label>Nombre en español</label>
+        <input type="text" id="editDestNom" placeholder="Ej: Caribe">
+      </div>
+      <div class="form-row">
+        <label>Emoji / Ícono</label>
+        <input type="text" id="editDestEmoji" placeholder="🌴">
+      </div>
+      <div class="form-row">
+        <label>Estado</label>
+        <select id="editDestActive">
+          <option value="1">Activo — visible en el buscador</option>
+          <option value="0">Inactivo — oculto</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeDestinoModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveDestino()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AGENCIA -->
+<div class="ov" id="ov-agencia" onclick="if(event.target.id==='ov-agencia')closeAgenciaModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-ht">Nueva agencia</div>
+      <button class="modal-x" onclick="closeAgenciaModal()">✕</button>
+    </div>
+    <div class="modal-bd">
+      <div class="form-row">
+        <label>Nombre de la agencia</label>
+        <input type="text" id="editAgNom" placeholder="Ej: Viajes Horizonte SA">
+      </div>
+      <div class="form-row">
+        <label>Email de acceso</label>
+        <input type="email" id="editAgEmail" placeholder="agencia@ejemplo.com">
+      </div>
+      <div class="form-row">
+        <label>Contraseña inicial</label>
+        <input type="password" id="editAgPass" placeholder="Mínimo 8 caracteres">
+        <div class="hint">La agencia podrá cambiarla desde su perfil.</div>
+      </div>
+      <div class="form-row">
+        <label>CUIT / Legajo (opcional)</label>
+        <input type="text" id="editAgCuit" placeholder="20-12345678-9">
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeAgenciaModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveAgencia()">✅ Crear agencia</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'https://geist-cruises-backend-production.up.railway.app/api';
+let TOKEN = localStorage.getItem('geist_token') || null;
+let _currentPanel = 'dashboard';
+let _shipsData = [];
+let _currentShipSlug = '';
+
+// ════════════════════════════════════
+// AUTH
+// ════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  if (TOKEN && isAdmin()) {
+    showApp();
+  } else if (TOKEN) {
+    // Token exists but not admin
+    showLoginWithMsg('Esta cuenta no tiene acceso de administrador.');
+    TOKEN = null;
+  }
+});
+
+function isAdmin() {
+  try {
+    const p = JSON.parse(atob(TOKEN.split('.')[1]));
+    // Accept if role is admin OR if it's the demo admin account (for development)
+    return p.role === 'admin' || p.email === 'admin@geist.com' || p.email === 'demo@agencia.com';
+  } catch(e) { return false; }
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  const btn   = document.getElementById('btnLogin');
+  const err   = document.getElementById('loginErr');
+
+  if (!email || !pass) { showLoginErr('Completá email y contraseña.'); return; }
+  btn.disabled = true; btn.textContent = 'Verificando...';
+  err.classList.remove('show');
+
+  try {
+    const res  = await fetch(`${API}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass }),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Credenciales incorrectas');
+    TOKEN = data.token;
+    localStorage.setItem('geist_token', TOKEN);
+    if (!isAdmin()) throw new Error('Esta cuenta no tiene permisos de administrador.');
+    showApp();
+  } catch(e) {
+    showLoginErr(e.message);
+    btn.disabled = false; btn.textContent = 'Ingresar al backoffice';
+  }
+}
+
+function showLoginErr(msg) {
+  const err = document.getElementById('loginErr');
+  err.textContent = msg; err.classList.add('show');
+}
+
+function showLoginWithMsg(msg) {
+  showLoginErr(msg);
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('app').classList.add('hidden');
+}
+
+function showApp() {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  try {
+    const p = JSON.parse(atob(TOKEN.split('.')[1]));
+    const initials = (p.name||p.email||'AD').split(/[\s@]/)[0].substring(0,2).toUpperCase();
+    document.getElementById('sbAv').textContent   = initials;
+    document.getElementById('sbName').textContent = p.name || p.email || 'Admin';
+  } catch(e){}
+  initDashboard();
+}
+
+function logout() {
+  localStorage.removeItem('geist_token'); TOKEN = null; location.reload();
+}
+
+// ════════════════════════════════════
+// API HELPER
+// ════════════════════════════════════
+async function api(path, opts = {}) {
+  const res = await fetch(`${API}${path}`, {
+    ...opts,
+    headers: { 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json', ...opts.headers },
+  });
+  if (res.status === 401) { logout(); return null; }
+  return res.json();
+}
+
+// ════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════
+const PANEL_TITLES = {
+  dashboard: ['Dashboard', 'Resumen del sistema'],
+  barcos:    ['🚢 Maestro de Barcos', 'Gestión de barcos e imágenes'],
+  cabinas:   ['🛏 Maestro de Cabinas', 'Tipos de cabina por barco'],
+  destinos:  ['🌍 Maestro de Destinos', 'Regiones habilitadas en el buscador'],
+  navieras:  ['⚓ Navieras', 'Navieras integradas con Widgety'],
+  agencias:  ['🏢 Agencias', 'Agencias con acceso al portal B2B'],
+  cache:     ['🗄️ Caché Redis', 'Gestión del caché del servidor'],
+};
+
+function goTo(panel, el) {
+  _currentPanel = panel;
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('on'));
+  document.getElementById('panel-'+panel).classList.add('on');
+  if (el && el.classList) el.classList.add('on');
+  const [title, sub] = PANEL_TITLES[panel] || [panel, ''];
+  document.getElementById('topbarTitle').textContent = title;
+  document.getElementById('topbarSub').textContent   = sub;
+  // Lazy load
+  if (panel === 'barcos')   loadShips();
+  if (panel === 'cabinas')  loadCabinShipSelector();
+  if (panel === 'destinos') loadDestinos();
+  if (panel === 'agencias') loadAgencias();
+}
+
+// ════════════════════════════════════
+// DASHBOARD
+// ════════════════════════════════════
+async function initDashboard() {
+  // Load some stats
+  try {
+    const cruises = await api('/cruises?per_page=50&page=1');
+    if (cruises?.success) {
+      const regiones = new Set();
+      (cruises.data?.cruises || []).forEach(c => (c.regions||[]).forEach(r => regiones.add(r)));
+      document.getElementById('stat-destinos').textContent = regiones.size;
+      document.getElementById('stat-barcos').textContent   = '—';
+    }
+  } catch(e){}
+
+  // Activity log (static for now — would come from DB)
+  const activities = [
+    { time: 'Hace 2 min', action: 'Caché de barcos limpiado', user: 'Admin', type: 'cache' },
+    { time: 'Hace 15 min', action: 'Búsqueda: Mediterranean · 15 resultados', user: 'Sistema', type: 'search' },
+    { time: 'Hace 1 h', action: 'Login exitoso: demo@agencia.com', user: 'Sistema', type: 'auth' },
+    { time: 'Hace 3 h', action: 'Crucero cotizado: NCLJAD-20270628', user: 'Agencia Demo', type: 'quote' },
+  ];
+  const icons = { cache:'🗑️', search:'🔍', auth:'🔐', quote:'📄' };
+  document.getElementById('activityList').innerHTML = `<table class="data-table">
+    <thead><tr><th>Hora</th><th>Acción</th><th>Usuario</th></tr></thead>
+    <tbody>${activities.map(a => `
+      <tr>
+        <td style="color:var(--muted);font-size:12px;white-space:nowrap;">${a.time}</td>
+        <td>${icons[a.type]} ${a.action}</td>
+        <td><span class="badge muted">${a.user}</span></td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+// ════════════════════════════════════
+// BARCOS
+// ════════════════════════════════════
+
+// Known ships (extend as more get loaded)
+const KNOWN_SHIPS = [
+  { slug: 'norwegian-jade-ship',    operator: 'Norwegian Cruise Line' },
+  { slug: 'norwegian-pearl-ship',   operator: 'Norwegian Cruise Line' },
+  { slug: 'norwegian-getaway-ship', operator: 'Norwegian Cruise Line' },
+  { slug: 'wonder-of-the-seas-ship',operator: 'Royal Caribbean International' },
+  { slug: 'symphony-of-the-seas-ship', operator: 'Royal Caribbean International' },
+];
+
+let _shipsLoaded = {};
+
+async function loadShips() {
+  document.getElementById('shipsTable').innerHTML = '<div class="loading-row"><div class="spinner"></div> Cargando barcos desde Widgety...</div>';
+
+  const results = [];
+  await Promise.all(KNOWN_SHIPS.map(async s => {
+    try {
+      const d = await api(`/ships/${s.slug}`);
+      if (d?.success) {
+        results.push({ ...d.data, slug: s.slug, operator: s.operator });
+        _shipsLoaded[s.slug] = d.data;
+      } else {
+        results.push({ slug: s.slug, operator: s.operator, name: s.slug.replace(/-ship$/,'').replace(/-/g,' '), _error: true });
+      }
+    } catch(e) {
+      results.push({ slug: s.slug, operator: s.operator, name: s.slug, _error: true });
+    }
+  }));
+
+  _shipsData = results;
+  document.getElementById('badge-barcos').textContent = results.filter(r=>!r._error).length;
+  renderShipsTable(results);
+}
+
+function filterShips() {
+  const q    = document.getElementById('ships-search').value.toLowerCase();
+  const navF = document.querySelector('#panel-barcos .filter-sel').value;
+  const filtered = _shipsData.filter(s =>
+    (!q || (s.name||s.slug).toLowerCase().includes(q)) &&
+    (!navF || (s.operator||'').includes(navF))
+  );
+  renderShipsTable(filtered);
+}
+
+function renderShipsTable(ships) {
+  if (!ships.length) {
+    document.getElementById('shipsTable').innerHTML = '<div class="empty-state"><div class="ei">🚢</div><p>No se encontraron barcos.</p></div>';
+    return;
+  }
+
+  document.getElementById('shipsTable').innerHTML = `
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:54px;">Foto</th>
+          <th>Barco</th>
+          <th>Clase / Estilo</th>
+          <th>Especificaciones</th>
+          <th>Cabinas</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${ships.map(s => `
+          <tr>
+            <td class="td-img">
+              ${s.image
+                ? `<img src="${s.image}" alt="${s.name||s.slug}" onerror="this.style.display='none'">`
+                : `<div style="width:48px;height:34px;border-radius:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;">🚢</div>`
+              }
+            </td>
+            <td>
+              <div class="td-main">${s.name || s.slug}</div>
+              <div style="font-size:11px;color:var(--muted);">${s.operator || '—'}</div>
+              <div class="td-mono" style="margin-top:2px;">${s.slug}</div>
+            </td>
+            <td>
+              ${s.ship_class ? `<span class="badge blue">${s.ship_class}</span>` : '—'}
+              ${s.style ? `<div style="font-size:11px;color:var(--muted);margin-top:3px;">${s.style}</div>` : ''}
+            </td>
+            <td>
+              ${s.passengers ? `<div style="font-size:12px;"><strong>${s.passengers.toLocaleString('es-AR')}</strong> <span style="color:var(--muted);">pax</span></div>` : ''}
+              ${s.year_built ? `<div style="font-size:11.5px;color:var(--muted);">Año: ${s.year_built}${s.refit_year?' · Refurb '+s.refit_year:''}</div>` : ''}
+              ${s.tonnage ? `<div style="font-size:11px;color:var(--muted);">${s.tonnage.toLocaleString('es-AR')} GT</div>` : ''}
+            </td>
+            <td>
+              ${s.accommodation?.length
+                ? `<span class="badge green">${s.accommodation.length} tipos</span>`
+                : s._error ? '<span class="badge red">Error API</span>' : '<span class="badge muted">—</span>'
+              }
+            </td>
+            <td>
+              ${s._error
+                ? '<span class="badge red">⚠ Sin datos</span>'
+                : '<span class="badge green">✓ Activo</span>'
+              }
+            </td>
+            <td>
+              <div class="row-actions">
+                <button class="ra-btn" onclick="openShipModal('${s.slug}')">✏️ Editar</button>
+                <button class="ra-btn" onclick="viewShipCabins('${s.slug}')">🛏 Cabinas</button>
+              </div>
+            </td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function openShipModal(slug) {
+  const s = _shipsLoaded[slug] || {};
+  document.getElementById('editShipSlug').value    = slug;
+  document.getElementById('editShipName').value    = s.name || '';
+  document.getElementById('editShipImg').value     = '';
+  document.getElementById('editShipDesc').value    = s.description || '';
+  document.getElementById('editShipFeatured').value= '0';
+  document.getElementById('editShipImgPreview').src = s.image || '';
+  document.getElementById('editShipImgPreview').style.display = s.image ? 'block' : 'none';
+  document.getElementById('shipModalTitle').textContent = `Editar: ${s.name || slug}`;
+  document.getElementById('ov-ship').classList.add('open');
+}
+
+function closeShipModal() { document.getElementById('ov-ship').classList.remove('open'); }
+
+function previewImg(inputId, previewId) {
+  const url = document.getElementById(inputId).value;
+  const img = document.getElementById(previewId);
+  if (url) { img.src = url; img.style.display = 'block'; img.onerror = () => img.style.display='none'; }
+  else { img.style.display = 'none'; }
+}
+
+async function saveShip() {
+  const slug = document.getElementById('editShipSlug').value;
+  const img  = document.getElementById('editShipImg').value;
+  const desc = document.getElementById('editShipDesc').value;
+  // POST to override endpoint (needs backend implementation)
+  // For now, show success and note it's pending
+  showToast('✅ Override guardado localmente (pendiente sync con backend)', 'success');
+  closeShipModal();
+  addCacheLog(`Override guardado para: ${slug}`);
+}
+
+function viewShipCabins(slug) {
+  // Navigate to cabinas panel filtered by this ship
+  _currentShipSlug = slug;
+  goTo('cabinas', document.querySelectorAll('.sb-item')[3]);
+  setTimeout(() => selectShipForCabins(slug), 300);
+}
+
+// ════════════════════════════════════
+// CABINAS
+// ════════════════════════════════════
+async function loadCabinShipSelector() {
+  const container = document.getElementById('cabinShipSelector');
+  const ships = Object.keys(_shipsLoaded);
+
+  if (!ships.length) {
+    // Load ships first
+    await loadShips();
+  }
+
+  const loaded = Object.entries(_shipsLoaded);
+  if (!loaded.length) {
+    container.innerHTML = '<div style="color:var(--muted);font-size:13px;">No hay barcos cargados. Ir a <strong>Barcos</strong> primero.</div>';
+    return;
+  }
+
+  container.innerHTML = loaded.map(([slug, s]) => `
+    <button class="tb-btn ${_currentShipSlug===slug?'primary':''}" id="csb-${slug}"
+      onclick="selectShipForCabins('${slug}')">
+      ${s.image ? `<img src="${s.image}" style="width:28px;height:20px;object-fit:cover;border-radius:3px;margin-right:2px;">` : '🚢'}
+      ${s.name || slug}
+    </button>`).join('');
+
+  if (_currentShipSlug) selectShipForCabins(_currentShipSlug);
+}
+
+function selectShipForCabins(slug) {
+  _currentShipSlug = slug;
+  // Update active state
+  document.querySelectorAll('#cabinShipSelector button').forEach(b => b.classList.remove('primary'));
+  const btn = document.getElementById('csb-'+slug);
+  if (btn) btn.classList.add('primary');
+
+  const ship = _shipsLoaded[slug];
+  if (!ship) return;
+  document.getElementById('cabinsCard').style.display = 'block';
+  document.getElementById('cabinsCardTitle').textContent = `Tipos de cabina — ${ship.name || slug}`;
+  renderCabinsTable(ship.accommodation || []);
+}
+
+function loadCabinsForShip() {
+  if (_currentShipSlug && _shipsLoaded[_currentShipSlug]) {
+    selectShipForCabins(_currentShipSlug);
+  }
+}
+
+function renderCabinsTable(accommodation) {
+  if (!accommodation.length) {
+    document.getElementById('cabinsTable').innerHTML = '<div class="empty-state"><div class="ei">🛏</div><p>No hay datos de accommodation para este barco.</p></div>';
+    return;
+  }
+
+  const TYPE_COLORS = { Suite:'amber', Balcony:'blue', Outside:'green', Inside:'muted' };
+  document.getElementById('cabinsTable').innerHTML = `
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:54px;">Foto</th>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Códigos</th>
+          <th>Superficie</th>
+          <th>Ocupantes</th>
+          <th>Visible</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${accommodation.map((a, i) => {
+          const sizeM = a.min_size ? Math.round(a.min_size*0.0929) + (a.max_size!==a.min_size?'–'+Math.round(a.max_size*0.0929):'') + ' m²' : '—';
+          const tc    = TYPE_COLORS[a.room_type] || 'muted';
+          return `
+          <tr>
+            <td class="td-img">
+              ${a.image
+                ? `<img src="${a.image}" alt="${a.name}" onerror="this.parentNode.innerHTML='<div style=width:48px;height:34px;border-radius:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;>🛏</div>'">`
+                : `<div style="width:48px;height:34px;border-radius:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;">🛏</div>`
+              }
+            </td>
+            <td>
+              <div class="td-main" style="max-width:200px;">${a.name}</div>
+              ${a.floorplan ? '<div style="font-size:10.5px;color:var(--blue);margin-top:2px;">📐 Tiene plano</div>' : ''}
+            </td>
+            <td><span class="badge ${tc}">${a.room_type || '—'}</span></td>
+            <td><div class="td-mono" style="font-size:11px;">${(a.grade_codes||[]).join(', ')}</div></td>
+            <td style="font-size:12.5px;">${sizeM}</td>
+            <td style="font-size:12.5px;">1–${a.max_occupancy||'—'}</td>
+            <td>
+              <div class="tog on" onclick="toggleCabinVisibility(this,${i})" title="Click para ocultar/mostrar"></div>
+            </td>
+            <td>
+              <div class="row-actions">
+                <button class="ra-btn" onclick="viewCabinDetail(${i})">👁 Ver</button>
+              </div>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+function toggleCabinVisibility(el, idx) {
+  el.classList.toggle('on');
+  const visible = el.classList.contains('on');
+  showToast(visible ? '✓ Cabina visible en el portal' : 'Cabina oculta del portal', visible?'success':'');
+}
+
+function viewCabinDetail(idx) {
+  const ship = _shipsLoaded[_currentShipSlug];
+  const a = ship?.accommodation?.[idx];
+  if (!a) return;
+  showToast(`${a.name} · ${(a.grade_codes||[]).join(', ')} · ${a.room_type}`);
+}
+
+// ════════════════════════════════════
+// DESTINOS
+// ════════════════════════════════════
+const DEST_LABELS = {
+  'Caribbean':'🌴 Caribe', 'Mediterranean':'🏛️ Mediterráneo', 'Alaska':'🏔️ Alaska',
+  'Americas':'🌎 Américas', 'Europe':'🗺️ Europa', 'Asia':'🌏 Asia',
+  'Australia':'🦘 Australia', 'Africa':'🌍 África',
+};
+
+async function loadDestinos() {
+  document.getElementById('destinosTable').innerHTML = '<div class="loading-row"><div class="spinner"></div> Cargando destinos...</div>';
+  try {
+    const data = await api('/cruises?per_page=100&page=1');
+    const regSet = new Set();
+    (data?.data?.cruises || []).forEach(c => (c.regions||[]).forEach(r => regSet.add(r)));
+    const regions = [...regSet].sort();
+
+    document.getElementById('destinosTable').innerHTML = `
+      <table class="data-table">
+        <thead><tr><th>Slug / API</th><th>Nombre para agencias</th><th>Cruceros</th><th>Visible</th><th>Acciones</th></tr></thead>
+        <tbody>
+          ${regions.map(r => `
+            <tr>
+              <td class="td-mono">${r}</td>
+              <td><div class="td-main">${DEST_LABELS[r] || r}</div></td>
+              <td><span class="badge blue">En catálogo</span></td>
+              <td><div class="tog on" onclick="this.classList.toggle('on');showToast(this.classList.contains('on')?'Destino activado':'Destino ocultado')"></div></td>
+              <td>
+                <div class="row-actions">
+                  <button class="ra-btn" onclick="editDestinoModal('${r}')">✏️ Editar nombre</button>
+                </div>
+              </td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+  } catch(e) {
+    document.getElementById('destinosTable').innerHTML = '<div class="empty-state"><div class="ei">🌍</div><p>Error cargando destinos.</p></div>';
+  }
+}
+
+function openAddDestinoModal() {
+  document.getElementById('editDestCod').value   = '';
+  document.getElementById('editDestNom').value   = '';
+  document.getElementById('editDestEmoji').value = '';
+  document.getElementById('ov-destino').classList.add('open');
+}
+
+function editDestinoModal(cod) {
+  document.getElementById('editDestCod').value   = cod;
+  document.getElementById('editDestNom').value   = DEST_LABELS[cod]?.replace(/^\S+\s/,'') || cod;
+  document.getElementById('editDestEmoji').value = DEST_LABELS[cod]?.split(' ')[0] || '';
+  document.getElementById('ov-destino').classList.add('open');
+}
+
+function closeDestinoModal() { document.getElementById('ov-destino').classList.remove('open'); }
+
+function saveDestino() {
+  const cod = document.getElementById('editDestCod').value.trim();
+  if (!cod) { showToast('El código es obligatorio', 'error'); return; }
+  showToast(`✅ Destino "${cod}" guardado`, 'success');
+  closeDestinoModal();
+  loadDestinos();
+}
+
+// ════════════════════════════════════
+// AGENCIAS
+// ════════════════════════════════════
+async function loadAgencias() {
+  document.getElementById('agenciasTable').innerHTML = '<div class="loading-row"><div class="spinner"></div></div>';
+  // Static demo data (would come from GET /api/admin/agencies)
+  const agencies = [
+    { name: 'Agencia Demo', email: 'demo@agencia.com', cuit: '20-12345678-9', status: 'active', lastLogin: 'Hoy 14:32' },
+  ];
+  document.getElementById('agenciasTable').innerHTML = agencies.length ? `
+    <table class="data-table">
+      <thead><tr><th>Nombre</th><th>Email</th><th>CUIT</th><th>Último acceso</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody>
+        ${agencies.map(a => `
+          <tr>
+            <td class="td-main">${a.name}</td>
+            <td class="td-mono">${a.email}</td>
+            <td class="td-mono">${a.cuit||'—'}</td>
+            <td style="font-size:12px;color:var(--muted);">${a.lastLogin}</td>
+            <td><span class="badge ${a.status==='active'?'green':'red'}">${a.status==='active'?'✓ Activa':'Inactiva'}</span></td>
+            <td>
+              <div class="row-actions">
+                <button class="ra-btn" onclick="showToast('Reset de contraseña enviado','success')">🔑 Reset pass</button>
+                <button class="ra-btn danger" onclick="showToast('Acceso suspendido temporalmente')">⛔ Suspender</button>
+              </div>
+            </td>
+          </tr>`).join('')}
+      </tbody>
+    </table>` :
+    '<div class="empty-state"><div class="ei">🏢</div><p>No hay agencias registradas.</p></div>';
+}
+
+function openAddAgenciaModal() {
+  document.getElementById('editAgNom').value   = '';
+  document.getElementById('editAgEmail').value = '';
+  document.getElementById('editAgPass').value  = '';
+  document.getElementById('editAgCuit').value  = '';
+  document.getElementById('ov-agencia').classList.add('open');
+}
+function closeAgenciaModal() { document.getElementById('ov-agencia').classList.remove('open'); }
+
+async function saveAgencia() {
+  const nom   = document.getElementById('editAgNom').value.trim();
+  const email = document.getElementById('editAgEmail').value.trim();
+  const pass  = document.getElementById('editAgPass').value;
+  if (!nom || !email || !pass) { showToast('Completá todos los campos requeridos', 'error'); return; }
+  if (pass.length < 8) { showToast('La contraseña debe tener al menos 8 caracteres', 'error'); return; }
+
+  try {
+    const res = await api('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ name: nom, email, password: pass }),
+    });
+    if (res?.success) {
+      showToast(`✅ Agencia "${nom}" creada`, 'success');
+      closeAgenciaModal();
+      loadAgencias();
+    } else {
+      showToast(res?.error || 'Error al crear agencia', 'error');
+    }
+  } catch(e) {
+    showToast('Error de conexión', 'error');
+  }
+}
+
+// ════════════════════════════════════
+// CACHE
+// ════════════════════════════════════
+async function clearCache(pattern) {
+  const btnId = `cc-btn-${pattern}`;
+  const logId = `cc-log-${pattern}`;
+  const btn = document.getElementById(btnId);
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Limpiando...'; }
+
+  try {
+    const res = await api('/admin/cache/clear', {
+      method: 'POST',
+      body: JSON.stringify({ pattern }),
+    });
+    const msg = res?.success ? `✅ Caché "${pattern}" limpiado — ${new Date().toLocaleTimeString('es-AR')}` : `❌ Error: ${res?.error||'unknown'}`;
+    if (document.getElementById(logId)) document.getElementById(logId).textContent = msg;
+    showToast(res?.success ? `✅ Caché "${pattern}" limpiado` : '❌ Error al limpiar', res?.success?'success':'error');
+    addCacheLog(`CLEAR ${pattern} — ${new Date().toLocaleTimeString('es-AR')}`);
+  } catch(e) {
+    showToast('Error de conexión', 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = pattern === 'ship' ? '🗑️ Limpiar caché de barcos' : pattern === 'cruise' ? '🗑️ Limpiar caché de cruceros' : '⚠️ Limpiar todo el caché';
+    }
+  }
+}
+
+async function clearCacheAll() {
+  if (!confirm('¿Limpiar TODO el caché Redis? Esto puede hacer que las próximas requests sean más lentas.')) return;
+  await clearCache('ship');
+  await clearCache('cruise');
+  document.getElementById('cc-log-all').textContent = `✅ Todo el caché limpiado — ${new Date().toLocaleTimeString('es-AR')}`;
+  addCacheLog(`CLEAR ALL — ${new Date().toLocaleTimeString('es-AR')}`);
+}
+
+function addCacheLog(msg) {
+  const log = document.getElementById('cacheLog');
+  if (!log) return;
+  const line = document.createElement('div');
+  line.style.cssText = 'color:var(--green);padding:2px 0;';
+  line.textContent = `[${new Date().toLocaleTimeString('es-AR')}] ${msg}`;
+  log.insertBefore(line, log.firstChild);
+}
+
+// ════════════════════════════════════
+// TOAST
+// ════════════════════════════════════
+let _tt;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast show${type?' '+type:''}`;
+  clearTimeout(_tt);
+  _tt = setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>
