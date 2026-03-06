@@ -155,7 +155,81 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
 .btn-send:hover{background:var(--blue-h);}
 .toast{position:fixed;bottom:22px;right:22px;z-index:1000;background:var(--navy);color:#fff;padding:13px 18px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:9px;transform:translateY(80px);opacity:0;transition:all 0.3s ease;pointer-events:none;}
 .toast.show{transform:translateY(0);opacity:1;}
+.ct-info-btn{display:inline-flex;align-items:center;gap:4px;background:none;border:1px solid var(--border2);border-radius:6px;font-family:inherit;font-size:11px;font-weight:600;color:var(--text2);padding:4px 9px;cursor:pointer;margin-top:5px;transition:all 0.15s;}
+.ct-info-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-soft);}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+  /* ── CABIN DETAIL MODAL ── */
+  #cabin-modal-ov{display:none;position:fixed;inset:0;z-index:600;background:rgba(8,16,32,0.62);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:20px;}
+  #cabin-modal-ov.open{display:flex;}
+  .cm{background:#fff;border-radius:20px;width:680px;max-width:100%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(13,31,60,0.22);animation:mIn 0.22s ease;}
+  .cm-img{width:100%;height:220px;object-fit:cover;display:block;flex-shrink:0;}
+  .cm-img-placeholder{width:100%;height:220px;background:linear-gradient(135deg,var(--navy),var(--blue));display:flex;align-items:center;justify-content:center;font-size:48px;flex-shrink:0;}
+  .cm-body{overflow-y:auto;flex:1;}
+  .cm-head{padding:20px 24px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+  .cm-title-block{flex:1;}
+  .cm-badge{display:inline-block;background:var(--blue-soft);color:var(--blue);font-size:10px;font-weight:700;padding:3px 9px;border-radius:4px;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:8px;}
+  .cm-title{font-size:20px;font-weight:800;color:var(--navy);line-height:1.2;margin-bottom:4px;}
+  .cm-code{font-size:12px;color:var(--muted);}
+  .cm-close{background:var(--bg2);border:1px solid var(--border);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--text2);flex-shrink:0;transition:background 0.15s;}
+  .cm-close:hover{background:var(--border);}
+  .cm-section{padding:16px 24px;border-bottom:1px solid var(--border);}
+  .cm-section:last-child{border-bottom:none;}
+  .cm-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:12px;}
+  .cm-specs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .cm-spec{background:var(--bg2);border-radius:10px;padding:12px 14px;text-align:center;}
+  .cm-spec-v{font-size:16px;font-weight:700;color:var(--navy);}
+  .cm-spec-l{font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.06em;}
+  .cm-amenities{display:flex;flex-wrap:wrap;gap:6px;}
+  .cm-am{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px;}
+  .cm-pricing{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .cm-price-card{border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;}
+  .cm-price-card.highlight{border-color:var(--blue);background:var(--blue-soft);}
+  .cm-price-lbl{font-size:11px;color:var(--muted);margin-bottom:4px;}
+  .cm-price-val{font-size:22px;font-weight:800;color:var(--navy);}
+  .cm-price-card.highlight .cm-price-val{color:var(--blue);}
+  .cm-price-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+  .cm-avail{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:6px;margin-top:8px;}
+  .cm-avail.available{background:var(--green-bg);color:var(--green);}
+  .cm-avail.closed{background:#fff0f0;color:#e04545;}
+  .cm-avail.enquire{background:var(--bg2);color:var(--muted);}
+  .cm-footer{padding:16px 24px;background:var(--bg2);border-top:1px solid var(--border);display:flex;gap:10px;align-items:center;position:sticky;bottom:0;}
+  .cm-btn-sel{flex:2;background:var(--blue);color:#fff;border:none;font-family:inherit;font-size:14px;font-weight:700;padding:13px;border-radius:10px;cursor:pointer;box-shadow:0 4px 14px rgba(30,94,255,0.28);transition:background 0.15s;}
+  .cm-btn-sel:hover{background:var(--blue-h);}
+  .cm-btn-cancel{flex:1;background:#fff;color:var(--text2);border:1.5px solid var(--border);font-family:inherit;font-size:13px;font-weight:600;padding:13px;border-radius:10px;cursor:pointer;transition:all 0.15s;}
+  .cm-btn-cancel:hover{border-color:var(--text2);}
+  .ct-info-btn{background:none;border:1px solid var(--border2);border-radius:6px;font-family:inherit;font-size:11px;color:var(--text2);padding:3px 8px;cursor:pointer;transition:all 0.15s;margin-top:4px;}
+  .ct-info-btn:hover{border-color:var(--blue);color:var(--blue);}
+
+
+  /* ══════════════════════════════════════
+     RESPONSIVE — TABLET (≤900px)
+  ══════════════════════════════════════ */
+  @media (max-width: 900px) {
+    nav { padding: 0 16px; }
+    .page { grid-template-columns: 1fr; padding: 16px; gap: 14px; }
+    .sidebar-right { position: static; width: 100%; order: -1; }
+    .sum-card, .meta-card { padding: 16px; }
+    .type-row { grid-template-columns: repeat(2,1fr); gap: 10px; }
+    .ct-img { display: none; }
+  }
+
+  /* ══════════════════════════════════════
+     RESPONSIVE — MOBILE (≤600px)
+  ══════════════════════════════════════ */
+  @media (max-width: 600px) {
+    nav { padding: 0 12px; }
+    .n-links { display: none; }
+    .page { padding: 10px; }
+    .type-row { grid-template-columns: repeat(2,1fr); gap: 8px; }
+    .tcard { padding: 10px 8px 8px; }
+    .tc-img { height: 70px; }
+    .ship-stats-grid { grid-template-columns: repeat(2,1fr); }
+    table.cabin-table { font-size: 13px; }
+    .ct-price-col { min-width: 90px; }
+    .bottom-bar { flex-direction: column; gap: 8px; padding: 12px; }
+    .btn-confirm, .btn-add { width: 100%; text-align: center; }
+    .ov .modal { width: 95vw; }
+  }
 </style>
 </head>
 <body>
@@ -309,6 +383,63 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
   </aside>
 </div>
 
+
+<!-- CABIN DETAIL MODAL -->
+<div id="cabin-modal-ov" onclick="if(event.target.id==='cabin-modal-ov')closeCabinModal()">
+  <div class="cm" id="cabinModal">
+    <div id="cmImgWrap"></div>
+    <div class="cm-body">
+      <div class="cm-head">
+        <div class="cm-title-block">
+          <div class="cm-badge" id="cmBadge">Balcón</div>
+          <div class="cm-title" id="cmTitle">Aft-Facing Balcony</div>
+          <div class="cm-code" id="cmCode">Código: B1</div>
+        </div>
+        <button class="cm-close" onclick="closeCabinModal()">✕</button>
+      </div>
+
+      <!-- Disponibilidad -->
+      <div class="cm-section">
+        <div id="cmAvail" class="cm-avail available">✅ Disponible</div>
+      </div>
+
+      <!-- Descripción real del barco -->
+      <div class="cm-section" id="cmDescSection" style="display:none;">
+        <div class="cm-section-title">Descripción</div>
+        <p id="cmDesc" style="font-size:13.5px;color:var(--text2);line-height:1.7;"></p>
+      </div>
+
+      <!-- Especificaciones -->
+      <div class="cm-section">
+        <div class="cm-section-title">Especificaciones</div>
+        <div class="cm-specs" id="cmSpecs">
+          <div class="cm-spec"><div class="cm-spec-v" id="cmOcup">2</div><div class="cm-spec-l">Máx. ocupantes</div></div>
+          <div class="cm-spec"><div class="cm-spec-v" id="cmDeck">—</div><div class="cm-spec-l">Cubierta</div></div>
+          <div class="cm-spec"><div class="cm-spec-v" id="cmSize">—</div><div class="cm-spec-l">Superficie</div></div>
+        </div>
+      </div>
+
+      <!-- Amenities -->
+      <div class="cm-section">
+        <div class="cm-section-title">Incluye</div>
+        <div class="cm-amenities" id="cmAmenities"></div>
+      </div>
+
+      <!-- Precios -->
+      <div class="cm-section">
+        <div class="cm-section-title">Tarifas</div>
+        <div class="cm-pricing" id="cmPricing"></div>
+        <p style="font-size:11px;color:var(--muted);margin-top:10px;">* Precios en USD por persona. Sujetos a disponibilidad. No incluyen tasas portuarias.</p>
+      </div>
+    </div>
+
+    <div class="cm-footer">
+      <button class="cm-btn-cancel" onclick="closeCabinModal()">Volver</button>
+      <button class="cm-btn-sel" id="cmSelBtn" onclick="selectFromModal()">✓ Seleccionar esta cabina</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"><span id="toastMsg">—</span></div>
 
 <div class="ov" id="ov" onclick="if(event.target.id==='ov')closeModal()">
@@ -333,12 +464,41 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
   let   TOKEN = localStorage.getItem('geist_token') || null;
   const S = { adults:2, kids:0, cabinType:null, cabinName:null, price:0, budgets:[], cruise:null };
 
-  const CABIN_IMGS = {
+  // Fallback Unsplash si no hay imágenes del barco
+  const CABIN_IMGS_FALLBACK = {
     Inside:  'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80',
     Outside: 'https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=400&q=80',
     Balcony: 'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=400&q=80',
     Suite:   'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&q=80',
   };
+
+  // Obtener imagen real del barco para un tipo y grade_code dado
+  // Prioridad: imagen del accommodation que coincida con grade_code > primer img del tipo > fallback
+  function getCabinImg(typeKey, gradeCode) {
+    const accom = S.ship?.accommodation || [];
+    const typeNorm = typeKey.toLowerCase(); // 'inside','outside','balcony','suite'
+    // Buscar por grade_code exacto primero
+    if (gradeCode) {
+      const byGrade = accom.find(a => a.grade_codes?.includes(gradeCode));
+      if (byGrade?.image) return byGrade.image;
+    }
+    // Fallback: primer accommodation del tipo
+    const byType = accom.find(a => a.room_type?.toLowerCase() === typeNorm);
+    if (byType?.image) return byType.image;
+    // Último recurso: Unsplash
+    return CABIN_IMGS_FALLBACK[typeKey] || CABIN_IMGS_FALLBACK.Inside;
+  }
+
+  // Obtener accommodation completo por grade_code para el modal
+  function getAccomByGrade(gradeCode) {
+    const accom = S.ship?.accommodation || [];
+    return accom.find(a => a.grade_codes?.includes(gradeCode)) || null;
+  }
+
+  // Para las type cards: imagen representativa del tipo
+  function getCabinTypeImg(typeKey) {
+    return getCabinImg(typeKey, null);
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
     if (!TOKEN) { window.location.href = 'index.html'; return; }
@@ -363,11 +523,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
   async function loadCruise(ref, adults, children) {
     try {
       const paxQuery = `?adults=${adults}&children=${children}`;
-      const [cruiseRes] = await Promise.all([
-        fetch(`${API}/cruises/${encodeURIComponent(ref)}${paxQuery}`, {
-          headers: { 'Authorization': `Bearer ${TOKEN}` }
-        })
-      ]);
+      const cruiseRes = await fetch(`${API}/cruises/${encodeURIComponent(ref)}${paxQuery}`, {
+        headers: { 'Authorization': `Bearer ${TOKEN}` }
+      });
       if (cruiseRes.status === 401) { localStorage.removeItem('geist_token'); window.location.href = 'index.html'; return; }
       const data = await cruiseRes.json();
       if (!data.success) throw new Error(data.error || 'Error');
@@ -495,7 +653,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       const pStr = p > 0 ? `US$ ${p.toLocaleString('es-AR')}` : 'Consultar';
       return `<div class="tcard${idx===0?' on':''}" onclick="selectType(this,'${TIPO_MAP[t]}','${TIPO_KEY[t]}','${t}')">
         <div class="tc-check">✓</div>
-        <div class="tc-img"><img src="${CABIN_IMGS[TIPO_KEY[t]]}" alt="${TIPO_MAP[t]}" loading="lazy"></div>
+        <div class="tc-img"><img src="${getCabinTypeImg(TIPO_KEY[t])}" alt="${TIPO_MAP[t]}" loading="lazy"></div>
         <div class="tc-foot">
           <div class="tc-type">${TIPO_MAP[t]}</div>
           <div class="tc-price">Desde <strong>${pStr}</strong></div>
@@ -526,7 +684,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       const basePrice = parseFloat(hp[hpKey]) || 0;
       document.getElementById('cabinRows').innerHTML = `
         <tr class="on" onclick="selectCabin(this,'${typeLabel}','${typeLabel}',${basePrice})">
-          <td class="ct-img"><img src="${CABIN_IMGS[typeKey]}" alt="${typeLabel}" loading="lazy"></td>
+          <td class="ct-img"><img src="${getCabinTypeImg(typeKey)}" alt="${typeLabel}" loading="lazy"></td>
           <td class="ct-info">
             <div class="ct-name">${typeLabel} Estándar</div>
             <div class="ct-amenities"><span class="ct-am">📋 Consultar disponibilidad</span></div>
@@ -560,16 +718,29 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
         const total    = p.total_price || (price * S.adults);
         const avail    = p.availability === 'available' ? '✅ Disponible' : p.availability === 'closed' ? '🔒 No disponible' : '📋 Consultar';
         const safeName = (p.grade_name||typeLabel).replace(/'/g,"\'");
+        const cabinData = JSON.stringify(p).replace(/'/g,"&apos;");
         html += `
           <tr onclick="selectCabin(this,'${safeName}','${typeLabel}',${price},${total})">
-            <td class="ct-img"><img src="${CABIN_IMGS[typeKey]}" alt="${p.grade_name||typeLabel}" loading="lazy"></td>
+            <td class="ct-img"><img src="${getCabinImg(typeKey, p.grade_code)}" alt="${p.grade_name||typeLabel}" loading="lazy"></td>
             <td class="ct-info">
-              <div class="ct-cat">Cód: ${p.grade_code||'—'}</div>
+              <div class="ct-cat">Cód: ${p.grade_code||'—'} · ${p.room_type||typeLabel}</div>
               <div class="ct-name">${p.grade_name||typeLabel}</div>
               <div class="ct-amenities">
                 <span class="ct-am">${avail}</span>
                 ${p.taxes_fees ? `<span class="ct-am">+US$ ${parseFloat(p.taxes_fees).toLocaleString('es-AR')} tasas</span>` : ''}
               </div>
+              <button class="ct-info-btn"
+                data-price="${price}"
+                data-total="${total}"
+                data-name="${safeName.replace(/"/g,'&quot;')}"
+                data-code="${p.grade_code||''}"
+                data-type="${typeLabel}"
+                data-avail="${p.availability||''}"
+                data-taxes="${p.taxes_fees||0}"
+                data-typekey="${typeKey}"
+                data-triple="${p.triple_price_pp||0}"
+                data-credit="${p.onboard_credit||0}"
+                onclick="event.stopPropagation();openCabinModalFromBtn(this)">🔍 Ver detalles</button>
             </td>
             <td class="ct-price-col">
               <span class="ct-price">US$ ${price.toLocaleString('es-AR')}</span>
@@ -605,11 +776,210 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
   }
 
   function selectCabin(row, name, type, price, totalPrice) {
-    document.querySelectorAll('#cabinRows tr').forEach(r => { r.classList.remove('on'); r.querySelector('.ct-sel-btn').textContent = 'Seleccionar'; });
+    document.querySelectorAll('#cabinRows tr').forEach(r => { r.classList.remove('on'); const btn = r.querySelector('.ct-sel-btn'); if (btn) btn.textContent = 'Seleccionar'; });
     row.classList.add('on');
     row.querySelector('.ct-sel-btn').textContent = '✓ Seleccionada';
     S.cabinName = name; S.cabinType = type; S.price = price; S.totalPrice = totalPrice || (price * S.adults);
     updateUI();
+  }
+
+  // ── CABIN DETAIL MODAL ──
+  let _cmData = {}; // current cabin modal data
+
+  // Iconos para facilidades de Widgety
+  const FAC_ICONS = {
+    'TV':'📺','Wi-Fi':'📶','Safe':'🔒','Hair Dryer':'💨','Telephone':'📞','Desk':'🪑',
+    'Air Conditioning':'❄️','Shower':'🚿','Bath':'🛁','Whirlpool Bath':'🛁','Toiletries Provided':'🧴',
+    'Room Service Available':'🍽️','Butler Service':'👔','Suite Benefits':'⭐','Lounge Area':'🛋️',
+    'Dining Area':'🍽️','Sofa Bed':'🛋️','King or Twin Configuration':'🛏','Queen or Twin Configuration':'🛏',
+    'Pullman Bed':'🛏','Pullman Bed x2':'🛏','Second Bedroom':'🚪','Vanity Area':'🪞',
+    'Coffee Machine':'☕','Balcony':'🪴',
+  };
+
+  function facIcon(f) {
+    for (const [k,v] of Object.entries(FAC_ICONS)) { if (f.includes(k)) return v+' '+f; }
+    return '✓ '+f;
+  }
+
+  function openCabinModalFromBtn(btn) {
+    const price    = parseFloat(btn.dataset.price) || 0;
+    const total    = parseFloat(btn.dataset.total) || 0;
+    const name     = btn.dataset.name;
+    const code     = btn.dataset.code;
+    const typeLabel= btn.dataset.type;
+    const avail    = btn.dataset.avail;
+    const taxes    = parseFloat(btn.dataset.taxes) || 0;
+    const typeKey  = btn.dataset.typekey;
+    const triple   = parseFloat(btn.dataset.triple) || 0;
+    const credit   = parseFloat(btn.dataset.credit) || 0;
+    openCabinModal(price, total, name, code, typeLabel, avail, taxes, typeKey, triple, credit);
+  }
+
+  function openCabinModal(price, total, name, code, typeLabel, availability, taxes, typeKey, triplePrice, onboardCredit) {
+    _cmData = { price, total, name, code, typeLabel, availability, taxes, typeKey };
+
+    // Buscar datos reales de accommodation por grade_code
+    const accom = getAccomByGrade(code);
+
+    // ── IMAGEN ── usa imágenes reales del barco
+    const imgWrap = document.getElementById('cmImgWrap');
+    const realImg = getCabinImg(typeKey, code);
+
+    // Si hay múltiples imágenes en el accommodation, mostrar galería
+    const allImgs = accom?.images || (realImg ? [realImg] : []);
+    if (allImgs.length > 1) {
+      imgWrap.innerHTML = `
+        <div style="position:relative;height:240px;overflow:hidden;background:var(--navy);">
+          <img id="cmMainImg" src="${allImgs[0]}" alt="${name}"
+            style="width:100%;height:240px;object-fit:cover;display:block;cursor:pointer;"
+            onclick="cmNextImg()" title="Click para ver siguiente foto">
+          <div style="position:absolute;bottom:10px;right:12px;background:rgba(0,0,0,0.55);
+            color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px;">
+            <span id="cmImgIdx">1</span>/${allImgs.length} · click para ver más
+          </div>
+          ${accom?.floorplan ? `<button onclick="toggleFloorplan()" style="position:absolute;bottom:10px;left:12px;
+            background:rgba(255,255,255,0.9);border:none;border-radius:6px;padding:4px 10px;
+            font-size:11px;font-weight:600;cursor:pointer;color:var(--navy);">📐 Plano</button>` : ''}
+        </div>
+        ${accom?.floorplan ? `<div id="cmFloorplan" style="display:none;">
+          <img src="${accom.floorplan}" alt="Plano de cabina"
+            style="width:100%;max-height:200px;object-fit:contain;background:#f8f9fc;padding:12px;">
+        </div>` : ''}`;
+      window._cmImgs = allImgs; window._cmImgIdx = 0;
+    } else {
+      imgWrap.innerHTML = realImg
+        ? `<img class="cm-img" src="${realImg}" alt="${name}">`
+        : `<div class="cm-img-placeholder">🛏</div>`;
+      window._cmImgs = []; window._cmImgIdx = 0;
+    }
+
+    // ── HEADER ──
+    document.getElementById('cmBadge').textContent  = typeLabel;
+    document.getElementById('cmTitle').textContent  = name;
+    document.getElementById('cmCode').textContent   = code ? `Código: ${code}` : '';
+
+    // ── DISPONIBILIDAD ──
+    const availEl = document.getElementById('cmAvail');
+    if (availability === 'available') { availEl.className='cm-avail available'; availEl.textContent='✅ Disponible'; }
+    else if (availability === 'closed') { availEl.className='cm-avail closed'; availEl.textContent='🔒 No disponible'; }
+    else { availEl.className='cm-avail enquire'; availEl.textContent='📋 Consultar disponibilidad'; }
+
+    // ── DESCRIPCIÓN (si existe en accommodation) ──
+    const descSection = document.getElementById('cmDescSection');
+    if (accom?.description) {
+      const cleanDesc = accom.description.replace(/<[^>]+>/g,'').trim();
+      descSection.style.display = 'block';
+      document.getElementById('cmDesc').textContent = cleanDesc;
+    } else {
+      descSection.style.display = 'none';
+    }
+
+    // ── ESPECIFICACIONES (datos reales de Widgety) ──
+    const maxOcup = accom?.max_occupancy || (typeKey === 'Suite' ? 4 : 2);
+    const deckTxt = (() => {
+      if (!accom?.stats) return '—';
+      const m = accom.stats.replace(/<[^>]+>/g,' ').match(/Deck[^:]*:\s*([^<
+]+)/i);
+      return m ? m[1].trim() : '—';
+    })();
+    const sizeFt = accom ? (accom.min_size === accom.max_size
+      ? accom.min_size + ' ft²'
+      : accom.min_size + '–' + accom.max_size + ' ft²') : '—';
+    // Convertir ft² a m² (1 ft² = 0.0929 m²)
+    const sizeM2 = accom ? (() => {
+      const minM = Math.round(accom.min_size * 0.0929);
+      const maxM = Math.round(accom.max_size * 0.0929);
+      return minM === maxM ? minM + ' m²' : minM + '–' + maxM + ' m²';
+    })() : '—';
+    const locTxt = (() => {
+      if (!accom?.stats) return '—';
+      const m = accom.stats.replace(/<[^>]+>/g,' ').match(/Location:\s*([^<
+]+)/i);
+      return m ? m[1].trim() : '—';
+    })();
+
+    document.getElementById('cmOcup').textContent  = maxOcup;
+    document.getElementById('cmDeck').textContent  = deckTxt;
+    document.getElementById('cmSize').textContent  = sizeM2 !== '—' ? sizeM2 : '—';
+
+    // Agregar ubicación si existe
+    const cmSpecs = document.getElementById('cmSpecs');
+    const existing4th = cmSpecs.querySelector('.cm-spec-loc');
+    if (existing4th) existing4th.remove();
+    if (locTxt !== '—') {
+      const locDiv = document.createElement('div');
+      locDiv.className = 'cm-spec cm-spec-loc';
+      locDiv.innerHTML = `<div class="cm-spec-v" style="font-size:13px;">${locTxt}</div><div class="cm-spec-l">Ubicación</div>`;
+      cmSpecs.appendChild(locDiv);
+    }
+
+    // ── FACILIDADES (datos reales de Widgety) ──
+    const facilities = accom?.facilities || [];
+    const amenitiesEl = document.getElementById('cmAmenities');
+    if (facilities.length) {
+      amenitiesEl.innerHTML = facilities.map(f => `<div class="cm-am">${facIcon(f)}</div>`).join('');
+    } else {
+      amenitiesEl.innerHTML = '<div class="cm-am" style="color:var(--muted)">Consultar amenities</div>';
+    }
+
+    // ── PRECIOS ──
+    const paxStr = `${S.adults} adulto${S.adults>1?'s':''}${S.kids>0?' + '+S.kids+' niño'+(S.kids>1?'s':''):''}`;
+    const taxStr = taxes > 0 ? `<div style="font-size:11px;color:var(--muted);margin-top:4px;">+ US$ ${parseFloat(taxes).toLocaleString('es-AR')} tasas portuarias</div>` : '';
+    const tripleStr = triplePrice > 0 ? `<div class="cm-price-card"><div class="cm-price-lbl">3° / 4° pasajero</div><div class="cm-price-val" style="font-size:18px;">US$ ${Number(triplePrice).toLocaleString('es-AR')}</div><div class="cm-price-sub">por huésped adicional</div></div>` : '';
+    const creditStr = onboardCredit > 0 ? `<div style="margin-top:10px;background:var(--green-bg);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--green);font-weight:600;">🎁 Crédito a bordo incluido: US$ ${Number(onboardCredit).toLocaleString('es-AR')}</div>` : '';
+    document.getElementById('cmPricing').innerHTML = `
+      <div class="cm-price-card highlight">
+        <div class="cm-price-lbl">Por huésped (base doble)</div>
+        <div class="cm-price-val">US$ ${price.toLocaleString('es-AR')}</div>
+        <div class="cm-price-sub">Sin tasas</div>
+      </div>
+      <div class="cm-price-card">
+        <div class="cm-price-lbl">Total para ${paxStr}</div>
+        <div class="cm-price-val" style="font-size:18px;">US$ ${(total||price*S.adults).toLocaleString('es-AR')}</div>
+        ${taxStr}
+      </div>
+      ${tripleStr}
+      ${creditStr}`;
+
+    // ── BOTÓN ──
+    document.getElementById('cmSelBtn').textContent = availability === 'closed'
+      ? '📋 Consultar disponibilidad'
+      : '✓ Seleccionar esta cabina';
+
+    document.getElementById('cabin-modal-ov').classList.add('open');
+    document.getElementById('cabinModal').scrollTop = 0;
+  }
+
+  function cmNextImg() {
+    if (!window._cmImgs || window._cmImgs.length < 2) return;
+    window._cmImgIdx = (window._cmImgIdx + 1) % window._cmImgs.length;
+    document.getElementById('cmMainImg').src = window._cmImgs[window._cmImgIdx];
+    document.getElementById('cmImgIdx').textContent = window._cmImgIdx + 1;
+  }
+
+  function toggleFloorplan() {
+    const fp = document.getElementById('cmFloorplan');
+    if (fp) fp.style.display = fp.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function closeCabinModal() {
+    document.getElementById('cabin-modal-ov').classList.remove('open');
+  }
+
+  function selectFromModal() {
+    const d = _cmData;
+    if (d.availability === 'closed') { closeCabinModal(); return; }
+    // Find and click the matching row
+    const rows = document.querySelectorAll('#cabinRows tr');
+    rows.forEach(r => {
+      const btn = r.querySelector('.ct-sel-btn');
+      const nameEl = r.querySelector('.ct-name');
+      if (nameEl && nameEl.textContent.trim() === d.name.trim()) {
+        r.click();
+      }
+    });
+    closeCabinModal();
+    showToast('✓ Cabina seleccionada: ' + d.name);
   }
 
   function toggleItin() {
