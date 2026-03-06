@@ -75,8 +75,29 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
   .ship-stat-v{font-size:14px;font-weight:700;color:var(--navy);}
   .ship-stat-l{font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.06em;}
   .ship-desc{padding:14px 18px;font-size:13px;color:var(--text2);line-height:1.6;border-top:1px solid var(--border);}
-.spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* ── Themed cruise loader ── */
+.spinner{display:inline-flex;align-items:center;gap:3px;flex-shrink:0;}
+.spinner span{display:block;width:4px;border-radius:2px;background:var(--blue);animation:wave-bar 1.1s ease-in-out infinite;}
+.spinner span:nth-child(1){height:10px;animation-delay:0s;}
+.spinner span:nth-child(2){height:18px;animation-delay:0.15s;}
+.spinner span:nth-child(3){height:14px;animation-delay:0.3s;}
+.spinner span:nth-child(4){height:22px;animation-delay:0.45s;}
+.spinner span:nth-child(5){height:12px;animation-delay:0.6s;}
+@keyframes wave-bar{0%,100%{transform:scaleY(0.4);opacity:0.4;}50%{transform:scaleY(1);opacity:1;}}
+
+/* Ship sailing loader for full-page */
+.ship-loader{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:16px;}
+.ship-loader-ship{font-size:36px;animation:sail 2.5s ease-in-out infinite;}
+@keyframes sail{0%,100%{transform:translateX(-8px) rotate(-2deg);}50%{transform:translateX(8px) rotate(2deg);}}
+.ship-loader-waves{display:flex;gap:5px;align-items:flex-end;}
+.ship-loader-waves span{width:5px;border-radius:3px;background:var(--cyan);opacity:0.7;animation:wave-bar 1.1s ease-in-out infinite;}
+.ship-loader-waves span:nth-child(1){height:8px;animation-delay:0s;}
+.ship-loader-waves span:nth-child(2){height:14px;animation-delay:0.2s;}
+.ship-loader-waves span:nth-child(3){height:10px;animation-delay:0.4s;}
+.ship-loader-waves span:nth-child(4){height:16px;animation-delay:0.6s;}
+.ship-loader-waves span:nth-child(5){height:8px;animation-delay:0.8s;}
+.ship-loader-waves span:nth-child(6){height:12px;animation-delay:1.0s;}
+.ship-loader-text{font-size:13px;color:var(--muted);font-weight:500;letter-spacing:0.03em;}
 .sidebar{position:sticky;top:80px;display:flex;flex-direction:column;gap:12px;}
 .sum-card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);}
 .sum-top{padding:16px 18px;border-bottom:1px solid var(--border);}
@@ -258,7 +279,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     </div>
 
     <div id="loadingState" class="card">
-      <div class="loading-card"><div class="spinner"></div><span>Cargando información del crucero...</span></div>
+      <div class="loading-card"><div class="spinner"><span></span><span></span><span></span><span></span><span></span></div><span>Cargando información del crucero...</span></div>
     </div>
 
     <!-- BARCO -->
@@ -878,8 +899,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     const maxOcup = accom?.max_occupancy || (typeKey === 'Suite' ? 4 : 2);
     const deckTxt = (() => {
       if (!accom?.stats) return '—';
-      const m = accom.stats.replace(/<[^>]+>/g,' ').match(/Deck[^:]*:\s*([^<
-]+)/i);
+      const statsText = accom.stats.replace(/<[^>]+>/g,' ');
+    const m = statsText.match(/Deck[^:]*:[\s]*([^<]+)/i);
       return m ? m[1].trim() : '—';
     })();
     const sizeFt = accom ? (accom.min_size === accom.max_size
@@ -893,9 +914,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     })() : '—';
     const locTxt = (() => {
       if (!accom?.stats) return '—';
-      const m = accom.stats.replace(/<[^>]+>/g,' ').match(/Location:\s*([^<
-]+)/i);
-      return m ? m[1].trim() : '—';
+      const m2 = statsText.match(/Location:[\s]*([^<]+)/i);
+      return m2 ? m2[1].trim() : '—';
     })();
 
     document.getElementById('cmOcup').textContent  = maxOcup;

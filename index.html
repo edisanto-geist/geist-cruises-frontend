@@ -1178,14 +1178,25 @@
     padding: 60px 20px; text-align: center;
     color: var(--muted); font-size: 14px;
   }
-  .spinner {
-    width: 36px; height: 36px; border-radius: 50%;
-    border: 3px solid var(--border);
-    border-top-color: var(--blue);
-    animation: spin 0.7s linear infinite;
-    margin: 0 auto 14px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  /* ── Themed cruise loaders ── */
+  .spinner{display:inline-flex;align-items:center;justify-content:center;gap:3px;margin:0 auto 14px;}
+  .spinner span{display:block;width:5px;border-radius:3px;background:var(--blue);animation:wave-bar 1.1s ease-in-out infinite;}
+  .spinner span:nth-child(1){height:12px;animation-delay:0s;}
+  .spinner span:nth-child(2){height:22px;animation-delay:0.15s;}
+  .spinner span:nth-child(3){height:16px;animation-delay:0.3s;}
+  .spinner span:nth-child(4){height:26px;animation-delay:0.45s;}
+  .spinner span:nth-child(5){height:14px;animation-delay:0.6s;}
+  @keyframes wave-bar{0%,100%{transform:scaleY(0.35);opacity:0.35;}50%{transform:scaleY(1);opacity:1;}}
+  @keyframes sail{0%,100%{transform:translateX(-6px) rotate(-2deg);}50%{transform:translateX(6px) rotate(2deg);}}
+
+  /* Inline small spinner (for dropdowns / inline use) */
+  .spin-sm{display:inline-flex;align-items:center;gap:2px;}
+  .spin-sm span{display:block;width:3px;border-radius:2px;background:var(--blue);animation:wave-bar 1.1s ease-in-out infinite;}
+  .spin-sm span:nth-child(1){height:7px;animation-delay:0s;}
+  .spin-sm span:nth-child(2){height:12px;animation-delay:0.18s;}
+  .spin-sm span:nth-child(3){height:9px;animation-delay:0.36s;}
+  .spin-sm span:nth-child(4){height:14px;animation-delay:0.54s;}
+  .spin-sm span:nth-child(5){height:8px;animation-delay:0.72s;}
 
   .empty-state {
     padding: 60px 20px; text-align: center; color: var(--muted);
@@ -1573,7 +1584,7 @@
     document.querySelectorAll('.sb-drop.open').forEach(d => d.classList.remove('open'));
 
     // Mostrar loading
-    tbody.innerHTML = `<div class="loading-row"><div class="spinner"></div>Buscando cruceros...</div>`;
+    tbody.innerHTML = `<div class="loading-row"><div class="spinner"><span></span><span></span><span></span><span></span><span></span></div>Buscando cruceros...</div>`;
 
     try {
       // Construir params desde searchState
@@ -1733,7 +1744,7 @@
   async function openCruiseDetail(ref) {
     document.getElementById('ov').classList.add('open');
     document.getElementById('tab-barco').innerHTML = `
-      <div class="loading-row"><div class="spinner"></div>Cargando información...</div>`;
+      <div class="loading-row"><div class="spinner"><span></span><span></span><span></span><span></span><span></span></div>Cargando información...</div>`;
 
     try {
       const data = await apiFetch(`/cruises/${ref}`);
