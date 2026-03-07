@@ -81,6 +81,24 @@
     font-size: 11px; font-weight: 700; color: #fff;
   }
   .n-uname { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.88); }
+  .n-dropdown {
+    position: absolute; top: calc(100% + 8px); right: 0;
+    background: #1e2433; border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px; padding: 6px; min-width: 160px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35); z-index: 1000;
+    display: none;
+  }
+  .n-dropdown.open { display: block; }
+  .n-dropdown-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-radius: 7px; cursor: pointer;
+    font-size: 13px; color: rgba(255,255,255,0.75);
+    transition: background 0.12s;
+  }
+  .n-dropdown-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .n-dropdown-item.danger { color: #ff6b6b; }
+  .n-dropdown-item.danger:hover { background: rgba(255,107,107,0.12); }
+  .n-user-wrap { position: relative; }
 
   /* ─────────── HERO / SEARCH ─────────── */
   .hero {
@@ -752,9 +770,19 @@
     <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente">Mis reservas</a>
     <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente">Mis presupuestos</a>
   </div>
-  <div class="n-user">
-    <div class="n-av">AG</div>
-    <span class="n-uname">Agencia Demo &nbsp;▾</span>
+  <div class="n-user-wrap">
+    <div class="n-user" onclick="toggleUserMenu()">
+      <div class="n-av">AG</div>
+      <span class="n-uname">Agencia Demo &nbsp;▾</span>
+    </div>
+    <div class="n-dropdown" id="userDropdown">
+      <div class="n-dropdown-item" onclick="window.location.href='#mis-presupuestos'">
+        📋 Mis presupuestos
+      </div>
+      <div class="n-dropdown-item danger" onclick="logout()">
+        🚪 Cerrar sesión
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -1336,6 +1364,19 @@
   function showApp() {
     document.getElementById('loginScreen').classList.add('hidden');
   }
+
+  function toggleUserMenu() {
+    const dd = document.getElementById('userDropdown');
+    dd.classList.toggle('open');
+  }
+
+  // Cerrar dropdown al hacer click afuera
+  document.addEventListener('click', (e) => {
+    const wrap = document.querySelector('.n-user-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      document.getElementById('userDropdown')?.classList.remove('open');
+    }
+  });
 
   function logout() {
     localStorage.removeItem('geist_token');
