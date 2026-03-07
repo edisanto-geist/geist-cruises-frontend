@@ -318,16 +318,16 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
             <div class="sc-trend neutral">En catálogo</div>
           </div>
           <div class="stat-card amber">
-            <div class="sc-icon">⚓</div>
-            <div class="sc-val" id="stat-navieras">2</div>
-            <div class="sc-label">Navieras integradas</div>
-            <div class="sc-trend up">NCL + RCI</div>
+            <div class="sc-icon">🏢</div>
+            <div class="sc-val" id="stat-agencias">—</div>
+            <div class="sc-label">Agencias activas</div>
+            <div class="sc-trend neutral">Con acceso al portal</div>
           </div>
           <div class="stat-card cyan">
-            <div class="sc-icon">🛏</div>
-            <div class="sc-val" id="stat-cabinas">29</div>
-            <div class="sc-label">Tipos de cabina</div>
-            <div class="sc-trend neutral">Norwegian Jade</div>
+            <div class="sc-icon">📄</div>
+            <div class="sc-val" id="stat-presupuestos">—</div>
+            <div class="sc-label">Presupuestos totales</div>
+            <div class="sc-trend neutral">Histórico</div>
           </div>
         </div>
 
@@ -455,6 +455,25 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
         </div>
         <div class="info-box amber">
           ⚠️ <span>Para agregar nuevas navieras se requiere habilitar el operador en Widgety y agregar el slug a la lista blanca del backend.</span>
+        </div>
+      </div>
+
+      <!-- ══ CRUCEROS OFFLINE ══ -->
+      <div class="panel" id="panel-offline">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Cruceros offline</div>
+            <div class="card-actions">
+              <button class="tb-btn" onclick="loadOfflineCruises()">🔄 Recargar</button>
+              <button class="tb-btn primary" onclick="openOfflineModal()">+ Nuevo crucero</button>
+            </div>
+          </div>
+          <div class="info-box">
+            ℹ️ <span>Los cruceros offline son bloques o charters propios de Geist. Aparecen mezclados con los de Widgety en el buscador de las agencias.</span>
+          </div>
+          <div id="offlineTable">
+            <div class="loading-row"><div class="spinner"></div> Cargando...</div>
+          </div>
         </div>
       </div>
 
@@ -745,65 +764,88 @@ function goTo(panel, el) {
   if (panel === 'cabinas')  loadCabinShipSelector();
   if (panel === 'destinos') loadDestinos();
   if (panel === 'agencias') loadAgencias();
+  if (panel === 'offline')  loadOfflineCruises();
 }
 
 // ════════════════════════════════════
 // DASHBOARD
 // ════════════════════════════════════
 async function initDashboard() {
-  // Load some stats
   try {
-    const cruises = await api('/cruises?per_page=50&page=1');
-    if (cruises?.success) {
-      const regiones = new Set();
-      (cruises.data?.cruises || []).forEach(c => (c.regions||[]).forEach(r => regiones.add(r)));
-      document.getElementById('stat-destinos').textContent = regiones.size;
-      document.getElementById('stat-barcos').textContent   = '—';
-    }
-  } catch(e){}
+    const res = await api('/admin/dashboard');
+    if (!res?.success) return;
+    const d = res.data;
 
-  // Activity log (static for now — would come from DB)
-  const activities = [
-    { time: 'Hace 2 min', action: 'Caché de barcos limpiado', user: 'Admin', type: 'cache' },
-    { time: 'Hace 15 min', action: 'Búsqueda: Mediterranean · 15 resultados', user: 'Sistema', type: 'search' },
-    { time: 'Hace 1 h', action: 'Login exitoso: demo@agencia.com', user: 'Sistema', type: 'auth' },
-    { time: 'Hace 3 h', action: 'Crucero cotizado: NCLJAD-20270628', user: 'Agencia Demo', type: 'quote' },
-  ];
-  const icons = { cache:'🗑️', search:'🔍', auth:'🔐', quote:'📄' };
-  document.getElementById('activityList').innerHTML = `<table class="data-table">
-    <thead><tr><th>Hora</th><th>Acción</th><th>Usuario</th></tr></thead>
-    <tbody>${activities.map(a => `
-      <tr>
-        <td style="color:var(--muted);font-size:12px;white-space:nowrap;">${a.time}</td>
-        <td>${icons[a.type]} ${a.action}</td>
-        <td><span class="badge muted">${a.user}</span></td>
-      </tr>`).join('')}
-    </tbody>
-  </table>`;
+    // Stats
+    document.getElementById('stat-agencias')?.setAttributeNS && null;
+    const statAgencias = document.getElementById('stat-agencias');
+    if (statAgencias) statAgencias.textContent = d.agencies ?? '—';
+    document.getElementById('stat-presupuestos') && (document.getElementById('stat-presupuestos').textContent = d.budgets ?? '—');
+    document.getElementById('stat-offline') && (document.getElementById('stat-offline').textContent = d.offline_cruises ?? '—');
+
+    // Actividad real desde audit_log
+    const ACTION_ICONS = {
+      'login':                  '🔐',
+      'auth.login_failed':      '⚠️',
+      'budget.create':          '📄',
+      'ship.override':          '🚢',
+      'offline_cruise.create':  '⚓',
+      'offline_cruise.status_update': '🔄',
+      'agency.create':          '🏢',
+      'agency.activate':        '✅',
+      'agency.suspend':         '⛔',
+    };
+
+    const activities = d.recent_activity || [];
+    document.getElementById('activityList').innerHTML = activities.length
+      ? `<table class="data-table">
+          <thead><tr><th>Hora</th><th>Acción</th><th>Usuario</th></tr></thead>
+          <tbody>${activities.map(a => {
+            const icon = ACTION_ICONS[a.action] || '📋';
+            const user = a.user_name || a.agency_name || 'Sistema';
+            const when = a.created_at ? new Date(a.created_at).toLocaleString('es-AR', {dateStyle:'short', timeStyle:'short'}) : '—';
+            return `<tr>
+              <td style="color:var(--muted);font-size:12px;white-space:nowrap;">${when}</td>
+              <td>${icon} ${a.action}</td>
+              <td><span class="badge muted">${user}</span></td>
+            </tr>`;
+          }).join('')}
+          </tbody>
+        </table>`
+      : '<div class="empty-state"><div class="ei">📋</div><p>Sin actividad registrada todavía.</p></div>';
+  } catch(e) {
+    console.error('Dashboard error:', e);
+  }
 }
 
 // ════════════════════════════════════
 // BARCOS
 // ════════════════════════════════════
 
-// Known ships (extend as more get loaded)
-const KNOWN_SHIPS = [
-  { slug: 'norwegian-jade-ship',    operator: 'Norwegian Cruise Line' },
-  { slug: 'norwegian-pearl-ship',   operator: 'Norwegian Cruise Line' },
-  { slug: 'norwegian-getaway-ship', operator: 'Norwegian Cruise Line' },
-  { slug: 'wonder-of-the-seas-ship',operator: 'Royal Caribbean International' },
-  { slug: 'symphony-of-the-seas-ship', operator: 'Royal Caribbean International' },
-];
-
 let _shipsLoaded = {};
+let _allShips    = [];   // cache local de todos los barcos cargados
 
 async function loadShips() {
   document.getElementById('shipsTable').innerHTML = '<div class="loading-row"><div class="spinner"></div> Cargando barcos desde Widgety...</div>';
 
   const results = [];
-  await Promise.all(KNOWN_SHIPS.map(async s => {
+  // Cargar barcos desde Widgety
+  let ships = [];
+  try {
+    const res = await api('/ships');
+    ships = (res?.data?.ships || res?.data || []).slice(0, 30);
+  } catch(e) {}
+
+  if (!ships.length) {
+    document.getElementById('shipsTable').innerHTML =
+      '<div class="empty-state"><div class="ei">🚢</div><p>No se encontraron barcos. Verificá la conexión con Widgety.</p></div>';
+    return;
+  }
+
+  await Promise.all(ships.map(async s => {
+    const slug = s.slug || s.ship_ref || s.ref;
     try {
-      const d = await api(`/ships/${s.slug}`);
+      const d = await api(`/ships/${slug}`);
       if (d?.success) {
         results.push({ ...d.data, slug: s.slug, operator: s.operator });
         _shipsLoaded[s.slug] = d.data;
@@ -1120,31 +1162,60 @@ function saveDestino() {
 // ════════════════════════════════════
 async function loadAgencias() {
   document.getElementById('agenciasTable').innerHTML = '<div class="loading-row"><div class="spinner"></div></div>';
-  // Static demo data (would come from GET /api/admin/agencies)
-  const agencies = [
-    { name: 'Agencia Demo', email: 'demo@agencia.com', cuit: '20-12345678-9', status: 'active', lastLogin: 'Hoy 14:32' },
-  ];
-  document.getElementById('agenciasTable').innerHTML = agencies.length ? `
-    <table class="data-table">
-      <thead><tr><th>Nombre</th><th>Email</th><th>CUIT</th><th>Último acceso</th><th>Estado</th><th>Acciones</th></tr></thead>
-      <tbody>
-        ${agencies.map(a => `
-          <tr>
-            <td class="td-main">${a.name}</td>
-            <td class="td-mono">${a.email}</td>
-            <td class="td-mono">${a.cuit||'—'}</td>
-            <td style="font-size:12px;color:var(--muted);">${a.lastLogin}</td>
-            <td><span class="badge ${a.status==='active'?'green':'red'}">${a.status==='active'?'✓ Activa':'Inactiva'}</span></td>
-            <td>
-              <div class="row-actions">
-                <button class="ra-btn" onclick="showToast('Reset de contraseña enviado','success')">🔑 Reset pass</button>
-                <button class="ra-btn danger" onclick="showToast('Acceso suspendido temporalmente')">⛔ Suspender</button>
-              </div>
-            </td>
-          </tr>`).join('')}
-      </tbody>
-    </table>` :
-    '<div class="empty-state"><div class="ei">🏢</div><p>No hay agencias registradas.</p></div>';
+  try {
+    const res = await api('/admin/agencies');
+    const agencies = res?.data || [];
+    document.getElementById('agenciasTable').innerHTML = agencies.length ? `
+      <table class="data-table">
+        <thead><tr><th>Agencia</th><th>Email</th><th>Presupuestos</th><th>Último acceso</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <tbody>
+          ${agencies.map(a => {
+            const lastLogin = a.last_login_at
+              ? new Date(a.last_login_at).toLocaleString('es-AR', {dateStyle:'short', timeStyle:'short'})
+              : 'Nunca';
+            const isActive  = a.active !== false;
+            return `<tr>
+              <td><div class="td-main">${a.name}</div>${a.legajo ? `<div style="font-size:11px;color:var(--muted);">Leg. ${a.legajo}</div>` : ''}</td>
+              <td class="td-mono">${a.email}</td>
+              <td><span class="badge blue">${a.budget_count || 0} presupuestos</span></td>
+              <td style="font-size:12px;color:var(--muted);">${lastLogin}</td>
+              <td><span class="badge ${isActive?'green':'red'}">${isActive?'✓ Activa':'Suspendida'}</span></td>
+              <td>
+                <div class="row-actions">
+                  ${isActive
+                    ? `<button class="ra-btn danger" onclick="toggleAgencia(${a.id}, false, '${a.name}')">⛔ Suspender</button>`
+                    : `<button class="ra-btn" onclick="toggleAgencia(${a.id}, true, '${a.name}')">✅ Activar</button>`
+                  }
+                </div>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>` :
+      '<div class="empty-state"><div class="ei">🏢</div><p>No hay agencias registradas.</p></div>';
+  } catch(e) {
+    document.getElementById('agenciasTable').innerHTML =
+      '<div class="empty-state"><div class="ei">⚠️</div><p>Error cargando agencias.</p></div>';
+  }
+}
+
+async function toggleAgencia(id, active, name) {
+  const accion = active ? 'activar' : 'suspender';
+  if (!confirm(`¿Querés ${accion} la agencia "${name}"?`)) return;
+  try {
+    const res = await api(`/admin/agencies/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ active }),
+    });
+    if (res?.success) {
+      showToast(`${active ? '✅ Agencia activada' : '⛔ Agencia suspendida'}: ${name}`, active ? 'success' : 'error');
+      loadAgencias();
+    } else {
+      showToast(res?.error || 'Error al actualizar agencia', 'error');
+    }
+  } catch(e) {
+    showToast('Error de conexión', 'error');
+  }
 }
 
 function openAddAgenciaModal() {
@@ -1236,6 +1307,94 @@ function showToast(msg, type = '') {
   clearTimeout(_tt);
   _tt = setTimeout(() => t.classList.remove('show'), 3500);
 }
+
+// ════════════════════════════════════
+// CRUCEROS OFFLINE
+// ════════════════════════════════════
+
+const STATUS_LABELS = {
+  active:    { label: '✓ Activo',    cls: 'green' },
+  draft:     { label: '✎ Borrador',  cls: 'muted' },
+  sold_out:  { label: '⚠ Agotado',  cls: 'amber' },
+  cancelled: { label: '✕ Cancelado', cls: 'red'   },
+};
+
+async function loadOfflineCruises() {
+  document.getElementById('offlineTable').innerHTML =
+    '<div class="loading-row"><div class="spinner"></div> Cargando cruceros offline...</div>';
+  try {
+    const res = await api('/admin/offline-cruises');
+    const cruises = res?.data || [];
+    if (!cruises.length) {
+      document.getElementById('offlineTable').innerHTML =
+        '<div class="empty-state"><div class="ei">⚓</div><p>No hay cruceros offline cargados todavía.</p><p style="font-size:12px;color:var(--muted);">Usá el botón "+ Nuevo crucero" para agregar el primero.</p></div>';
+      return;
+    }
+    document.getElementById('offlineTable').innerHTML = `
+      <table class="data-table">
+        <thead><tr>
+          <th>Crucero</th><th>Barco / Naviera</th><th>Salida</th>
+          <th>Noches</th><th>Tipo</th><th>Estado</th><th>Acciones</th>
+        </tr></thead>
+        <tbody>
+          ${cruises.map(c => {
+            const st = STATUS_LABELS[c.status] || { label: c.status, cls: 'muted' };
+            const fecha = c.departure_date
+              ? new Date(c.departure_date).toLocaleDateString('es-AR', {day:'2-digit',month:'short',year:'numeric'})
+              : '—';
+            return `<tr>
+              <td>
+                <div class="td-main">${c.cruise_name}</div>
+                <div style="font-size:11px;color:var(--muted);">${c.departure_port} → ${c.arrival_port}</div>
+              </td>
+              <td>
+                <div class="td-main">${c.ship_name || '—'}</div>
+                <div style="font-size:11px;color:var(--muted);">${c.operator_name || ''}</div>
+              </td>
+              <td style="font-size:13px;">${fecha}</td>
+              <td style="text-align:center;">${c.nights}</td>
+              <td><span class="badge muted">${c.source_type || 'MANUAL'}</span></td>
+              <td><span class="badge ${st.cls}">${st.label}</span></td>
+              <td>
+                <div class="row-actions">
+                  <select class="ra-btn" style="padding:4px 6px;" onchange="changeOfflineStatus(${c.id}, this.value, this)">
+                    ${Object.entries(STATUS_LABELS).map(([v,l]) =>
+                      `<option value="${v}" ${c.status===v?'selected':''}>${l.label}</option>`
+                    ).join('')}
+                  </select>
+                </div>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+  } catch(e) {
+    document.getElementById('offlineTable').innerHTML =
+      '<div class="empty-state"><div class="ei">⚠️</div><p>Error cargando cruceros offline.</p></div>';
+  }
+}
+
+async function changeOfflineStatus(id, status, selectEl) {
+  try {
+    const res = await api(`/admin/offline-cruises/${id}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    });
+    if (res?.success) {
+      showToast(`Estado actualizado: ${STATUS_LABELS[status]?.label || status}`, 'success');
+      loadOfflineCruises();
+    } else {
+      showToast(res?.error || 'Error al actualizar', 'error');
+    }
+  } catch(e) {
+    showToast('Error de conexión', 'error');
+  }
+}
+
+function openOfflineModal() {
+  showToast('Para crear cruceros offline usá la API directamente o el panel cuando esté completo.', 'info');
+}
+
 </script>
 </body>
 </html>
