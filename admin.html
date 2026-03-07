@@ -826,39 +826,55 @@ let _shipsLoaded = {};
 let _allShips    = [];   // cache local de todos los barcos cargados
 
 async function loadShips() {
-  document.getElementById('shipsTable').innerHTML = '<div class="loading-row"><div class="spinner"></div> Cargando barcos desde Widgety...</div>';
+  document.getElementById('shipsTable').innerHTML =
+    '<div class="loading-row"><div class="spinner"></div> Cargando barcos desde Widgety...</div>';
 
-  const results = [];
-  // Cargar barcos desde Widgety
-  let ships = [];
+  // Extraer barcos únicos desde los cruceros (ya están en cache)
+  // Es más completo que /api/ships que devuelve solo la primera página
+  let slugsVistos = new Set();
+  let slugList = [];
+
   try {
-    const res = await api('/ships');
-    ships = (res?.data?.ships || res?.data || []).slice(0, 30);
+    const res = await api('/cruises?per_page=100&page=1');
+    const cruises = res?.data?.cruises || [];
+    for (const c of cruises) {
+      const slug = c.ship_url;
+      if (slug && !slugsVistos.has(slug)) {
+        slugsVistos.add(slug);
+        slugList.push({ slug, operator: c.operator_title || '' });
+      }
+    }
   } catch(e) {}
 
-  if (!ships.length) {
+  if (!slugList.length) {
     document.getElementById('shipsTable').innerHTML =
       '<div class="empty-state"><div class="ei">🚢</div><p>No se encontraron barcos. Verificá la conexión con Widgety.</p></div>';
     return;
   }
 
-  await Promise.all(ships.map(async s => {
-    const slug = s.slug || s.ship_ref || s.ref;
-    try {
-      const d = await api(`/ships/${slug}`);
-      if (d?.success) {
-        results.push({ ...d.data, slug: s.slug, operator: s.operator });
-        _shipsLoaded[s.slug] = d.data;
-      } else {
-        results.push({ slug: s.slug, operator: s.operator, name: s.slug.replace(/-ship$/,'').replace(/-/g,' '), _error: true });
+  const results = [];
+
+  // Cargar detalles en batches de 5 para no saturar
+  for (let i = 0; i < slugList.length; i += 5) {
+    const batch = slugList.slice(i, i + 5);
+    await Promise.all(batch.map(async s => {
+      try {
+        const d = await api(`/ships/${s.slug}`);
+        if (d?.success) {
+          results.push({ ...d.data, slug: s.slug, operator: d.data.operator_title || s.operator });
+          _shipsLoaded[s.slug] = { ...d.data, slug: s.slug };
+        } else {
+          results.push({ slug: s.slug, operator: s.operator,
+            name: s.slug.replace(/-ship$/,'').replace(/-/g,' '), _error: true });
+        }
+      } catch(e) {
+        results.push({ slug: s.slug, operator: s.operator, name: s.slug, _error: true });
       }
-    } catch(e) {
-      results.push({ slug: s.slug, operator: s.operator, name: s.slug, _error: true });
-    }
-  }));
+    }));
+  }
 
   _shipsData = results;
-  document.getElementById('badge-barcos').textContent = results.filter(r=>!r._error).length;
+  document.getElementById('badge-barcos').textContent = results.filter(r => !r._error).length;
   renderShipsTable(results);
 }
 
