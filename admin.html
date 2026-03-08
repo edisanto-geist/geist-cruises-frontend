@@ -349,7 +349,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
             <div class="card-title">⚡ Acciones rápidas</div>
           </div>
           <div style="padding:16px 20px;display:flex;flex-wrap:wrap;gap:10px;">
-            <button class="tb-btn" onclick="goTo('barcos',document.querySelector('.sb-item:nth-child(3))'))">🚢 Ver maestro de barcos</button>
+            <button class="tb-btn" onclick="goTo('barcos', document.querySelector('.sb-item[onclick*=barcos]'))">🚢 Ver maestro de barcos</button>
             <button class="tb-btn" onclick="clearCache('ship')">🗑️ Limpiar caché de barcos</button>
             <button class="tb-btn" onclick="clearCache('cruise')">🗑️ Limpiar caché de cruceros</button>
             <button class="tb-btn primary" onclick="goTo('cache',document.querySelectorAll('.sb-item')[6])">🗄️ Gestionar caché</button>
@@ -777,9 +777,12 @@ async function initDashboard() {
     const d = res.data;
 
     // Stats
-    document.getElementById('stat-agencias')?.setAttributeNS && null;
     const statAgencias = document.getElementById('stat-agencias');
     if (statAgencias) statAgencias.textContent = d.agencies ?? '—';
+    const statBarcos = document.getElementById('stat-barcos');
+    if (statBarcos) statBarcos.textContent = d.ships ?? d.total_ships ?? '—';
+    const statDestinos = document.getElementById('stat-destinos');
+    if (statDestinos) statDestinos.textContent = d.destinations ?? d.total_destinations ?? '—';
     document.getElementById('stat-presupuestos') && (document.getElementById('stat-presupuestos').textContent = d.budgets ?? '—');
     document.getElementById('stat-offline') && (document.getElementById('stat-offline').textContent = d.offline_cruises ?? '—');
 
