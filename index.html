@@ -1362,6 +1362,15 @@
   }
 
   function showApp() {
+    try {
+      const payload = JSON.parse(atob(TOKEN.split('.')[1]));
+      const name = payload.name || payload.email || '';
+      if (name) {
+        const initials = name.split(/[\s@]/).map(w => w[0]).join('').substring(0, 2).toUpperCase();
+        document.querySelector('.n-av').textContent = initials;
+        document.querySelector('.n-uname').textContent = name.split('@')[0] + ' ▾';
+      }
+    } catch(e) {}
     document.getElementById('loginScreen').classList.add('hidden');
   }
 
@@ -1611,6 +1620,15 @@
 
     } catch(e) {
       console.log('Filtros: usando datos por defecto', e);
+      // Si falló la carga de puertos, agregar un item indicativo en el dropdown
+      const puertoList = document.getElementById('drop-puerto-list');
+      if (puertoList && puertoList.children.length <= 1) {
+        const el = document.createElement('div');
+        el.className = 'drop-item';
+        el.style.cssText = 'color:var(--muted);font-style:italic;cursor:default;';
+        el.textContent = 'No se pudieron cargar los puertos';
+        puertoList.appendChild(el);
+      }
     }
   }
 
