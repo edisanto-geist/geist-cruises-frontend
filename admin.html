@@ -665,8 +665,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function isAdmin() {
   try {
     const p = JSON.parse(atob(TOKEN.split('.')[1]));
-    // Accept if role is admin OR if it's the demo admin account (for development)
-    return p.role === 'admin' || p.email === 'admin@geist.com' || p.email === 'demo@agencia.com';
+    return p.role === 'admin';
   } catch(e) { return false; }
 }
 
