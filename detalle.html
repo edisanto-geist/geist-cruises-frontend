@@ -897,10 +897,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
 
     // ── ESPECIFICACIONES (datos reales de Widgety) ──
     const maxOcup = accom?.max_occupancy || (typeKey === 'Suite' ? 4 : 2);
+    const statsText = accom?.stats ? accom.stats.replace(/<[^>]+>/g,' ') : '';
     const deckTxt = (() => {
-      if (!accom?.stats) return '—';
-      const statsText = accom.stats.replace(/<[^>]+>/g,' ');
-    const m = statsText.match(/Deck[^:]*:[\s]*([^<]+)/i);
+      const m = statsText.match(/Deck[^:]*:[\s]*([^<]+)/i);
       return m ? m[1].trim() : '—';
     })();
     const sizeFt = accom ? (accom.min_size === accom.max_size
@@ -913,7 +912,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       return minM === maxM ? minM + ' m²' : minM + '–' + maxM + ' m²';
     })() : '—';
     const locTxt = (() => {
-      if (!accom?.stats) return '—';
       const m2 = statsText.match(/Location:[\s]*([^<]+)/i);
       return m2 ? m2[1].trim() : '—';
     })();
