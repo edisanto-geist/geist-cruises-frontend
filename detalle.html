@@ -461,7 +461,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
   </div>
 </div>
 
-<div class="toast" id="toast"><span id="toastMsg">—</span></div>
+<div class="toast" id="toast"></div>
 
 <div class="ov" id="ov" onclick="if(event.target.id==='ov')closeModal()">
   <div class="modal">
@@ -644,6 +644,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
         document.getElementById('shipDecks').textContent = ship.decks || '—';
         document.getElementById('shipTonnage').textContent = ship.tonnage ? ship.tonnage.toLocaleString('es-AR')+' GT' : '—';
         document.getElementById('shipDesc').textContent = ship.description || '';
+      }
+      // Mostrar mini-card del barco en sidebar
+      const bannerCard = document.getElementById('shipBannerCard');
+      if (bannerCard) {
+        if (ship?.image) {
+          bannerCard.innerHTML = `
+            <div style="display:flex;align-items:center;gap:10px;">
+              <img src="${ship.image}" alt="${ship.name||barco}"
+                style="width:52px;height:36px;object-fit:cover;border-radius:6px;border:1px solid var(--border);flex-shrink:0;"
+                onerror="this.style.display='none'">
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--text);">${ship.name||barco}</div>
+                <div style="font-size:11px;color:var(--muted);">${ship.ship_class||naviera}</div>
+              </div>
+            </div>`;
+        } else {
+          bannerCard.style.display = 'none';
+        }
       }
     }
 
@@ -1086,17 +1104,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
 
   function sendBudgets() {
     const e = document.getElementById('emailIn').value;
-    if (!e) { alert('Ingresá un email'); return; }
-    if (!S.budgets.length) { alert('No hay presupuestos'); return; }
+    if (!e) { showToast('Ingresá un email válido'); return; }
+    if (!S.budgets.length) { showToast('No hay cruceros en el presupuesto'); return; }
     showToast(`✉️ Enviado a ${e}`); closeModal();
   }
 
   let tt;
-  function showToast(msg) {
+  function showToast(msg, type = '') {
     const t = document.getElementById('toast');
-    document.getElementById('toastMsg').textContent = msg;
-    t.classList.add('show'); clearTimeout(tt);
-    tt = setTimeout(()=>t.classList.remove('show'), 3000);
+    t.textContent = msg;
+    t.className = `toast show${type ? ' ' + type : ''}`;
+    clearTimeout(tt);
+    tt = setTimeout(() => t.classList.remove('show'), 3000);
   }
 </script>
 </body>
