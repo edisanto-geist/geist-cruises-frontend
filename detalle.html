@@ -855,6 +855,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
   }
 
   function openCabinModal(price, total, name, code, typeLabel, availability, taxes, typeKey, triplePrice, onboardCredit) {
+    document.getElementById('cabin-modal-ov').classList.add('open');
+    document.getElementById('cabinModal').scrollTop = 0;
     _cmData = { price, total, name, code, typeLabel, availability, taxes, typeKey };
 
     // Buscar datos reales de accommodation por grade_code
@@ -982,8 +984,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       ? '📋 Consultar disponibilidad'
       : '✓ Seleccionar esta cabina';
 
-    document.getElementById('cabin-modal-ov').classList.add('open');
-    document.getElementById('cabinModal').scrollTop = 0;
   }
 
   function cmNextImg() {

@@ -767,8 +767,8 @@
   </a>
   <div class="n-links">
     <a href="#" class="on">🚢 Cruceros</a>
-    <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente">Mis reservas</a>
-    <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente">Mis presupuestos</a>
+    <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente">Mis reservas <span style="font-size:9px;font-weight:700;background:rgba(255,255,255,0.12);border-radius:3px;padding:1px 5px;letter-spacing:0.06em;vertical-align:middle;">PRONTO</span></a>
+    <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente">Mis presupuestos <span style="font-size:9px;font-weight:700;background:rgba(255,255,255,0.12);border-radius:3px;padding:1px 5px;letter-spacing:0.06em;vertical-align:middle;">PRONTO</span></a>
   </div>
   <div class="n-user-wrap">
     <div class="n-user" onclick="toggleUserMenu()">
@@ -1528,6 +1528,13 @@
       el.querySelector('.cb-sq').textContent = '✓';
     }
     searchCruises();
+    // Sincronizar chip visual en el hero (si existe)
+    document.querySelectorAll('.sa-chip').forEach(c => c.classList.remove('active'));
+    if (searchState.cabina) {
+      document.querySelectorAll('.sa-chip').forEach(c => {
+        if (c.textContent.toLowerCase().includes(searchState.cabina)) c.classList.add('active');
+      });
+    }
   }
 
   // ─────────────────────────────────────────
