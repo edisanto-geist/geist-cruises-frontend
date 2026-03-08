@@ -939,20 +939,9 @@
       <div class="fc-head" onclick="toggleFc(this)">Naviera <span class="ic">▾</span></div>
       <div class="fc-body">
         <div id="sidebar-navieras">
-          <!-- se llena dinámicamente desde el backend -->
           <div class="cb on" onclick="sidebarNaviera('','Todas',this)">
             <div class="cb-sq on">✓</div>
             <span class="cb-lbl">Todas las navieras</span>
-          </div>
-          <div class="cb" onclick="sidebarNaviera('norwegian-cruise-line','Norwegian Cruise Line',this)">
-            <div class="cb-sq"></div>
-            <span class="cb-lbl">Norwegian Cruise Line</span>
-            <span class="cb-val">NCL</span>
-          </div>
-          <div class="cb" onclick="sidebarNaviera('royal-caribbean-international','Royal Caribbean',this)">
-            <div class="cb-sq"></div>
-            <span class="cb-lbl">Royal Caribbean</span>
-            <span class="cb-val">RCI</span>
           </div>
         </div>
       </div>
@@ -1609,6 +1598,26 @@
         });
       }
 
+      // Poblar navieras en sidebar desde los cruceros
+      if (cruisesData?.success) {
+        const navierasMap = {};
+        (cruisesData.data?.cruises || []).forEach(c => {
+          const slug  = c.operator_url || c.operator || '';
+          const label = c.operator_title || c.operator_name || slug;
+          if (slug && label && !navierasMap[slug]) navierasMap[slug] = label;
+        });
+        const sbNav = document.getElementById('sidebar-navieras');
+        if (sbNav) {
+          Object.entries(navierasMap).forEach(([slug, label]) => {
+            const el = document.createElement('div');
+            el.className = 'cb';
+            el.onclick = function() { sidebarNaviera(slug, label, this); };
+            el.innerHTML = `<div class="cb-sq"></div><span class="cb-lbl">${label}</span>`;
+            sbNav.appendChild(el);
+          });
+        }
+      }
+
     } catch(e) {
       console.log('Filtros: usando datos por defecto', e);
     }
@@ -2077,7 +2086,7 @@
   function confirmPaxAndCotizar() {
     const adults   = parseInt(document.getElementById('pm-adults').textContent);
     const children = parseInt(document.getElementById('pm-children').textContent);
-    const base = window.location.href.replace('index.html','').replace(/\/$/, '');
+    const base = window.location.origin + window.location.pathname.replace(/index\.html$/, '').replace(/\/$/, '');
     window.location.href = `${base}/detalle.html?ref=${encodeURIComponent(_cotizarRef)}&adults=${adults}&children=${children}`;
   }
 

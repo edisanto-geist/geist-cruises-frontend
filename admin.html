@@ -989,7 +989,7 @@ async function saveShip() {
 function viewShipCabins(slug) {
   // Navigate to cabinas panel filtered by this ship
   _currentShipSlug = slug;
-  goTo('cabinas', document.querySelectorAll('.sb-item')[3]);
+  goTo('cabinas', document.querySelector('.sb-item[onclick*="cabinas"]'));
   setTimeout(() => selectShipForCabins(slug), 300);
 }
 
