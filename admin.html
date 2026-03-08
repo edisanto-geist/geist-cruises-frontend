@@ -276,6 +276,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
       <div class="sb-item" onclick="goTo('cabinas',this)"><span class="si">🛏</span> Cabinas</div>
       <div class="sb-item" onclick="goTo('destinos',this)"><span class="si">🌍</span> Destinos</div>
       <div class="sb-item" onclick="goTo('navieras',this)"><span class="si">⚓</span> Navieras</div>
+      <div class="sb-item" onclick="goTo('offline',this)"><span class="si">⚓</span> Cruceros Offline</div>
 
       <div class="sb-section">Sistema</div>
       <div class="sb-item" onclick="goTo('agencias',this)"><span class="si">🏢</span> Agencias</div>
@@ -641,6 +642,57 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
   </div>
 </div>
 
+<!-- MODAL CRUCERO OFFLINE -->
+<div class="ov" id="ov-offline" onclick="if(event.target.id==='ov-offline')closeOfflineModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-ht">Nuevo crucero offline</div>
+      <button class="modal-x" onclick="closeOfflineModal()">✕</button>
+    </div>
+    <div class="modal-bd">
+      <div class="form-row">
+        <label>Nombre del crucero</label>
+        <input type="text" id="offCruiseName" placeholder="Ej: Mediterráneo — Bloque Geist Mayo 2026">
+      </div>
+      <div class="form-row">
+        <label>Barco</label>
+        <input type="text" id="offShipName" placeholder="Ej: Norwegian Jade">
+      </div>
+      <div class="form-row">
+        <label>Naviera / Operador</label>
+        <input type="text" id="offOperator" placeholder="Ej: Norwegian Cruise Line">
+      </div>
+      <div class="form-row">
+        <label>Puerto de salida</label>
+        <input type="text" id="offDeparturePort" placeholder="Ej: Barcelona">
+      </div>
+      <div class="form-row">
+        <label>Puerto de llegada</label>
+        <input type="text" id="offArrivalPort" placeholder="Ej: Roma (Civitavecchia)">
+      </div>
+      <div class="form-row">
+        <label>Fecha de salida</label>
+        <input type="date" id="offDepartureDate">
+      </div>
+      <div class="form-row">
+        <label>Noches</label>
+        <input type="number" id="offNights" placeholder="Ej: 7" min="1" max="60">
+      </div>
+      <div class="form-row">
+        <label>Estado inicial</label>
+        <select id="offStatus">
+          <option value="draft">Borrador</option>
+          <option value="active">Activo</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeOfflineModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveOfflineCruise()">✅ Crear crucero</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = 'https://geist-cruises-backend-production.up.railway.app/api';
 let TOKEN = localStorage.getItem('geist_token') || null;
@@ -978,14 +1030,42 @@ function previewImg(inputId, previewId) {
 }
 
 async function saveShip() {
-  const slug = document.getElementById('editShipSlug').value;
-  const img  = document.getElementById('editShipImg').value;
-  const desc = document.getElementById('editShipDesc').value;
-  // POST to override endpoint (needs backend implementation)
-  // For now, show success and note it's pending
-  showToast('✅ Override guardado localmente (pendiente sync con backend)', 'success');
-  closeShipModal();
-  addCacheLog(`Override guardado para: ${slug}`);
+  const slug     = document.getElementById('editShipSlug').value;
+  const img      = document.getElementById('editShipImg').value.trim();
+  const desc     = document.getElementById('editShipDesc').value.trim();
+  const featured = document.getElementById('editShipFeatured').value;
+
+  const btn = document.querySelector('#ov-ship .btn-save');
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; }
+
+  try {
+    const body = {};
+    if (img)  body.image       = img;
+    if (desc) body.description = desc;
+    body.featured = parseInt(featured);
+
+    const res = await api(`/admin/ships/${encodeURIComponent(slug)}/override`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    });
+
+    if (res?.success) {
+      showToast(`✅ Cambios guardados para ${slug}`, 'success');
+      // Actualizar cache local si existe
+      if (_shipsLoaded[slug]) {
+        if (img)  _shipsLoaded[slug].image       = img;
+        if (desc) _shipsLoaded[slug].description = desc;
+      }
+      addCacheLog(`Override guardado: ${slug}`);
+      closeShipModal();
+    } else {
+      showToast(res?.error || 'Error al guardar', 'error');
+    }
+  } catch(e) {
+    showToast('Error de conexión', 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Guardar cambios'; }
+  }
 }
 
 function viewShipCabins(slug) {
@@ -1410,7 +1490,67 @@ async function changeOfflineStatus(id, status, selectEl) {
 }
 
 function openOfflineModal() {
-  showToast('Para crear cruceros offline usá la API directamente o el panel cuando esté completo.', 'info');
+  document.getElementById('offCruiseName').value    = '';
+  document.getElementById('offShipName').value      = '';
+  document.getElementById('offOperator').value      = '';
+  document.getElementById('offDeparturePort').value = '';
+  document.getElementById('offArrivalPort').value   = '';
+  document.getElementById('offDepartureDate').value = '';
+  document.getElementById('offNights').value        = '';
+  document.getElementById('offStatus').value        = 'draft';
+  document.getElementById('ov-offline').classList.add('open');
+}
+
+function closeOfflineModal() {
+  document.getElementById('ov-offline').classList.remove('open');
+}
+
+async function saveOfflineCruise() {
+  const name      = document.getElementById('offCruiseName').value.trim();
+  const shipName  = document.getElementById('offShipName').value.trim();
+  const operator  = document.getElementById('offOperator').value.trim();
+  const depPort   = document.getElementById('offDeparturePort').value.trim();
+  const arrPort   = document.getElementById('offArrivalPort').value.trim();
+  const depDate   = document.getElementById('offDepartureDate').value;
+  const nights    = document.getElementById('offNights').value;
+  const status    = document.getElementById('offStatus').value;
+
+  if (!name || !depPort || !depDate || !nights) {
+    showToast('Completá los campos obligatorios: nombre, puerto de salida, fecha y noches', 'error');
+    return;
+  }
+
+  const btn = document.querySelector('#ov-offline .btn-save');
+  if (btn) { btn.disabled = true; btn.textContent = 'Creando...'; }
+
+  try {
+    const res = await api('/admin/offline-cruises', {
+      method: 'POST',
+      body: JSON.stringify({
+        cruise_name:    name,
+        ship_name:      shipName,
+        operator_name:  operator,
+        departure_port: depPort,
+        arrival_port:   arrPort,
+        departure_date: depDate,
+        nights:         parseInt(nights),
+        status,
+        source_type:    'MANUAL',
+      }),
+    });
+
+    if (res?.success) {
+      showToast(`✅ Crucero "${name}" creado`, 'success');
+      closeOfflineModal();
+      loadOfflineCruises();
+    } else {
+      showToast(res?.error || 'Error al crear el crucero', 'error');
+    }
+  } catch(e) {
+    showToast('Error de conexión', 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '✅ Crear crucero'; }
+  }
 }
 
 </script>
