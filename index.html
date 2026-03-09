@@ -134,12 +134,12 @@
   .hs-div { width: 1px; height: 28px; background: rgba(255,255,255,0.15); }
 
   /* ─────────── SEARCH PANEL ─────────── */
-  .search-panel { overflow: visible;
+  .search-panel {
+    overflow: visible;
     flex: 1;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
-    border-bottom: none;
-    border-radius: 16px 16px 0 0;
+    border-radius: 16px;
     padding: 20px 20px 22px;
     backdrop-filter: blur(10px);
   }
@@ -148,11 +148,12 @@
     background: #fff; border-radius: 12px;
     overflow: visible;
     box-shadow: 0 4px 24px rgba(0,0,0,0.2);
-    margin-bottom: 14px; height: 58px;
+    margin-bottom: 14px; min-height: 58px;
+    flex-wrap: wrap;
   }
   .sb-field {
     display: flex; align-items: center; gap: 10px;
-    padding: 0 18px; flex: 1;
+    padding: 0 14px; flex: 1 1 0;
     cursor: pointer; transition: background 0.15s;
     border-right: 1px solid var(--border);
     min-width: 0;
@@ -937,21 +938,6 @@
 
       </div>
 
-      <!-- Fila secundaria: filtros avanzados -->
-      <div class="search-advanced">
-        <span class="sa-label">Más filtros:</span>
-        <div class="sa-chip" onclick="toggleDrop('drop-naviera', event)">
-          <span class="sa-chip-icon">🚢</span> Naviera / Barco
-          <div class="sb-drop sb-drop-sm" id="drop-naviera" onclick="event.stopPropagation()">
-            <div class="drop-list" id="drop-naviera-list">
-              <div class="drop-item on" onclick="selectDrop('naviera','','Naviera / Barco',this)">Cualquier naviera</div>
-            </div>
-          </div>
-        </div>
-        <div class="sa-chip" id="chip-clear" style="display:none">
-          <button class="sa-clear" onclick="clearAllFilters()">Limpiar todo ✕</button>
-        </div>
-      </div>
 
       <!-- Active filter chips -->
       <div id="filter-chips-row" style="display:none; margin-top:10px; flex-wrap:wrap; gap:6px;"></div>
@@ -1009,7 +995,7 @@
     </div>
 
     <!-- LIMPIAR FILTROS -->
-    <button class="btn-limpiar-sidebar" onclick="clearAllFilters(); searchCruises()">
+    <button class="btn-limpiar-sidebar" onclick="clearAllFilters()">
       Limpiar todos los filtros
     </button>
 
@@ -1428,7 +1414,6 @@
     el.closest('.sb-drop')?.classList.remove('open');
     updateClearChip();
     renderFilterChips();
-    searchCruises(true);
     if (evt) evt.stopPropagation();
   }
 
@@ -1441,7 +1426,6 @@
     el.closest('.sb-drop')?.classList.remove('open');
     updateClearChip();
     renderFilterChips();
-    searchCruises(true);
   }
 
   function filterDrop(dropId, query) {
@@ -1501,7 +1485,7 @@
     }
     updateBarcoLabel();
     renderFilterChips();
-    searchCruises(true);
+    updateClearChip();
   }
 
   function updateBarcoLabel() {
@@ -1548,7 +1532,6 @@
     }
     updateClearChip();
     renderFilterChips();
-    searchCruises(true);
   }
 
   function formatDateShort(d) {
@@ -1603,8 +1586,7 @@
   }
 
   function updateClearChip() {
-    const hasFilter = searchState.destino || searchState.puerto || searchState.dateFrom || searchState.durMin || searchState.ships.length || searchState.naviera;
-    document.getElementById('chip-clear').style.display = hasFilter ? 'flex' : 'none';
+    // no-op: clear chip moved into filter-chips-row
   }
 
   function renderFilterChips() {
@@ -1612,24 +1594,24 @@
     if (!row) return;
     let html = '';
     if (searchState.destino) {
-      html += `<span class="filter-chip">${searchState.destino}<button class="filter-chip-x" onclick="searchState.destino='';document.getElementById('val-destino').textContent='Cualquier destino';renderFilterChips();updateClearChip();searchCruises(true);">×</button></span>`;
+      html += `<span class="filter-chip">${searchState.destino}<button class="filter-chip-x" onclick="searchState.destino='';document.getElementById('val-destino').textContent='Cualquier destino';renderFilterChips();updateClearChip();">×</button></span>`;
     }
     if (searchState.dateFrom) {
       const lbl = searchState.dateTo ? formatDateShort(searchState.dateFrom)+' → '+formatDateShort(searchState.dateTo) : 'Desde '+formatDateShort(searchState.dateFrom);
-      html += `<span class="filter-chip">${lbl}<button class="filter-chip-x" onclick="clearFechas();renderFilterChips();updateClearChip();searchCruises(true);">×</button></span>`;
+      html += `<span class="filter-chip">${lbl}<button class="filter-chip-x" onclick="clearFechas();renderFilterChips();updateClearChip();">×</button></span>`;
     }
     if (searchState.durMin) {
       const lbl = document.getElementById('val-duracion').textContent;
-      html += `<span class="filter-chip">${lbl}<button class="filter-chip-x" onclick="searchState.durMin='';searchState.durMax='';document.getElementById('val-duracion').textContent='Cualquier duración';renderFilterChips();updateClearChip();searchCruises(true);">×</button></span>`;
+      html += `<span class="filter-chip">${lbl}<button class="filter-chip-x" onclick="searchState.durMin='';searchState.durMax='';document.getElementById('val-duracion').textContent='Cualquier duración';renderFilterChips();updateClearChip();">×</button></span>`;
     }
     if (searchState.puerto) {
-      html += `<span class="filter-chip">${searchState.puerto}<button class="filter-chip-x" onclick="searchState.puerto='';document.getElementById('val-puerto').textContent='Cualquier puerto';renderFilterChips();updateClearChip();searchCruises(true);">×</button></span>`;
+      html += `<span class="filter-chip">${searchState.puerto}<button class="filter-chip-x" onclick="searchState.puerto='';document.getElementById('val-puerto').textContent='Cualquier puerto';renderFilterChips();updateClearChip();">×</button></span>`;
     }
     if (searchState.naviera) {
-      html += `<span class="filter-chip">${searchState.naviera}<button class="filter-chip-x" onclick="searchState.naviera='';renderFilterChips();updateClearChip();searchCruises(true);">×</button></span>`;
+      html += `<span class="filter-chip">${searchState.naviera}<button class="filter-chip-x" onclick="searchState.naviera='';renderFilterChips();updateClearChip();">×</button></span>`;
     }
     searchState.ships.forEach(ship => {
-      html += `<span class="filter-chip">${ship}<button class="filter-chip-x" onclick="searchState.ships=searchState.ships.filter(s=>s!=='${ship.replace(/'/g,"\\'")}');updateBarcoLabel();populateBarcoDropdown();renderFilterChips();updateClearChip();searchCruises(true);">×</button></span>`;
+      html += `<span class="filter-chip">${ship}<button class="filter-chip-x" onclick="searchState.ships=searchState.ships.filter(s=>s!=='${ship.replace(/'/g,"\\'")}');updateBarcoLabel();populateBarcoDropdown();renderFilterChips();updateClearChip();">×</button></span>`;
     });
     if (searchState.sidebarNavieras) {
       searchState.sidebarNavieras.forEach(nav => {
@@ -1640,6 +1622,9 @@
       searchState.sidebarPuertos.forEach(port => {
         html += `<span class="filter-chip">${port}<button class="filter-chip-x" onclick="searchState.sidebarPuertos=searchState.sidebarPuertos.filter(p=>p!=='${port.replace(/'/g,"\\'")}');populateSidebarFilters();renderFilterChips();renderCruises(_cruisesData,false);">×</button></span>`;
       });
+    }
+    if (html) {
+      html += `<span class="filter-chip" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);cursor:pointer;" onclick="clearAllFilters()">Limpiar todo <button class="filter-chip-x" style="margin-left:2px;">×</button></span>`;
     }
     row.innerHTML = html;
     row.style.display = html ? 'flex' : 'none';
@@ -1664,7 +1649,8 @@
     el.classList.add('on');
     el.querySelector('.cb-sq').classList.add('on');
     el.querySelector('.cb-sq').textContent = '✓';
-    searchCruises();
+    renderFilterChips();
+    updateClearChip();
   }
 
   function populateSidebarFilters() {
@@ -1744,7 +1730,8 @@
     el.classList.add('on');
     el.querySelector('.cb-sq').classList.add('on');
     el.querySelector('.cb-sq').textContent = '✓';
-    searchCruises();
+    renderFilterChips();
+    updateClearChip();
   }
 
   function sidebarCabina(tipo, el) {
@@ -1759,7 +1746,8 @@
       el.querySelector('.cb-sq').classList.add('on');
       el.querySelector('.cb-sq').textContent = '✓';
     }
-    searchCruises();
+    renderFilterChips();
+    updateClearChip();
     // Sincronizar chip visual en el hero (si existe)
     document.querySelectorAll('.sa-chip').forEach(c => c.classList.remove('active'));
     if (searchState.cabina) {
