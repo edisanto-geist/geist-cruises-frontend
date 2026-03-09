@@ -896,6 +896,25 @@
 
         <div class="sb-sep"></div>
 
+        <!-- PUERTO ESCALA -->
+        <div class="sb-field" onclick="toggleDrop('drop-escala', event)">
+          <div class="sb-icon">📍</div>
+          <div class="sb-content">
+            <div class="sb-label">Puerto Escala</div>
+            <div class="sb-value" id="val-escala">Cualquier escala</div>
+          </div>
+          <div class="sb-drop" id="drop-escala">
+            <div class="drop-search-wrap">
+              <input class="drop-search" id="drop-escala-search" placeholder="Buscar escala..." oninput="filterDrop('drop-escala',this.value)" onclick="event.stopPropagation()">
+            </div>
+            <div class="drop-list" id="drop-escala-list">
+              <div class="drop-item on" onclick="selectDrop('escala','','Cualquier escala',this)">Cualquier escala</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-sep"></div>
+
         <!-- DURACIÓN -->
         <div class="sb-field" onclick="toggleDrop('drop-duracion', event)">
           <div class="sb-icon">🌙</div>
@@ -1387,7 +1406,7 @@
   }
 
   // ─── ESTADO BÚSQUEDA ───
-  const searchState = { destino:'', puerto:'', naviera:'', dateFrom:'', dateTo:'', durMin:'', durMax:'', cabina:'', ships:[], sidebarNavieras:[], sidebarPuertos:[] };
+  const searchState = { destino:'', puerto:'', naviera:'', escala:'', dateFrom:'', dateTo:'', durMin:'', durMax:'', cabina:'', ships:[], sidebarNavieras:[], sidebarPuertos:[] };
   let _currentPage = 1;
   let _totalPages  = 1;
   let _allCruisesForFilters = [];
@@ -1554,12 +1573,13 @@
   }
 
   function clearAllFilters() {
-    searchState.destino=''; searchState.puerto=''; searchState.naviera='';
+    searchState.destino=''; searchState.puerto=''; searchState.naviera=''; searchState.escala='';
     searchState.dateFrom=''; searchState.dateTo=''; searchState.durMin=''; searchState.durMax='';
     searchState.cabina = ''; searchState.ships = []; searchState.sidebarNavieras = []; searchState.sidebarPuertos = [];
     document.getElementById('val-destino').textContent  = 'Cualquier destino';
     document.getElementById('val-fechas').textContent   = 'Cualquier fecha';
     document.getElementById('val-puerto').textContent   = 'Cualquier puerto';
+    document.getElementById('val-escala').textContent   = 'Cualquier escala';
     document.getElementById('val-duracion').textContent = 'Cualquier duración';
     clearFechas();
     document.querySelectorAll('.drop-item.on').forEach(i => i.classList.remove('on'));
@@ -1573,6 +1593,7 @@
     const firstSq = document.querySelector('#sidebar-navieras .cb .cb-sq');
     if (firstSq) { firstSq.classList.add('on'); firstSq.textContent='✓'; }
     document.querySelector('#drop-puerto-list .drop-item')?.classList.add('on');
+    document.querySelector('#drop-escala-list .drop-item')?.classList.add('on');
     rebuildFilterOptions();
     populateSidebarFilters();
     updateClearChip();
@@ -1600,6 +1621,9 @@
     }
     if (searchState.puerto) {
       html += `<span class="filter-chip">${searchState.puerto}<button class="filter-chip-x" onclick="searchState.puerto='';document.getElementById('val-puerto').textContent='Cualquier puerto';rebuildFilterOptions();renderFilterChips();updateClearChip();">×</button></span>`;
+    }
+    if (searchState.escala) {
+      html += `<span class="filter-chip">${searchState.escala}<button class="filter-chip-x" onclick="searchState.escala='';document.getElementById('val-escala').textContent='Cualquier escala';rebuildFilterOptions();renderFilterChips();updateClearChip();">×</button></span>`;
     }
     if (searchState.naviera) {
       html += `<span class="filter-chip">${searchState.naviera}<button class="filter-chip-x" onclick="searchState.naviera='';renderFilterChips();updateClearChip();">×</button></span>`;
@@ -1802,6 +1826,7 @@
     const currentDestino = searchState.destino;
     const currentPuerto = searchState.puerto;
     const currentShips = searchState.ships;
+    const currentEscala = searchState.escala;
 
     // --- Rebuild DESTINO dropdown ---
     const filteredForDestino = _allCruisesForFilters.filter(c => {
@@ -1812,6 +1837,10 @@
       if (currentShips.length) {
         const ship = c.ship_title || c.ship_name || '';
         if (!currentShips.includes(ship)) return false;
+      }
+      if (currentEscala) {
+        const ports = (c.itinerary_days || []).filter(d => d.port_name && !d.at_sea).map(d => d.port_name);
+        if (!ports.includes(currentEscala)) return false;
       }
       return true;
     });
@@ -1845,6 +1874,10 @@
       if (currentShips.length) {
         const ship = c.ship_title || c.ship_name || '';
         if (!currentShips.includes(ship)) return false;
+      }
+      if (currentEscala) {
+        const ports = (c.itinerary_days || []).filter(d => d.port_name && !d.at_sea).map(d => d.port_name);
+        if (!ports.includes(currentEscala)) return false;
       }
       return true;
     });
@@ -1882,6 +1915,10 @@
         const port = c.starts_at?.name || c.departure_port_name || '';
         if (port !== searchState.puerto) return false;
       }
+      if (currentEscala) {
+        const ports = (c.itinerary_days || []).filter(d => d.port_name && !d.at_sea).map(d => d.port_name);
+        if (!ports.includes(currentEscala)) return false;
+      }
       return true;
     });
     const barcoMap = {};
@@ -1917,6 +1954,47 @@
       });
     });
     updateBarcoLabel();
+
+    // --- Rebuild ESCALA dropdown ---
+    const filteredForEscala = _allCruisesForFilters.filter(c => {
+      if (searchState.destino) {
+        if (!(c.regions || []).includes(searchState.destino)) return false;
+      }
+      if (searchState.puerto) {
+        const port = c.starts_at?.name || c.departure_port_name || '';
+        if (port !== searchState.puerto) return false;
+      }
+      if (currentShips.length) {
+        const ship = c.ship_title || c.ship_name || '';
+        if (!currentShips.includes(ship)) return false;
+      }
+      return true;
+    });
+    const escalasSet = new Set();
+    filteredForEscala.forEach(c => {
+      (c.itinerary_days || []).forEach(d => {
+        if (d.port_name && !d.at_sea) escalasSet.add(d.port_name);
+      });
+    });
+    const escalaList = document.getElementById('drop-escala-list');
+    escalaList.innerHTML = '';
+    const escalaDefault = document.createElement('div');
+    escalaDefault.className = 'drop-item' + (!currentEscala ? ' on' : '');
+    escalaDefault.textContent = 'Cualquier escala';
+    escalaDefault.onclick = (e) => { selectDrop('escala', '', 'Cualquier escala', escalaDefault); e.stopPropagation(); };
+    escalaList.appendChild(escalaDefault);
+    [...escalasSet].sort((a, b) => a.localeCompare(b)).forEach(name => {
+      const el = document.createElement('div');
+      el.className = 'drop-item' + (currentEscala === name ? ' on' : '');
+      el.textContent = name;
+      el.onclick = (e) => { selectDrop('escala', name, name, el); e.stopPropagation(); };
+      escalaList.appendChild(el);
+    });
+    if (currentEscala && !escalasSet.has(currentEscala)) {
+      searchState.escala = '';
+      document.getElementById('val-escala').textContent = 'Cualquier escala';
+      escalaDefault.classList.add('on');
+    }
   }
 
   // ─────────────────────────────────────────
