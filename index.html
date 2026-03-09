@@ -1936,6 +1936,7 @@
   }
 
   function renderCruises(cruises, save = true) {
+    console.log('CRUISE SAMPLE:', JSON.stringify(cruises[0], null, 2));
     if (save) {
       _cruisesData = cruises;
       populateBarcoDropdown();
