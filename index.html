@@ -1976,6 +1976,7 @@
         if (d.port_name && !d.at_sea) escalasSet.add(d.port_name);
       });
     });
+    console.log('ESCALA DEBUG: filteredForEscala count:', filteredForEscala.length, 'escalasSet size:', escalasSet.size, 'sample cruise itinerary_days:', filteredForEscala[0]?.itinerary_days);
     const escalaList = document.getElementById('drop-escala-list');
     escalaList.innerHTML = '';
     const escalaDefault = document.createElement('div');
