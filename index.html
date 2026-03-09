@@ -1782,8 +1782,23 @@
     try {
       const cruisesData = await apiFetch('/cruises?per_page=200&page=1');
 
-      if (cruisesData?.success) {
+            if (cruisesData?.success) {
         _allCruisesForFilters = cruisesData.data?.cruises || [];
+
+        // Fetch itinerary_days for each cruise (list endpoint doesn't include them)
+        const detailPromises = _allCruisesForFilters.map(c => {
+          const ref = c.holiday_ref || c.ref;
+          if (!ref) return Promise.resolve(null);
+          return apiFetch(`/cruises/${ref}`).catch(() => null);
+        });
+        const details = await Promise.all(detailPromises);
+        details.forEach((detail, i) => {
+          if (detail?.success && detail.data?.itinerary_days) {
+            _allCruisesForFilters[i].itinerary_days = detail.data.itinerary_days;
+          }
+        });
+
+        // Poblar navieras en sidebar desde los cruceros
 
         // Poblar navieras en sidebar desde los cruceros
         const navierasMap = {};
@@ -1976,7 +1991,7 @@
         if (d.port_name && !d.at_sea) escalasSet.add(d.port_name);
       });
     });
-    console.log('ESCALA DEBUG: filteredForEscala count:', filteredForEscala.length, 'escalasSet size:', escalasSet.size, 'sample cruise itinerary_days:', filteredForEscala[0]?.itinerary_days);
+ 
     const escalaList = document.getElementById('drop-escala-list');
     escalaList.innerHTML = '';
     const escalaDefault = document.createElement('div');
