@@ -1974,6 +1974,7 @@
     const total = document.getElementById('resultsCount');
     if (total) total.innerHTML = `<strong>${filtered.length} cruceros</strong> encontrados`;
 
+    console.log('CRUISE SAMPLE:', JSON.stringify(cruises[0], null, 2));
     tbody.innerHTML = filtered.map(c => {
       const ref     = c.holiday_ref || c.ref || '';
       const nombre  = c.name || '—';
