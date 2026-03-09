@@ -115,7 +115,7 @@
   .hero-inner {
     position: relative; z-index: 2;
     max-width: 1280px; margin: 0 auto;
-    padding: 32px 32px 0;
+    padding: 32px 32px 32px;
     display: flex; align-items: flex-end; gap: 40px;
   }
   .hero-title-block { flex-shrink: 0; padding-bottom: 28px; min-width: 200px; }
@@ -201,7 +201,7 @@
   /* ─────────── MAIN LAYOUT ─────────── */
   .main {
     max-width: 1280px; margin: 0 auto;
-    padding: 24px 32px 48px;
+    padding: 24px 32px 80px;
     display: grid;
     grid-template-columns: 214px 1fr;
     gap: 22px;
@@ -699,6 +699,19 @@
   }
   .sa-clear:hover { color: var(--text); }
 
+  /* Filter chips */
+  .filter-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(30,94,255,0.15); border: 1px solid rgba(30,94,255,0.3);
+    border-radius: 100px; padding: 4px 10px 4px 12px;
+    font-size: 12px; font-weight: 500; color: #a8c4ff;
+  }
+  .filter-chip-x {
+    background: none; border: none; color: #a8c4ff; font-size: 14px;
+    cursor: pointer; padding: 0 2px; line-height: 1;
+  }
+  .filter-chip-x:hover { color: #fff; }
+
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
@@ -901,7 +914,23 @@
           </div>
         </div>
 
-        <button class="sb-btn" onclick="searchCruises()">
+        <!-- BARCO -->
+        <div class="sb-field" onclick="toggleDrop('drop-barco', event)">
+          <div class="sb-icon">🚢</div>
+          <div class="sb-content">
+            <div class="sb-label">Barco</div>
+            <div class="sb-value" id="val-barco">Barco</div>
+          </div>
+          <div class="sb-drop sb-drop-wide" id="drop-barco" onclick="event.stopPropagation()">
+            <div class="drop-search-wrap">
+              <input class="drop-search" id="drop-barco-search" placeholder="Buscar barco..." oninput="filterBarcoList(this.value)" onclick="event.stopPropagation()">
+            </div>
+            <div class="drop-list" id="drop-barco-list" style="max-height:300px;">
+            </div>
+          </div>
+        </div>
+
+        <button class="sb-btn" onclick="handleBuscarClick()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           Buscar
         </button>
@@ -924,7 +953,17 @@
         </div>
       </div>
 
+      <!-- Active filter chips -->
+      <div id="filter-chips-row" style="display:none; margin-top:10px; flex-wrap:wrap; gap:6px;"></div>
+
     </div>
+  </div>
+</div>
+
+<!-- ADS CONTAINER -->
+<div id="ads-container" style="display:none; max-width:1280px; margin:0 auto; padding:24px 32px;">
+  <div style="min-height:300px; border:2px dashed var(--border2); border-radius:14px; display:flex; align-items:center; justify-content:center;">
+    <span style="color:var(--muted); font-size:16px;">Publicidades</span>
   </div>
 </div>
 
@@ -960,14 +999,12 @@
       </div>
     </div>
 
-    <!-- TIPO DE CABINA -->
+    <!-- PUERTO DE SALIDA (sidebar) -->
     <div class="fc">
-      <div class="fc-head" onclick="toggleFc(this)">Tipo de cabina <span class="ic">▾</span></div>
+      <div class="fc-head" onclick="toggleFc(this)">Puerto de Salida <span class="ic">▾</span></div>
       <div class="fc-body">
-        <div class="cb" onclick="sidebarCabina('inside',this)"><div class="cb-sq"></div><span class="cb-lbl">Interior</span></div>
-        <div class="cb" onclick="sidebarCabina('outside',this)"><div class="cb-sq"></div><span class="cb-lbl">Exterior</span></div>
-        <div class="cb" onclick="sidebarCabina('balcony',this)"><div class="cb-sq"></div><span class="cb-lbl">Balcón</span></div>
-        <div class="cb" onclick="sidebarCabina('suite',this)"><div class="cb-sq"></div><span class="cb-lbl">Suite</span></div>
+        <div id="sidebar-puertos">
+        </div>
       </div>
     </div>
 
@@ -997,12 +1034,12 @@
     <div class="results-table">
       <!-- HEAD -->
       <div class="rt-head">
-        <div class="rth" onclick="sortTable('nombre')">Itinerario <span class="sort-ic" id="sort-nombre"></span></div>
+        <div class="rth" onclick="sortTable('nombre')">Puerto de Salida <span class="sort-ic" id="sort-nombre"></span></div>
         <div class="rth" onclick="sortTable('barco')">Barco / Naviera <span class="sort-ic" id="sort-barco"></span></div>
         <div class="rth rth-center" onclick="sortTable('noches')">Noches <span class="sort-ic" id="sort-noches"></span></div>
         <div class="rth rth-center" onclick="sortTable('fecha')">Fecha salida <span class="sort-ic" id="sort-fecha"></span></div>
-        <div class="rth rth-center" onclick="sortTable('precio')">Tarifa desde <span class="sort-ic" id="sort-precio"></span></div>
         <div class="rth rth-center">Itinerario</div>
+        <div class="rth rth-center" onclick="sortTable('precio')">Tarifa desde <span class="sort-ic" id="sort-precio"></span></div>
         <div class="rth"></div>
       </div>
 
@@ -1255,8 +1292,11 @@
     if (TOKEN) {
       showApp();
       loadFilters();
-      // Mostrar cruceros de prueba reales de Widgety
-      searchCruises();
+      // Hide results, sidebar, pagination on initial load
+      document.querySelector('.sidebar').style.display = 'none';
+      document.querySelector('.results-area').style.display = 'none';
+      document.getElementById('pagination').style.display = 'none';
+      document.getElementById('ads-container').style.display = 'block';
     }
     // Enter en login
     document.getElementById('loginPass').addEventListener('keydown', e => {
@@ -1361,7 +1401,7 @@
   }
 
   // ─── ESTADO BÚSQUEDA ───
-  const searchState = { destino:'', puerto:'', naviera:'', dateFrom:'', dateTo:'', durMin:'', durMax:'', cabina:'' };
+  const searchState = { destino:'', puerto:'', naviera:'', dateFrom:'', dateTo:'', durMin:'', durMax:'', cabina:'', ships:[], sidebarNavieras:[], sidebarPuertos:[] };
   let _currentPage = 1;
   let _totalPages  = 1;
 
@@ -1387,6 +1427,8 @@
     el.classList.add('on');
     el.closest('.sb-drop')?.classList.remove('open');
     updateClearChip();
+    renderFilterChips();
+    searchCruises(true);
     if (evt) evt.stopPropagation();
   }
 
@@ -1398,6 +1440,8 @@
     el.classList.add('on');
     el.closest('.sb-drop')?.classList.remove('open');
     updateClearChip();
+    renderFilterChips();
+    searchCruises(true);
   }
 
   function filterDrop(dropId, query) {
@@ -1406,6 +1450,86 @@
       const match = item.textContent.toLowerCase().includes(query.toLowerCase());
       item.classList.toggle('hidden', !match);
     });
+  }
+
+  // ─── BARCO DROPDOWN ───
+  function populateBarcoDropdown() {
+    const list = document.getElementById('drop-barco-list');
+    if (!list) return;
+    // Build naviera -> ships map from _cruisesData
+    const map = {};
+    _cruisesData.forEach(c => {
+      const nav = c.operator_title || c.operator_name || '';
+      const ship = c.ship_title || c.ship_name || '';
+      if (!nav || !ship) return;
+      if (!map[nav]) map[nav] = new Set();
+      map[nav].add(ship);
+    });
+    // Sort navieras alphabetically
+    const sortedNavs = Object.keys(map).sort((a,b) => a.localeCompare(b));
+    list.innerHTML = '';
+    sortedNavs.forEach(nav => {
+      const header = document.createElement('div');
+      header.className = 'drop-item';
+      header.style.cssText = 'font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);cursor:default;padding:10px 14px 4px;';
+      header.textContent = nav;
+      header.dataset.naviera = nav;
+      list.appendChild(header);
+      [...map[nav]].sort((a,b) => a.localeCompare(b)).forEach(ship => {
+        const item = document.createElement('div');
+        item.className = 'drop-item';
+        item.dataset.ship = ship;
+        item.dataset.naviera = nav;
+        const isChecked = searchState.ships.includes(ship);
+        item.innerHTML = `<div class="cb-sq ${isChecked?'on':''}" style="width:14px;height:14px;border-radius:3px;flex-shrink:0;border:1.5px solid var(--border2);background:${isChecked?'var(--blue)':'#fff'};display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;">${isChecked?'✓':''}</div>${ship}`;
+        item.onclick = (e) => { e.stopPropagation(); toggleShipSelection(ship, item); };
+        list.appendChild(item);
+      });
+    });
+  }
+
+  function toggleShipSelection(ship, el) {
+    const idx = searchState.ships.indexOf(ship);
+    if (idx >= 0) searchState.ships.splice(idx, 1);
+    else searchState.ships.push(ship);
+    const sq = el.querySelector('.cb-sq');
+    if (sq) {
+      const on = searchState.ships.includes(ship);
+      sq.classList.toggle('on', on);
+      sq.style.background = on ? 'var(--blue)' : '#fff';
+      sq.textContent = on ? '✓' : '';
+    }
+    updateBarcoLabel();
+    renderFilterChips();
+    searchCruises(true);
+  }
+
+  function updateBarcoLabel() {
+    const label = document.getElementById('val-barco');
+    if (!label) return;
+    label.textContent = searchState.ships.length ? `${searchState.ships.length} barco${searchState.ships.length>1?'s':''}` : 'Barco';
+  }
+
+  function filterBarcoList(query) {
+    const items = document.querySelectorAll('#drop-barco-list .drop-item');
+    const q = query.toLowerCase();
+    let lastHeader = null;
+    let headerHasVisible = false;
+    items.forEach(item => {
+      if (item.dataset.ship) {
+        const match = item.dataset.ship.toLowerCase().includes(q) || item.dataset.naviera.toLowerCase().includes(q);
+        item.classList.toggle('hidden', !match);
+        if (match) headerHasVisible = true;
+      } else {
+        // This is a header; hide previous header if no children matched
+        if (lastHeader && !headerHasVisible) lastHeader.classList.add('hidden');
+        lastHeader = item;
+        headerHasVisible = false;
+        item.classList.remove('hidden');
+      }
+    });
+    // Handle last header
+    if (lastHeader && !headerHasVisible) lastHeader.classList.add('hidden');
   }
 
   // ─── FECHAS ───
@@ -1423,6 +1547,8 @@
       document.getElementById('val-fechas').textContent = 'Cualquier fecha';
     }
     updateClearChip();
+    renderFilterChips();
+    searchCruises(true);
   }
 
   function formatDateShort(d) {
@@ -1452,7 +1578,7 @@
   function clearAllFilters() {
     searchState.destino=''; searchState.puerto=''; searchState.naviera='';
     searchState.dateFrom=''; searchState.dateTo=''; searchState.durMin=''; searchState.durMax='';
-    searchState.cabina = '';
+    searchState.cabina = ''; searchState.ships = []; searchState.sidebarNavieras = []; searchState.sidebarPuertos = [];
     document.getElementById('val-destino').textContent  = 'Cualquier destino';
     document.getElementById('val-fechas').textContent   = 'Cualquier fecha';
     document.getElementById('val-puerto').textContent   = 'Cualquier puerto';
@@ -1469,12 +1595,54 @@
     const firstSq = document.querySelector('#sidebar-navieras .cb .cb-sq');
     if (firstSq) { firstSq.classList.add('on'); firstSq.textContent='✓'; }
     document.querySelector('#drop-puerto-list .drop-item')?.classList.add('on');
+    updateBarcoLabel();
+    populateBarcoDropdown();
+    populateSidebarFilters();
     updateClearChip();
+    renderFilterChips();
   }
 
   function updateClearChip() {
-    const hasFilter = searchState.destino || searchState.puerto || searchState.dateFrom || searchState.durMin;
+    const hasFilter = searchState.destino || searchState.puerto || searchState.dateFrom || searchState.durMin || searchState.ships.length || searchState.naviera;
     document.getElementById('chip-clear').style.display = hasFilter ? 'flex' : 'none';
+  }
+
+  function renderFilterChips() {
+    const row = document.getElementById('filter-chips-row');
+    if (!row) return;
+    let html = '';
+    if (searchState.destino) {
+      html += `<span class="filter-chip">${searchState.destino}<button class="filter-chip-x" onclick="searchState.destino='';document.getElementById('val-destino').textContent='Cualquier destino';renderFilterChips();updateClearChip();searchCruises(true);">×</button></span>`;
+    }
+    if (searchState.dateFrom) {
+      const lbl = searchState.dateTo ? formatDateShort(searchState.dateFrom)+' → '+formatDateShort(searchState.dateTo) : 'Desde '+formatDateShort(searchState.dateFrom);
+      html += `<span class="filter-chip">${lbl}<button class="filter-chip-x" onclick="clearFechas();renderFilterChips();updateClearChip();searchCruises(true);">×</button></span>`;
+    }
+    if (searchState.durMin) {
+      const lbl = document.getElementById('val-duracion').textContent;
+      html += `<span class="filter-chip">${lbl}<button class="filter-chip-x" onclick="searchState.durMin='';searchState.durMax='';document.getElementById('val-duracion').textContent='Cualquier duración';renderFilterChips();updateClearChip();searchCruises(true);">×</button></span>`;
+    }
+    if (searchState.puerto) {
+      html += `<span class="filter-chip">${searchState.puerto}<button class="filter-chip-x" onclick="searchState.puerto='';document.getElementById('val-puerto').textContent='Cualquier puerto';renderFilterChips();updateClearChip();searchCruises(true);">×</button></span>`;
+    }
+    if (searchState.naviera) {
+      html += `<span class="filter-chip">${searchState.naviera}<button class="filter-chip-x" onclick="searchState.naviera='';renderFilterChips();updateClearChip();searchCruises(true);">×</button></span>`;
+    }
+    searchState.ships.forEach(ship => {
+      html += `<span class="filter-chip">${ship}<button class="filter-chip-x" onclick="searchState.ships=searchState.ships.filter(s=>s!=='${ship.replace(/'/g,"\\'")}');updateBarcoLabel();populateBarcoDropdown();renderFilterChips();updateClearChip();searchCruises(true);">×</button></span>`;
+    });
+    if (searchState.sidebarNavieras) {
+      searchState.sidebarNavieras.forEach(nav => {
+        html += `<span class="filter-chip">${nav}<button class="filter-chip-x" onclick="searchState.sidebarNavieras=searchState.sidebarNavieras.filter(n=>n!=='${nav.replace(/'/g,"\\'")}');populateSidebarFilters();renderFilterChips();renderCruises(_cruisesData,false);">×</button></span>`;
+      });
+    }
+    if (searchState.sidebarPuertos) {
+      searchState.sidebarPuertos.forEach(port => {
+        html += `<span class="filter-chip">${port}<button class="filter-chip-x" onclick="searchState.sidebarPuertos=searchState.sidebarPuertos.filter(p=>p!=='${port.replace(/'/g,"\\'")}');populateSidebarFilters();renderFilterChips();renderCruises(_cruisesData,false);">×</button></span>`;
+      });
+    }
+    row.innerHTML = html;
+    row.style.display = html ? 'flex' : 'none';
   }
 
 
@@ -1497,6 +1665,70 @@
     el.querySelector('.cb-sq').classList.add('on');
     el.querySelector('.cb-sq').textContent = '✓';
     searchCruises();
+  }
+
+  function populateSidebarFilters() {
+    // Populate Navieras dynamically
+    const sbNav = document.getElementById('sidebar-navieras');
+    if (sbNav) {
+      const navSet = new Set();
+      _cruisesData.forEach(c => {
+        const nav = c.operator_title || c.operator_name || '';
+        if (nav) navSet.add(nav);
+      });
+      sbNav.innerHTML = '';
+      [...navSet].sort((a,b) => a.localeCompare(b)).forEach(nav => {
+        const el = document.createElement('div');
+        el.className = 'cb' + (searchState.sidebarNavieras.includes(nav) ? ' on' : '');
+        el.innerHTML = `<div class="cb-sq${searchState.sidebarNavieras.includes(nav) ? ' on' : ''}">${searchState.sidebarNavieras.includes(nav) ? '✓' : ''}</div><span class="cb-lbl">${nav}</span>`;
+        el.onclick = function() { toggleSidebarNaviera(nav, this); };
+        sbNav.appendChild(el);
+      });
+    }
+
+    // Populate Puerto de Salida dynamically
+    const sbPuerto = document.getElementById('sidebar-puertos');
+    if (sbPuerto) {
+      const portSet = new Set();
+      _cruisesData.forEach(c => {
+        const port = c.starts_at?.name || c.departure_port_name || '';
+        if (port) portSet.add(port);
+      });
+      sbPuerto.innerHTML = '';
+      [...portSet].sort((a,b) => a.localeCompare(b)).forEach(port => {
+        const el = document.createElement('div');
+        el.className = 'cb' + (searchState.sidebarPuertos.includes(port) ? ' on' : '');
+        el.innerHTML = `<div class="cb-sq${searchState.sidebarPuertos.includes(port) ? ' on' : ''}">${searchState.sidebarPuertos.includes(port) ? '✓' : ''}</div><span class="cb-lbl">${port}</span>`;
+        el.onclick = function() { toggleSidebarPuerto(port, this); };
+        sbPuerto.appendChild(el);
+      });
+    }
+  }
+
+  function toggleSidebarNaviera(nav, el) {
+    const idx = searchState.sidebarNavieras.indexOf(nav);
+    if (idx >= 0) searchState.sidebarNavieras.splice(idx, 1);
+    else searchState.sidebarNavieras.push(nav);
+    const sq = el.querySelector('.cb-sq');
+    const on = searchState.sidebarNavieras.includes(nav);
+    el.classList.toggle('on', on);
+    sq.classList.toggle('on', on);
+    sq.textContent = on ? '✓' : '';
+    renderFilterChips();
+    renderCruises(_cruisesData, false);
+  }
+
+  function toggleSidebarPuerto(port, el) {
+    const idx = searchState.sidebarPuertos.indexOf(port);
+    if (idx >= 0) searchState.sidebarPuertos.splice(idx, 1);
+    else searchState.sidebarPuertos.push(port);
+    const sq = el.querySelector('.cb-sq');
+    const on = searchState.sidebarPuertos.includes(port);
+    el.classList.toggle('on', on);
+    sq.classList.toggle('on', on);
+    sq.textContent = on ? '✓' : '';
+    renderFilterChips();
+    renderCruises(_cruisesData, false);
   }
 
   function sidebarDuracion(min, max, label, el) {
@@ -1613,6 +1845,17 @@
   }
 
   // ─────────────────────────────────────────
+  // BUSCAR BUTTON HANDLER
+  // ─────────────────────────────────────────
+  function handleBuscarClick() {
+    document.getElementById('ads-container').style.display = 'none';
+    document.querySelector('.sidebar').style.display = '';
+    document.querySelector('.results-area').style.display = '';
+    document.getElementById('pagination').style.display = '';
+    searchCruises(true);
+  }
+
+  // ─────────────────────────────────────────
   // BUSCAR CRUCEROS
   // ─────────────────────────────────────────
   async function searchCruises(resetPage = true) {
@@ -1705,12 +1948,45 @@
   }
 
   function renderCruises(cruises, save = true) {
-    if (save) _cruisesData = cruises;
+    if (save) {
+      _cruisesData = cruises;
+      populateBarcoDropdown();
+      populateSidebarFilters();
+    }
+
+    // Client-side ship filter
+    let filtered = cruises;
+    if (searchState.ships.length) {
+      filtered = filtered.filter(c => {
+        const ship = c.ship_title || c.ship_name || '';
+        return searchState.ships.includes(ship);
+      });
+    }
+
+    // Client-side sidebar naviera filter (multi-select)
+    if (searchState.sidebarNavieras && searchState.sidebarNavieras.length) {
+      filtered = filtered.filter(c => {
+        const nav = c.operator_title || c.operator_name || '';
+        return searchState.sidebarNavieras.includes(nav);
+      });
+    }
+
+    // Client-side sidebar puerto filter (multi-select)
+    if (searchState.sidebarPuertos && searchState.sidebarPuertos.length) {
+      filtered = filtered.filter(c => {
+        const port = c.starts_at?.name || c.departure_port_name || '';
+        return searchState.sidebarPuertos.includes(port);
+      });
+    }
+
+    // Default sort by departure date ascending
+    filtered.sort((a, b) => new Date(a.date_from || 0) - new Date(b.date_from || 0));
+
     const tbody = document.getElementById('resultsBody');
     const total = document.getElementById('resultsCount');
-    if (total) total.innerHTML = `<strong>${cruises.length} cruceros</strong> encontrados`;
+    if (total) total.innerHTML = `<strong>${filtered.length} cruceros</strong> encontrados`;
 
-    tbody.innerHTML = cruises.map(c => {
+    tbody.innerHTML = filtered.map(c => {
       const ref     = c.holiday_ref || c.ref || '';
       const nombre  = c.name || '—';
       const naviera = c.operator_title || c.operator_name || '—';
@@ -1726,10 +2002,6 @@
       const precios = [c.inside_price, c.outside_price, c.balcony_price, c.suite_price].filter(p => p && p > 0);
       const minPrecio = precios.length ? Math.min(...precios) : null;
 
-      const navBadge = naviera.includes('Norwegian') ? 'NCL'
-                     : naviera.includes('Royal')      ? 'RCI'
-                     : naviera.substring(0,3).toUpperCase();
-
       const puertoText = salida === llegada ? salida : `${salida} → ${llegada}`;
 
       const itin = (c.itinerary_days || [])
@@ -1738,26 +2010,27 @@
         .slice(1,-1);
       const paradas = itin.length ? itin.join(' · ') : (c.regions || []).join(' · ') || nombre;
 
+      // Format date as dd/mm/yyyy
+      const fechaDdMm = formatDateDdMmYyyy(c.date_from || c.departure_date);
+
       return `
         <div class="rt-row" data-nombre="${nombre.replace(/"/g,'&quot;')}">
           <div class="rta rta-itin">
             <div class="rta-route">${puertoText}</div>
-            <div class="rta-stops">${paradas}</div>
           </div>
           <div class="rta rta-line">
-            <div class="line-chip">${navBadge}</div>
             <div class="rta-ship" style="font-weight:600;color:var(--text);">${barco !== '—' ? barco : '—'}</div>
             <div class="rta-nights">${naviera}</div>
           </div>
           <div class="rta rta-center" style="font-size:15px;font-weight:700;">${noches}</div>
-          <div class="rta rta-center">${fecha}</div>
+          <div class="rta rta-center">${fechaDdMm}</div>
+          <div class="rta rta-center">
+            <a class="itin-link" onclick="event.stopPropagation();openItinerarioModal('${ref}', this)">Ver</a>
+          </div>
           <div class="rta rta-center">
             ${minPrecio
               ? `<span class="price-val">US$ ${Number(minPrecio).toLocaleString('es-AR')}</span><span style="font-size:10px;color:var(--muted);display:block;">por huésped</span>`
               : `<span style="color:var(--muted);font-size:12px;">Consultar</span>`}
-          </div>
-          <div class="rta rta-center">
-            <a class="itin-link" onclick="event.stopPropagation();openItinerarioModal('${ref}', this)">Ver</a>
           </div>
           <div class="rta rta-action" style="display:flex;gap:5px;justify-content:flex-end;align-items:center;padding:8px 10px;">
             <button class="rta-btn rta-btn-info" style="padding:7px 11px;font-size:12px;" onclick="event.stopPropagation();openCruiseDetail('${ref}')">+Info</button>
@@ -1801,6 +2074,15 @@
   function formatDate(d) {
     if (!d) return '—';
     return new Date(d).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  function formatDateDdMmYyyy(d) {
+    if (!d) return '—';
+    const dt = new Date(d);
+    const dd = String(dt.getDate()).padStart(2, '0');
+    const mm = String(dt.getMonth() + 1).padStart(2, '0');
+    const yyyy = dt.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
   }
 
   // ─────────────────────────────────────────
