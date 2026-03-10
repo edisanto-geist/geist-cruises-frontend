@@ -896,6 +896,25 @@
 
         <div class="sb-sep"></div>
 
+        <!-- PUERTO ESCALA -->
+        <div class="sb-field" onclick="toggleDrop('drop-escala', event)">
+          <div class="sb-icon">📍</div>
+          <div class="sb-content">
+            <div class="sb-label">Puerto Escala</div>
+            <div class="sb-value" id="val-escala">Cualquier escala</div>
+          </div>
+          <div class="sb-drop" id="drop-escala">
+            <div class="drop-search-wrap">
+              <input class="drop-search" id="drop-escala-search" placeholder="Buscar escala..." oninput="filterDrop('drop-escala',this.value)" onclick="event.stopPropagation()">
+            </div>
+            <div class="drop-list" id="drop-escala-list">
+              <div class="drop-item on" onclick="selectDrop('escala','','Cualquier escala',this)">Cualquier escala</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-sep"></div>
+
         <!-- DURACIÓN -->
         <div class="sb-field" onclick="toggleDrop('drop-duracion', event)">
           <div class="sb-icon">🌙</div>
@@ -1388,9 +1407,10 @@
   }
 
   // ─── ESTADO BÚSQUEDA ───
-  const searchState = { destino:'', puerto:'', naviera:'', dateFrom:'', dateTo:'', durMin:'', durMax:'', cabina:'', ships:[], sidebarNavieras:[], sidebarPuertos:[] };
+  const searchState = { destino:'', puerto:'', naviera:'', escala:'', dateFrom:'', dateTo:'', durMin:'', durMax:'', cabina:'', ships:[], sidebarNavieras:[], sidebarPuertos:[] };
   let _currentPage = 1;
   let _totalPages  = 1;
+  let _allCruisesForFilters = [];
 
   // ─── DROPDOWNS ───
   function toggleDrop(id, event) {
@@ -1413,6 +1433,7 @@
     el.closest('.drop-list')?.querySelectorAll('.drop-item').forEach(i => i.classList.remove('on'));
     el.classList.add('on');
     el.closest('.sb-drop')?.classList.remove('open');
+    rebuildFilterOptions();
     updateClearChip();
     renderFilterChips();
     if (evt) evt.stopPropagation();
@@ -1477,14 +1498,7 @@
     const idx = searchState.ships.indexOf(ship);
     if (idx >= 0) searchState.ships.splice(idx, 1);
     else searchState.ships.push(ship);
-    const sq = el.querySelector('.cb-sq');
-    if (sq) {
-      const on = searchState.ships.includes(ship);
-      sq.classList.toggle('on', on);
-      sq.style.background = on ? 'var(--blue)' : '#fff';
-      sq.textContent = on ? '✓' : '';
-    }
-    updateBarcoLabel();
+    rebuildFilterOptions();
     renderFilterChips();
     updateClearChip();
   }
@@ -1560,12 +1574,13 @@
   }
 
   function clearAllFilters() {
-    searchState.destino=''; searchState.puerto=''; searchState.naviera='';
+    searchState.destino=''; searchState.puerto=''; searchState.naviera=''; searchState.escala='';
     searchState.dateFrom=''; searchState.dateTo=''; searchState.durMin=''; searchState.durMax='';
     searchState.cabina = ''; searchState.ships = []; searchState.sidebarNavieras = []; searchState.sidebarPuertos = [];
     document.getElementById('val-destino').textContent  = 'Cualquier destino';
     document.getElementById('val-fechas').textContent   = 'Cualquier fecha';
     document.getElementById('val-puerto').textContent   = 'Cualquier puerto';
+    document.getElementById('val-escala').textContent   = 'Cualquier escala';
     document.getElementById('val-duracion').textContent = 'Cualquier duración';
     clearFechas();
     document.querySelectorAll('.drop-item.on').forEach(i => i.classList.remove('on'));
@@ -1579,8 +1594,8 @@
     const firstSq = document.querySelector('#sidebar-navieras .cb .cb-sq');
     if (firstSq) { firstSq.classList.add('on'); firstSq.textContent='✓'; }
     document.querySelector('#drop-puerto-list .drop-item')?.classList.add('on');
-    updateBarcoLabel();
-    populateBarcoDropdown();
+    document.querySelector('#drop-escala-list .drop-item')?.classList.add('on');
+    rebuildFilterOptions();
     populateSidebarFilters();
     updateClearChip();
     renderFilterChips();
@@ -1595,7 +1610,7 @@
     if (!row) return;
     let html = '';
     if (searchState.destino) {
-      html += `<span class="filter-chip">${searchState.destino}<button class="filter-chip-x" onclick="searchState.destino='';document.getElementById('val-destino').textContent='Cualquier destino';renderFilterChips();updateClearChip();">×</button></span>`;
+      html += `<span class="filter-chip">${searchState.destino}<button class="filter-chip-x" onclick="searchState.destino='';document.getElementById('val-destino').textContent='Cualquier destino';rebuildFilterOptions();renderFilterChips();updateClearChip();">×</button></span>`;
     }
     if (searchState.dateFrom) {
       const lbl = searchState.dateTo ? formatDateShort(searchState.dateFrom)+' → '+formatDateShort(searchState.dateTo) : 'Desde '+formatDateShort(searchState.dateFrom);
@@ -1606,13 +1621,16 @@
       html += `<span class="filter-chip">${lbl}<button class="filter-chip-x" onclick="searchState.durMin='';searchState.durMax='';document.getElementById('val-duracion').textContent='Cualquier duración';renderFilterChips();updateClearChip();">×</button></span>`;
     }
     if (searchState.puerto) {
-      html += `<span class="filter-chip">${searchState.puerto}<button class="filter-chip-x" onclick="searchState.puerto='';document.getElementById('val-puerto').textContent='Cualquier puerto';renderFilterChips();updateClearChip();">×</button></span>`;
+      html += `<span class="filter-chip">${searchState.puerto}<button class="filter-chip-x" onclick="searchState.puerto='';document.getElementById('val-puerto').textContent='Cualquier puerto';rebuildFilterOptions();renderFilterChips();updateClearChip();">×</button></span>`;
+    }
+    if (searchState.escala) {
+      html += `<span class="filter-chip">${searchState.escala}<button class="filter-chip-x" onclick="searchState.escala='';document.getElementById('val-escala').textContent='Cualquier escala';rebuildFilterOptions();renderFilterChips();updateClearChip();">×</button></span>`;
     }
     if (searchState.naviera) {
       html += `<span class="filter-chip">${searchState.naviera}<button class="filter-chip-x" onclick="searchState.naviera='';renderFilterChips();updateClearChip();">×</button></span>`;
     }
     searchState.ships.forEach(ship => {
-      html += `<span class="filter-chip">${ship}<button class="filter-chip-x" onclick="searchState.ships=searchState.ships.filter(s=>s!=='${ship.replace(/'/g,"\\'")}');updateBarcoLabel();populateBarcoDropdown();renderFilterChips();updateClearChip();">×</button></span>`;
+      html += `<span class="filter-chip">${ship}<button class="filter-chip-x" onclick="searchState.ships=searchState.ships.filter(s=>s!=='${ship.replace(/'/g,"\\'")}');rebuildFilterOptions();renderFilterChips();updateClearChip();">×</button></span>`;
     });
     if (searchState.sidebarNavieras) {
       searchState.sidebarNavieras.forEach(nav => {
@@ -1763,46 +1781,29 @@
   // ─────────────────────────────────────────
   async function loadFilters() {
     try {
-      // Cargar puertos desde endpoint admin (lista estática completa)
-      const [cruisesData, portsData] = await Promise.all([
-        apiFetch('/cruises?per_page=50&page=1'),
-        apiFetch('/admin/ports')
-      ]);
+      const cruisesData = await apiFetch('/cruises?per_page=200&page=1');
 
-      // Poblar DESTINOS desde cruceros
-      if (cruisesData?.success) {
-        const regionesSet = new Set();
-        (cruisesData.data?.cruises || []).forEach(c => {
-          (c.regions || []).forEach(r => regionesSet.add(r));
-        });
-        const destList = document.getElementById('drop-destino-list');
-        [...regionesSet].sort().forEach(r => {
-          const el = document.createElement('div');
-          el.className = 'drop-item';
-          el.textContent = r;
-          el.onclick = (e) => { selectDrop('destino', r, r, el); e.stopPropagation(); };
-          destList.appendChild(el);
-        });
-      }
+            if (cruisesData?.success) {
+        _allCruisesForFilters = cruisesData.data?.cruises || [];
 
-      // Poblar PUERTOS desde endpoint admin (lista completa estática)
-      const puertoList = document.getElementById('drop-puerto-list');
-      const ports = portsData?.data || portsData?.ports || [];
-      if (ports.length) {
-        [...ports].sort((a,b) => (a.name||a).localeCompare(b.name||b)).forEach(p => {
-          const name = p.name || p;
-          const el = document.createElement('div');
-          el.className = 'drop-item';
-          el.textContent = name;
-          el.onclick = (e) => { selectDrop('puerto', name, name, el); e.stopPropagation(); };
-          puertoList.appendChild(el);
+        // Fetch itinerary_days for each cruise (list endpoint doesn't include them)
+        const detailPromises = _allCruisesForFilters.map(c => {
+          const ref = c.holiday_ref || c.ref;
+          if (!ref) return Promise.resolve(null);
+          return apiFetch(`/cruises/${ref}`).catch(() => null);
         });
-      }
+        const details = await Promise.all(detailPromises);
+        details.forEach((detail, i) => {
+          if (detail?.success && detail.data?.itinerary_days) {
+            _allCruisesForFilters[i].itinerary_days = detail.data.itinerary_days;
+          }
+        });
 
-      // Poblar navieras en sidebar desde los cruceros
-      if (cruisesData?.success) {
+        // Poblar navieras en sidebar desde los cruceros
+
+        // Poblar navieras en sidebar desde los cruceros
         const navierasMap = {};
-        (cruisesData.data?.cruises || []).forEach(c => {
+        _allCruisesForFilters.forEach(c => {
           const slug  = c.operator_url || c.operator || '';
           const label = c.operator_title || c.operator_name || slug;
           if (slug && label && !navierasMap[slug]) navierasMap[slug] = label;
@@ -1819,9 +1820,10 @@
         }
       }
 
+      rebuildFilterOptions();
+
     } catch(e) {
-      console.log('Filtros: usando datos por defecto', e);
-      // Si falló la carga de puertos, agregar un item indicativo en el dropdown
+      console.warn('Filtros: usando datos por defecto', e);
       const puertoList = document.getElementById('drop-puerto-list');
       if (puertoList && puertoList.children.length <= 1) {
         const el = document.createElement('div');
@@ -1830,6 +1832,185 @@
         el.textContent = 'No se pudieron cargar los puertos';
         puertoList.appendChild(el);
       }
+    }
+  }
+
+  // ─────────────────────────────────────────
+  // REBUILD FILTER OPTIONS (smart cross-filtering)
+  // ─────────────────────────────────────────
+  function rebuildFilterOptions() {
+    const currentDestino = searchState.destino;
+    const currentPuerto = searchState.puerto;
+    const currentShips = searchState.ships;
+    const currentEscala = searchState.escala;
+
+    // --- Rebuild DESTINO dropdown ---
+    const filteredForDestino = _allCruisesForFilters.filter(c => {
+      if (currentPuerto) {
+        const port = c.starts_at?.name || c.departure_port_name || '';
+        if (port !== currentPuerto) return false;
+      }
+      if (currentShips.length) {
+        const ship = c.ship_title || c.ship_name || '';
+        if (!currentShips.includes(ship)) return false;
+      }
+      if (currentEscala) {
+        const ports = (c.itinerary_days || []).filter(d => d.port_name && !d.at_sea).map(d => d.port_name);
+        if (!ports.includes(currentEscala)) return false;
+      }
+      return true;
+    });
+    const regionesSet = new Set();
+    filteredForDestino.forEach(c => { (c.regions || []).forEach(r => regionesSet.add(r)); });
+    const destList = document.getElementById('drop-destino-list');
+    destList.innerHTML = '';
+    const destDefault = document.createElement('div');
+    destDefault.className = 'drop-item' + (!currentDestino ? ' on' : '');
+    destDefault.textContent = 'Cualquier destino';
+    destDefault.onclick = (e) => { selectDrop('destino', '', 'Cualquier destino', destDefault); e.stopPropagation(); };
+    destList.appendChild(destDefault);
+    [...regionesSet].sort().forEach(r => {
+      const el = document.createElement('div');
+      el.className = 'drop-item' + (currentDestino === r ? ' on' : '');
+      el.textContent = r;
+      el.onclick = (e) => { selectDrop('destino', r, r, el); e.stopPropagation(); };
+      destList.appendChild(el);
+    });
+    if (currentDestino && !regionesSet.has(currentDestino)) {
+      searchState.destino = '';
+      document.getElementById('val-destino').textContent = 'Cualquier destino';
+      destDefault.classList.add('on');
+    }
+
+    // --- Rebuild PUERTO dropdown ---
+    const filteredForPuerto = _allCruisesForFilters.filter(c => {
+      if (currentDestino && regionesSet.has(currentDestino)) {
+        if (!(c.regions || []).includes(currentDestino)) return false;
+      }
+      if (currentShips.length) {
+        const ship = c.ship_title || c.ship_name || '';
+        if (!currentShips.includes(ship)) return false;
+      }
+      if (currentEscala) {
+        const ports = (c.itinerary_days || []).filter(d => d.port_name && !d.at_sea).map(d => d.port_name);
+        if (!ports.includes(currentEscala)) return false;
+      }
+      return true;
+    });
+    const puertosSet = new Set();
+    filteredForPuerto.forEach(c => {
+      const port = c.starts_at?.name || c.departure_port_name || '';
+      if (port) puertosSet.add(port);
+    });
+    const puertoList = document.getElementById('drop-puerto-list');
+    puertoList.innerHTML = '';
+    const puertoDefault = document.createElement('div');
+    puertoDefault.className = 'drop-item' + (!currentPuerto ? ' on' : '');
+    puertoDefault.textContent = 'Cualquier puerto';
+    puertoDefault.onclick = (e) => { selectDrop('puerto', '', 'Cualquier puerto', puertoDefault); e.stopPropagation(); };
+    puertoList.appendChild(puertoDefault);
+    [...puertosSet].sort((a, b) => a.localeCompare(b)).forEach(name => {
+      const el = document.createElement('div');
+      el.className = 'drop-item' + (currentPuerto === name ? ' on' : '');
+      el.textContent = name;
+      el.onclick = (e) => { selectDrop('puerto', name, name, el); e.stopPropagation(); };
+      puertoList.appendChild(el);
+    });
+    if (currentPuerto && !puertosSet.has(currentPuerto)) {
+      searchState.puerto = '';
+      document.getElementById('val-puerto').textContent = 'Cualquier puerto';
+      puertoDefault.classList.add('on');
+    }
+
+    // --- Rebuild BARCO dropdown ---
+    const filteredForBarco = _allCruisesForFilters.filter(c => {
+      if (searchState.destino) {
+        if (!(c.regions || []).includes(searchState.destino)) return false;
+      }
+      if (searchState.puerto) {
+        const port = c.starts_at?.name || c.departure_port_name || '';
+        if (port !== searchState.puerto) return false;
+      }
+      if (currentEscala) {
+        const ports = (c.itinerary_days || []).filter(d => d.port_name && !d.at_sea).map(d => d.port_name);
+        if (!ports.includes(currentEscala)) return false;
+      }
+      return true;
+    });
+    const barcoMap = {};
+    filteredForBarco.forEach(c => {
+      const nav = c.operator_title || c.operator_name || '';
+      const ship = c.ship_title || c.ship_name || '';
+      if (!nav || !ship) return;
+      if (!barcoMap[nav]) barcoMap[nav] = new Set();
+      barcoMap[nav].add(ship);
+    });
+    const availableShips = new Set();
+    Object.values(barcoMap).forEach(s => s.forEach(ship => availableShips.add(ship)));
+    // Remove invalid ships from selection
+    searchState.ships = searchState.ships.filter(s => availableShips.has(s));
+    const list = document.getElementById('drop-barco-list');
+    list.innerHTML = '';
+    Object.keys(barcoMap).sort((a, b) => a.localeCompare(b)).forEach(nav => {
+      const header = document.createElement('div');
+      header.className = 'drop-item';
+      header.style.cssText = 'font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);cursor:default;padding:10px 14px 4px;';
+      header.textContent = nav;
+      header.dataset.naviera = nav;
+      list.appendChild(header);
+      [...barcoMap[nav]].sort((a, b) => a.localeCompare(b)).forEach(ship => {
+        const item = document.createElement('div');
+        item.className = 'drop-item';
+        item.dataset.ship = ship;
+        item.dataset.naviera = nav;
+        const isChecked = searchState.ships.includes(ship);
+        item.innerHTML = `<div class="cb-sq ${isChecked?'on':''}" style="width:14px;height:14px;border-radius:3px;flex-shrink:0;border:1.5px solid var(--border2);background:${isChecked?'var(--blue)':'#fff'};display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;">${isChecked?'✓':''}</div>${ship}`;
+        item.onclick = (e) => { e.stopPropagation(); toggleShipSelection(ship, item); };
+        list.appendChild(item);
+      });
+    });
+    updateBarcoLabel();
+
+    // --- Rebuild ESCALA dropdown ---
+    const filteredForEscala = _allCruisesForFilters.filter(c => {
+      if (searchState.destino) {
+        if (!(c.regions || []).includes(searchState.destino)) return false;
+      }
+      if (searchState.puerto) {
+        const port = c.starts_at?.name || c.departure_port_name || '';
+        if (port !== searchState.puerto) return false;
+      }
+      if (currentShips.length) {
+        const ship = c.ship_title || c.ship_name || '';
+        if (!currentShips.includes(ship)) return false;
+      }
+      return true;
+    });
+    const escalasSet = new Set();
+    filteredForEscala.forEach(c => {
+      (c.itinerary_days || []).forEach(d => {
+        if (d.port_name && !d.at_sea) escalasSet.add(d.port_name);
+      });
+    });
+ 
+    const escalaList = document.getElementById('drop-escala-list');
+    escalaList.innerHTML = '';
+    const escalaDefault = document.createElement('div');
+    escalaDefault.className = 'drop-item' + (!currentEscala ? ' on' : '');
+    escalaDefault.textContent = 'Cualquier escala';
+    escalaDefault.onclick = (e) => { selectDrop('escala', '', 'Cualquier escala', escalaDefault); e.stopPropagation(); };
+    escalaList.appendChild(escalaDefault);
+    [...escalasSet].sort((a, b) => a.localeCompare(b)).forEach(name => {
+      const el = document.createElement('div');
+      el.className = 'drop-item' + (currentEscala === name ? ' on' : '');
+      el.textContent = name;
+      el.onclick = (e) => { selectDrop('escala', name, name, el); e.stopPropagation(); };
+      escalaList.appendChild(el);
+    });
+    if (currentEscala && !escalasSet.has(currentEscala)) {
+      searchState.escala = '';
+      document.getElementById('val-escala').textContent = 'Cualquier escala';
+      escalaDefault.classList.add('on');
     }
   }
 
@@ -1975,7 +2156,6 @@
     const total = document.getElementById('resultsCount');
     if (total) total.innerHTML = `<strong>${filtered.length} cruceros</strong> encontrados`;
 
-    console.log('CRUISE SAMPLE:', JSON.stringify(cruises[0], null, 2));
     tbody.innerHTML = filtered.map(c => {
       const ref     = c.holiday_ref || c.ref || '';
       const nombre  = c.name || '—';
