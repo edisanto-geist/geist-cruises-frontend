@@ -2186,7 +2186,7 @@
   (async function checkAIAvailability() {
     try {
       const data = await apiFetch('/ai/status');
-      if (data && data.configured === false) {
+      if (data && data.ai && data.ai.configured === false) {
         document.getElementById('ai-search-row').style.display = 'none';
       }
     } catch { /* silently hide if AI unavailable */ }
