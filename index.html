@@ -2182,14 +2182,17 @@
     if (e.key === 'Enter') { e.preventDefault(); handleAISearch(); }
   });
 
-  // Verificar disponibilidad de IA al cargar
+  // Verificar disponibilidad de IA al cargar (sin apiFetch para evitar logout en 401)
   (async function checkAIAvailability() {
+    if (!TOKEN) { document.getElementById('ai-search-row').style.display = 'none'; return; }
     try {
-      const data = await apiFetch('/ai/status');
+      const res = await fetch(`${API}/ai/status`, { headers: { 'Authorization': `Bearer ${TOKEN}` } });
+      if (!res.ok) { document.getElementById('ai-search-row').style.display = 'none'; return; }
+      const data = await res.json();
       if (data && data.ai && data.ai.configured === false) {
         document.getElementById('ai-search-row').style.display = 'none';
       }
-    } catch { /* silently hide if AI unavailable */ }
+    } catch { document.getElementById('ai-search-row').style.display = 'none'; }
   })();
 
   // ─────────────────────────────────────────
