@@ -200,14 +200,38 @@
   .sa-clear:hover { color: rgba(255,255,255,0.65); }
 
   /* ─────────── AI SEARCH ─────────── */
-  .ai-search-row {
+  .ai-search-wrapper {
+    margin-bottom: 14px;
+  }
+  .ai-search-toggle {
     display: flex; align-items: center; gap: 10px;
-    margin-bottom: 14px; padding: 10px 14px;
+    padding: 10px 14px;
     background: rgba(0,180,216,0.08);
     border: 1px solid rgba(0,180,216,0.25);
     border-radius: 12px;
+    cursor: pointer; user-select: none;
+    transition: background 0.2s, border-color 0.2s;
   }
-  .ai-search-icon { font-size: 18px; flex-shrink: 0; }
+  .ai-search-toggle:hover { background: rgba(0,180,216,0.14); border-color: rgba(0,180,216,0.4); }
+  .ai-search-toggle.active { border-radius: 12px 12px 0 0; border-bottom: none; background: rgba(0,180,216,0.12); }
+  .ai-search-toggle-icon { font-size: 18px; flex-shrink: 0; }
+  .ai-search-toggle-label {
+    flex: 1; font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.75);
+  }
+  .ai-search-toggle-arrow {
+    font-size: 12px; color: rgba(255,255,255,0.4);
+    transition: transform 0.25s;
+  }
+  .ai-search-toggle.active .ai-search-toggle-arrow { transform: rotate(180deg); }
+  .ai-search-row {
+    display: none; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: rgba(0,180,216,0.08);
+    border: 1px solid rgba(0,180,216,0.25);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+  }
+  .ai-search-row.open { display: flex; }
   .ai-search-input {
     flex: 1; background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.15);
@@ -247,7 +271,7 @@
   }
 
   @media (max-width: 768px) {
-    .ai-search-row { flex-wrap: wrap; gap: 8px; }
+    .ai-search-row.open { flex-wrap: wrap; gap: 8px; }
     .ai-search-input { flex: 1 1 100%; }
     .ai-search-btn { flex: 1 1 100%; justify-content: center; }
     .ai-search-status { flex: 1 1 100%; text-align: center; }
@@ -875,16 +899,22 @@
     <div class="search-panel">
 
       <!-- Búsqueda por IA -->
-      <div class="ai-search-row" id="ai-search-row">
-        <div class="ai-search-icon">✨</div>
-        <input type="text" class="ai-search-input" id="ai-search-input"
-          placeholder="Describí el crucero que buscás... ej: Caribe julio 2026, 7 noches, familia de 4"
-          aria-label="Búsqueda por lenguaje natural" autocomplete="off">
-        <div class="ai-search-status" id="ai-search-status"></div>
-        <button class="ai-search-btn" id="ai-search-btn" onclick="handleAISearch()">
-          <span id="ai-btn-text">Buscar con IA</span>
-          <div class="ai-spinner" id="ai-spinner" style="display:none"><span></span><span></span><span></span></div>
-        </button>
+      <div class="ai-search-wrapper" id="ai-search-wrapper">
+        <div class="ai-search-toggle" id="ai-search-toggle" onclick="toggleAISearch()">
+          <div class="ai-search-toggle-icon">✨</div>
+          <div class="ai-search-toggle-label">¿Querés buscar con IA?</div>
+          <div class="ai-search-toggle-arrow">▼</div>
+        </div>
+        <div class="ai-search-row" id="ai-search-row">
+          <input type="text" class="ai-search-input" id="ai-search-input"
+            placeholder="Describí el crucero que buscás... ej: Caribe julio 2026, 7 noches, familia de 4"
+            aria-label="Búsqueda por lenguaje natural" autocomplete="off">
+          <div class="ai-search-status" id="ai-search-status"></div>
+          <button class="ai-search-btn" id="ai-search-btn" onclick="handleAISearch()">
+            <span id="ai-btn-text">Buscar con IA</span>
+            <div class="ai-spinner" id="ai-spinner" style="display:none"><span></span><span></span><span></span></div>
+          </button>
+        </div>
       </div>
 
       <!-- Fila principal -->
@@ -2178,21 +2208,36 @@
     spinner.style.display = loading ? 'inline-flex' : 'none';
   }
 
+  function toggleAISearch() {
+    const toggle = document.getElementById('ai-search-toggle');
+    const row = document.getElementById('ai-search-row');
+    const isOpen = row.classList.contains('open');
+    if (isOpen) {
+      row.classList.remove('open');
+      toggle.classList.remove('active');
+    } else {
+      row.classList.add('open');
+      toggle.classList.add('active');
+      document.getElementById('ai-search-input').focus();
+    }
+  }
+
   document.getElementById('ai-search-input').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') { e.preventDefault(); handleAISearch(); }
   });
 
   // Verificar disponibilidad de IA al cargar (sin apiFetch para evitar logout en 401)
   (async function checkAIAvailability() {
-    if (!TOKEN) { document.getElementById('ai-search-row').style.display = 'none'; return; }
+    const wrapper = document.getElementById('ai-search-wrapper');
+    if (!TOKEN) { wrapper.style.display = 'none'; return; }
     try {
       const res = await fetch(`${API}/ai/status`, { headers: { 'Authorization': `Bearer ${TOKEN}` } });
-      if (!res.ok) { document.getElementById('ai-search-row').style.display = 'none'; return; }
+      if (!res.ok) { wrapper.style.display = 'none'; return; }
       const data = await res.json();
       if (data && data.ai && data.ai.configured === false) {
-        document.getElementById('ai-search-row').style.display = 'none';
+        wrapper.style.display = 'none';
       }
-    } catch { document.getElementById('ai-search-row').style.display = 'none'; }
+    } catch { wrapper.style.display = 'none'; }
   })();
 
   // ─────────────────────────────────────────
