@@ -199,6 +199,60 @@
   .sa-clear { margin-left: auto; background: none; border: none; color: rgba(255,255,255,0.3); font-size: 12px; font-family: inherit; cursor: pointer; transition: color 0.15s; }
   .sa-clear:hover { color: rgba(255,255,255,0.65); }
 
+  /* ─────────── AI SEARCH ─────────── */
+  .ai-search-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px; padding: 10px 14px;
+    background: rgba(0,180,216,0.08);
+    border: 1px solid rgba(0,180,216,0.25);
+    border-radius: 12px;
+  }
+  .ai-search-icon { font-size: 18px; flex-shrink: 0; }
+  .ai-search-input {
+    flex: 1; background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px; padding: 10px 14px;
+    font-family: inherit; font-size: 13.5px; font-weight: 500;
+    color: #fff; outline: none; transition: border-color 0.2s;
+  }
+  .ai-search-input::placeholder { color: rgba(255,255,255,0.4); }
+  .ai-search-input:focus { border-color: var(--cyan); }
+  .ai-search-status {
+    font-size: 12px; font-weight: 500; white-space: nowrap;
+    color: rgba(255,255,255,0.6); flex-shrink: 0;
+  }
+  .ai-search-status.error { color: #ff6b6b; }
+  .ai-search-btn {
+    background: linear-gradient(135deg, var(--cyan), #0090b0);
+    color: #fff; border: none; font-family: inherit;
+    font-size: 13px; font-weight: 700; padding: 10px 20px;
+    border-radius: 8px; cursor: pointer; display: flex;
+    align-items: center; gap: 8px; white-space: nowrap;
+    transition: opacity 0.15s; flex-shrink: 0;
+  }
+  .ai-search-btn:hover { opacity: 0.88; }
+  .ai-search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .ai-spinner {
+    display: inline-flex; gap: 3px; align-items: center;
+  }
+  .ai-spinner span {
+    width: 5px; height: 5px; border-radius: 50%; background: #fff;
+    animation: aiBounce 1.2s infinite ease-in-out;
+  }
+  .ai-spinner span:nth-child(2) { animation-delay: 0.15s; }
+  .ai-spinner span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes aiBounce {
+    0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1.1); }
+  }
+
+  @media (max-width: 768px) {
+    .ai-search-row { flex-wrap: wrap; gap: 8px; }
+    .ai-search-input { flex: 1 1 100%; }
+    .ai-search-btn { flex: 1 1 100%; justify-content: center; }
+    .ai-search-status { flex: 1 1 100%; text-align: center; }
+  }
+
   /* ─────────── MAIN LAYOUT ─────────── */
   .main {
     max-width: 1280px; margin: 0 auto;
@@ -819,6 +873,19 @@
 
     <!-- Buscador derecha -->
     <div class="search-panel">
+
+      <!-- Búsqueda por IA -->
+      <div class="ai-search-row" id="ai-search-row">
+        <div class="ai-search-icon">✨</div>
+        <input type="text" class="ai-search-input" id="ai-search-input"
+          placeholder="Describí el crucero que buscás... ej: Caribe julio 2026, 7 noches, familia de 4"
+          aria-label="Búsqueda por lenguaje natural" autocomplete="off">
+        <div class="ai-search-status" id="ai-search-status"></div>
+        <button class="ai-search-btn" id="ai-search-btn" onclick="handleAISearch()">
+          <span id="ai-btn-text">Buscar con IA</span>
+          <div class="ai-spinner" id="ai-spinner" style="display:none"><span></span><span></span><span></span></div>
+        </button>
+      </div>
 
       <!-- Fila principal -->
       <div class="search-bar">
@@ -2024,6 +2091,106 @@
     document.getElementById('pagination').style.display = '';
     searchCruises(true);
   }
+
+  // ─────────────────────────────────────────
+  // BÚSQUEDA CON IA (lenguaje natural)
+  // ─────────────────────────────────────────
+  async function handleAISearch() {
+    const input = document.getElementById('ai-search-input');
+    const text = (input.value || '').trim();
+    if (text.length < 3) {
+      showAIStatus('Escribí al menos 3 caracteres', true);
+      return;
+    }
+    setAILoading(true);
+    showAIStatus('Interpretando tu búsqueda...', false);
+    try {
+      const data = await apiFetch('/ai/parse-search', {
+        method: 'POST',
+        body: JSON.stringify({ text })
+      });
+      if (!data?.success || !data?.filters) {
+        throw new Error(data?.error || 'No se pudieron interpretar los filtros');
+      }
+      applyAIFilters(data.filters);
+      showAIStatus('Filtros aplicados ✓', false);
+      handleBuscarClick();
+    } catch (err) {
+      showAIStatus(err.message || 'Error al procesar la búsqueda', true);
+    } finally {
+      setAILoading(false);
+    }
+  }
+
+  function applyAIFilters(filters) {
+    clearAllFilters();
+    if (filters.destination) {
+      searchState.destino = filters.destination;
+      document.getElementById('val-destino').textContent = filters.destination;
+    }
+    if (filters.date_from) {
+      document.getElementById('date-from').value = filters.date_from;
+    }
+    if (filters.date_to) {
+      document.getElementById('date-to').value = filters.date_to;
+    }
+    if (filters.date_from || filters.date_to) {
+      updateFechas();
+    }
+    if (filters.duration_min || filters.duration_max) {
+      searchState.durMin = filters.duration_min || '';
+      searchState.durMax = filters.duration_max || '';
+      const min = filters.duration_min || '';
+      const max = filters.duration_max || '';
+      if (min && max && min !== max) {
+        document.getElementById('val-duracion').textContent = `${min}–${max} noches`;
+      } else if (min || max) {
+        document.getElementById('val-duracion').textContent = `${min || max} noches`;
+      }
+    }
+    if (filters.departure_port) {
+      searchState.puerto = filters.departure_port;
+      document.getElementById('val-puerto').textContent = filters.departure_port;
+    }
+    if (filters.cabin_preference) {
+      searchState.cabina = filters.cabin_preference;
+    }
+    if (filters.operator) {
+      searchState.naviera = filters.operator;
+    }
+    renderFilterChips();
+    updateClearChip();
+  }
+
+  function showAIStatus(msg, isError) {
+    const el = document.getElementById('ai-search-status');
+    el.textContent = msg;
+    el.className = 'ai-search-status' + (isError ? ' error' : '');
+    if (!isError && msg) setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 4000);
+  }
+
+  function setAILoading(loading) {
+    const btn = document.getElementById('ai-search-btn');
+    const btnText = document.getElementById('ai-btn-text');
+    const spinner = document.getElementById('ai-spinner');
+    btn.disabled = loading;
+    btnText.style.display = loading ? 'none' : '';
+    spinner.style.display = loading ? 'inline-flex' : 'none';
+  }
+
+  document.getElementById('ai-search-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); handleAISearch(); }
+  });
+
+  // Verificar disponibilidad de IA al cargar
+  (async function checkAIAvailability() {
+    try {
+      const data = await apiFetch('/ai/status');
+      if (data && data.configured === false) {
+        document.getElementById('ai-search-row').style.display = 'none';
+      }
+    } catch { /* silently hide if AI unavailable */ }
+  })();
 
   // ─────────────────────────────────────────
   // BUSCAR CRUCEROS
