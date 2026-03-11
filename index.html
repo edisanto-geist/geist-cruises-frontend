@@ -291,7 +291,13 @@
   }
 
   /* ─────────── SIDEBAR ─────────── */
-  .sidebar { display: flex; flex-direction: column; gap: 8px; position: sticky; top: 70px; }
+  .sidebar {
+    display: flex; flex-direction: column; gap: 8px;
+    position: sticky; top: 70px;
+    max-height: calc(100vh - 82px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
 
   .fc {
     background: var(--white);
@@ -810,7 +816,7 @@
     .sb-field.sb-destination { flex: 1 1 100%; }
     .sb-btn { width: 100%; border-radius: 0 0 10px 10px; padding: 14px; justify-content: center; font-size: 15px; }
     .main { grid-template-columns: 1fr; padding: 16px; gap: 14px; }
-    .sidebar { position: static; display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; }
+    .sidebar { position: static; display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; max-height: none; overflow-y: visible; }
     .rt-head { grid-template-columns: 2fr 1.4fr 0.5fr 1fr 90px; }
     .rt-row  { grid-template-columns: 2fr 1.4fr 0.5fr 1fr 90px; }
     .rta:nth-child(4) { display: none; } /* Fecha salida hidden on tablet */
@@ -1485,6 +1491,7 @@
 
       showApp();
       loadFilters();
+      checkAIAvailability();
     } catch (e) {
       err.textContent = e.message || 'Error al ingresar. Intentá de nuevo.';
       err.classList.add('show');
@@ -1539,6 +1546,31 @@
     });
     if (res.status === 401 || res.status === 403) { logout(); return; }
     return res.json();
+  }
+
+  // ─── LOGOS NAVIERAS ───
+  const CRUISE_LINE_LOGOS = {
+    'royal caribbean': 'cruise-lines/royal-caribbean.svg',
+    'celebrity': 'cruise-lines/celebrity.svg',
+    'celebrity cruises': 'cruise-lines/celebrity.svg',
+    'norwegian': 'cruise-lines/ncl.svg',
+    'norwegian cruise line': 'cruise-lines/ncl.svg',
+    'ncl': 'cruise-lines/ncl.svg',
+    'princess': 'cruise-lines/princess.svg',
+    'princess cruises': 'cruise-lines/princess.svg',
+    'msc': 'cruise-lines/msc.svg',
+    'msc cruises': 'cruise-lines/msc.svg',
+    'msc cruceros': 'cruise-lines/msc.svg',
+    'virgin': 'cruise-lines/virgin.svg',
+    'virgin voyages': 'cruise-lines/virgin.svg',
+  };
+  function getCruiseLineLogo(naviera) {
+    if (!naviera || naviera === '—') return '';
+    const key = naviera.toLowerCase();
+    for (const [k, v] of Object.entries(CRUISE_LINE_LOGOS)) {
+      if (key.includes(k)) return v;
+    }
+    return '';
   }
 
   // ─── ESTADO BÚSQUEDA ───
@@ -2276,11 +2308,12 @@
     if (e.key === 'Enter') { e.preventDefault(); handleAISearch(); }
   });
 
-  // Verificar disponibilidad de IA al cargar (sin apiFetch para evitar logout en 401)
-  (async function checkAIAvailability() {
+  // Verificar disponibilidad de IA (se llama al cargar y tras login)
+  async function checkAIAvailability() {
     const wrapper = document.getElementById('ai-search-wrapper');
     if (!TOKEN) { wrapper.style.display = 'none'; return; }
     try {
+      wrapper.style.display = '';
       const res = await fetch(`${API}/ai/status`, { headers: { 'Authorization': `Bearer ${TOKEN}` } });
       if (!res.ok) { wrapper.style.display = 'none'; return; }
       const data = await res.json();
@@ -2288,7 +2321,8 @@
         wrapper.style.display = 'none';
       }
     } catch { wrapper.style.display = 'none'; }
-  })();
+  }
+  checkAIAvailability();
 
   // ─────────────────────────────────────────
   // BUSCAR CRUCEROS
@@ -2453,9 +2487,12 @@
           <div class="rta rta-itin">
             <div class="rta-route">${puertoText}</div>
           </div>
-          <div class="rta rta-line">
-            <div class="rta-ship" style="font-weight:600;color:var(--text);">${barco !== '—' ? barco : '—'}</div>
-            <div class="rta-nights">${naviera}</div>
+          <div class="rta rta-line" style="display:flex;align-items:center;gap:10px;">
+            ${(() => { const logo = getCruiseLineLogo(naviera); return logo ? `<img src="${logo}" alt="${naviera}" width="24" height="24" style="border-radius:4px;flex-shrink:0;" onerror="this.style.display='none'">` : ''; })()}
+            <div>
+              <div class="rta-ship" style="font-weight:600;color:var(--text);">${barco !== '—' ? barco : '—'}</div>
+              <div class="rta-nights">${naviera}</div>
+            </div>
           </div>
           <div class="rta rta-center" style="font-size:15px;font-weight:700;">${noches}</div>
           <div class="rta rta-center">${fechaDdMm}</div>
