@@ -1,1 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="12" fill="#1a1a2e"/><text x="60" y="68" font-family="serif" font-size="56" font-weight="bold" fill="#fff" text-anchor="middle">X</text><rect x="25" y="82" width="70" height="2" fill="#c9a84c"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="cel-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#22223a"/>
+      <stop offset="100%" stop-color="#0f0f1e"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="10" fill="url(#cel-bg)"/>
+  <!-- The Celebrity "X" mark — precise geometric version -->
+  <g stroke="#fff" stroke-linecap="round" fill="none">
+    <!-- Left leg of X (thicker at top, thins toward center) -->
+    <path d="M16 14 L30.5 31.5" stroke-width="5.5"/>
+    <path d="M30.5 32.5 L16 50" stroke-width="5.5"/>
+    <!-- Right leg of X -->
+    <path d="M48 14 L33.5 31.5" stroke-width="5.5"/>
+    <path d="M33.5 32.5 L48 50" stroke-width="5.5"/>
+  </g>
+  <!-- Gold underline — the brand signature -->
+  <line x1="14" y1="55" x2="50" y2="55" stroke="#b8965a" stroke-width="2" stroke-linecap="round"/>
+</svg>

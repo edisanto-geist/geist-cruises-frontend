@@ -1,1 +1,55 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="12" fill="#00263e"/><path d="M60 25c-4 0-7 3-7 7v3c-8 2-13 8-13 15 0 10 9 18 20 18s20-8 20-18c0-7-5-13-13-15v-3c0-4-3-7-7-7z" fill="#c9a84c"/><path d="M45 75l15 20 15-20z" fill="#c9a84c"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="pr-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#003050"/>
+      <stop offset="100%" stop-color="#001a30"/>
+    </linearGradient>
+    <linearGradient id="pr-gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4af5a"/>
+      <stop offset="50%" stop-color="#f0d080"/>
+      <stop offset="100%" stop-color="#b8923a"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="10" fill="url(#pr-bg)"/>
+  <!-- Sea-witch profile medallion — woman facing right with wave hair -->
+  <g fill="url(#pr-gold)" stroke="#a07828" stroke-width="0.4">
+    <!-- Face profile — forehead, nose, lips, chin -->
+    <path d="
+      M26 16
+      C26 16 25 18 25 20
+      C25 22 24.5 23 24 24
+      L23 25
+      C22.5 25.5 22.5 26 23 26.5
+      C23.5 27 24 27 24 27.5
+      C24 28 23.5 28.5 23.5 29
+      C23.5 30 24 30.5 24.5 31
+      C25 31.5 25.5 32 25.5 33
+      C25.5 34 25 35 25 36
+      L25 37
+    " fill="none" stroke="url(#pr-gold)" stroke-width="2" stroke-linecap="round"/>
+    <!-- Flowing hair backward — the iconic wave -->
+    <path d="
+      M26 16
+      C28 14 31 13 34 14
+      C37 15 39 17 41 20
+      C43 23 45 25 48 26
+      C46 27 43 27.5 41 26
+      C39 24.5 37 23 35 22
+      C33 21 31 21 29 22
+      C27 24 26 26 25 28
+    " fill="none" stroke="url(#pr-gold)" stroke-width="1.8" stroke-linecap="round"/>
+    <!-- Second hair strand -->
+    <path d="
+      M28 15
+      C30 13.5 33 13 36 14.5
+      C39 16 42 19 45 21
+      C47 22.5 49 23 50 22.5
+    " fill="none" stroke="url(#pr-gold)" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+    <!-- Eye -->
+    <circle cx="25.5" cy="22.5" r="0.8" fill="url(#pr-gold)" stroke="none"/>
+  </g>
+  <!-- Wave decorations below -->
+  <path d="M10 44 Q20 39 32 44 Q44 49 54 44" fill="none" stroke="url(#pr-gold)" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M10 49 Q20 44 32 49 Q44 54 54 49" fill="none" stroke="url(#pr-gold)" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+  <path d="M10 53 Q20 48 32 53 Q44 58 54 53" fill="none" stroke="url(#pr-gold)" stroke-width="0.8" stroke-linecap="round" opacity="0.3"/>
+</svg>
