@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Panel de administración — Geist Cruceros">
+<meta name="theme-color" content="#0d1f3c">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚢</text></svg>">
 <title>Geist Admin — Backoffice</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -227,6 +231,73 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ══ RESPONSIVE ══ */
+.sidebar-toggle {
+  display: none;
+  background: none; border: none; color: #fff; font-size: 22px;
+  cursor: pointer; padding: 4px 8px; margin-right: 8px;
+}
+
+@media (max-width: 900px) {
+  .sidebar-toggle { display: block; }
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.2s ease-out;
+    z-index: 60;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay {
+    display: none; position: fixed; inset: 0; z-index: 55;
+    background: rgba(0,0,0,0.4);
+  }
+  .sidebar-overlay.open { display: block; }
+  .main { margin-left: 0; }
+  .topbar { left: 0; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .cache-grid { grid-template-columns: repeat(2, 1fr); }
+  .data-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .modal { width: 95vw; }
+  .modal-inner { padding: 20px; }
+  .toast { left: 16px; right: 16px; max-width: none; bottom: 16px; }
+}
+
+@media (max-width: 600px) {
+  .topbar { padding: 0 12px; }
+  .topbar-title { font-size: 14px; }
+  .stat-grid { grid-template-columns: 1fr; }
+  .cache-grid { grid-template-columns: 1fr; }
+  .login-box { padding: 24px; width: 100%; max-width: 95vw; }
+  .lf input, .lf select, .lf textarea { font-size: 16px !important; }
+  input, select, textarea { font-size: 16px !important; }
+  .form-row { flex-direction: column; }
+  .form-row label { min-width: 0; }
+  .tb-actions { gap: 4px; }
+  .tb-btn { padding: 6px 10px; font-size: 11px; }
+  .data-table th, .data-table td { padding: 10px 8px; font-size: 12px; }
+  .modal { border-radius: 12px; }
+}
+
+@media (max-width: 480px) {
+  .topbar { height: 50px; }
+  .section-title { font-size: 16px; }
+  .sc-val { font-size: 20px; }
+  .sc-label { font-size: 10px; }
+  .cc-btn { padding: 10px; font-size: 12px; min-height: 44px; }
+}
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .sidebar { padding-bottom: env(safe-area-inset-bottom); }
+  .toast { bottom: max(16px, env(safe-area-inset-bottom)); }
+}
 </style>
 </head>
 <body>
@@ -259,6 +330,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 <div class="app hidden" id="app">
 
   <!-- SIDEBAR -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
   <nav class="sidebar">
     <div class="sb-top">
       <div class="sb-logo">
@@ -294,6 +366,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
   <!-- MAIN -->
   <div class="main">
     <div class="topbar">
+      <button class="sidebar-toggle" aria-label="Abrir menú" onclick="toggleSidebar()">☰</button>
       <div>
         <div class="topbar-title" id="topbarTitle">Dashboard</div>
         <div class="topbar-sub" id="topbarSub">Resumen del sistema</div>
@@ -340,8 +413,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
           <div class="card-head">
             <div class="card-title">🕐 Actividad reciente</div>
           </div>
+          <div class="data-table-wrap">
           <div id="activityList">
             <div class="loading-row"><div class="spinner"></div> Cargando actividad...</div>
+          </div>
           </div>
         </div>
 
@@ -381,8 +456,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
               <option value="Royal">Royal Caribbean</option>
             </select>
           </div>
+          <div class="data-table-wrap">
           <div id="shipsTable">
             <div class="loading-row"><div class="spinner"></div> Cargando barcos...</div>
+          </div>
           </div>
         </div>
       </div>
@@ -407,7 +484,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
               <button class="tb-btn" onclick="loadCabinsForShip()">🔄 Recargar</button>
             </div>
           </div>
-          <div id="cabinsTable"></div>
+          <div class="data-table-wrap"><div id="cabinsTable"></div></div>
         </div>
       </div>
 
@@ -420,8 +497,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
               <button class="tb-btn primary" onclick="openAddDestinoModal()">+ Agregar destino</button>
             </div>
           </div>
+          <div class="data-table-wrap">
           <div id="destinosTable">
             <div class="loading-row"><div class="spinner"></div> Cargando destinos...</div>
+          </div>
           </div>
         </div>
       </div>
@@ -432,6 +511,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
           <div class="card-head">
             <div class="card-title">Navieras integradas</div>
           </div>
+          <div class="data-table-wrap">
           <table class="data-table">
             <thead>
               <tr><th>Naviera</th><th>Código API</th><th>Barcos</th><th>Estado</th><th>Acciones</th></tr>
@@ -453,6 +533,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
               </tr>
             </tbody>
           </table>
+          </div>
         </div>
         <div class="info-box amber">
           ⚠️ <span>Para agregar nuevas navieras se requiere habilitar el operador en Widgety y agregar el slug a la lista blanca del backend.</span>
@@ -472,8 +553,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
           <div class="info-box">
             ℹ️ <span>Los cruceros offline son bloques o charters propios de Geist. Aparecen mezclados con los de Widgety en el buscador de las agencias.</span>
           </div>
+          <div class="data-table-wrap">
           <div id="offlineTable">
             <div class="loading-row"><div class="spinner"></div> Cargando...</div>
+          </div>
           </div>
         </div>
       </div>
@@ -487,8 +570,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
               <button class="tb-btn primary" onclick="openAddAgenciaModal()">+ Nueva agencia</button>
             </div>
           </div>
+          <div class="data-table-wrap">
           <div id="agenciasTable">
             <div class="loading-row"><div class="spinner"></div> Cargando agencias...</div>
+          </div>
           </div>
         </div>
       </div>
@@ -535,11 +620,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 <div class="toast" id="toast"></div>
 
 <!-- MODAL BARCO EDIT -->
-<div class="ov" id="ov-ship" onclick="if(event.target.id==='ov-ship')closeShipModal()">
+<div class="ov" id="ov-ship" role="dialog" aria-modal="true" aria-label="Editar barco" onclick="if(event.target.id==='ov-ship')closeShipModal()">
   <div class="modal">
     <div class="modal-hd">
       <div class="modal-ht" id="shipModalTitle">Editar barco</div>
-      <button class="modal-x" onclick="closeShipModal()">✕</button>
+      <button class="modal-x" aria-label="Cerrar" onclick="closeShipModal()">✕</button>
     </div>
     <div class="modal-bd">
       <input type="hidden" id="editShipSlug">
@@ -574,11 +659,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 </div>
 
 <!-- MODAL DESTINO -->
-<div class="ov" id="ov-destino" onclick="if(event.target.id==='ov-destino')closeDestinoModal()">
+<div class="ov" id="ov-destino" role="dialog" aria-modal="true" aria-label="Destino / Región" onclick="if(event.target.id==='ov-destino')closeDestinoModal()">
   <div class="modal">
     <div class="modal-hd">
       <div class="modal-ht">Destino / Región</div>
-      <button class="modal-x" onclick="closeDestinoModal()">✕</button>
+      <button class="modal-x" aria-label="Cerrar" onclick="closeDestinoModal()">✕</button>
     </div>
     <div class="modal-bd">
       <div class="form-row">
@@ -610,11 +695,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 </div>
 
 <!-- MODAL AGENCIA -->
-<div class="ov" id="ov-agencia" onclick="if(event.target.id==='ov-agencia')closeAgenciaModal()">
+<div class="ov" id="ov-agencia" role="dialog" aria-modal="true" aria-label="Nueva agencia" onclick="if(event.target.id==='ov-agencia')closeAgenciaModal()">
   <div class="modal">
     <div class="modal-hd">
       <div class="modal-ht">Nueva agencia</div>
-      <button class="modal-x" onclick="closeAgenciaModal()">✕</button>
+      <button class="modal-x" aria-label="Cerrar" onclick="closeAgenciaModal()">✕</button>
     </div>
     <div class="modal-bd">
       <div class="form-row">
@@ -643,11 +728,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 </div>
 
 <!-- MODAL CRUCERO OFFLINE -->
-<div class="ov" id="ov-offline" onclick="if(event.target.id==='ov-offline')closeOfflineModal()">
+<div class="ov" id="ov-offline" role="dialog" aria-modal="true" aria-label="Nuevo crucero offline" onclick="if(event.target.id==='ov-offline')closeOfflineModal()">
   <div class="modal">
     <div class="modal-hd">
       <div class="modal-ht">Nuevo crucero offline</div>
-      <button class="modal-x" onclick="closeOfflineModal()">✕</button>
+      <button class="modal-x" aria-label="Cerrar" onclick="closeOfflineModal()">✕</button>
     </div>
     <div class="modal-bd">
       <div class="form-row">
@@ -699,6 +784,21 @@ let TOKEN = localStorage.getItem('geist_token') || null;
 let _currentPanel = 'dashboard';
 let _shipsData = [];
 let _currentShipSlug = '';
+
+// Sidebar toggle for mobile
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+
+// Close modals/sidebar with Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar && sidebar.classList.contains('open')) { toggleSidebar(); return; }
+    document.querySelectorAll('.ov.open').forEach(ov => ov.classList.remove('open'));
+  }
+});
 
 // ════════════════════════════════════
 // AUTH

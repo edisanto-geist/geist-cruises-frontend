@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Portal B2B de cruceros para agencias — Geist Cruceros">
+<meta name="theme-color" content="#0d1f3c">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚢</text></svg>">
 <title>Geist Cruceros — Portal B2B</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -39,7 +42,7 @@
 
   /* ─────────── NAV ─────────── */
   nav {
-    position: fixed; top:0; left:0; right:0; z-index:200;
+    position: fixed; top:0; left:0; right:0; z-index:40;
     height: 58px;
     background: var(--navy);
     display: flex; align-items: center; padding: 0 32px;
@@ -85,7 +88,7 @@
     position: absolute; top: calc(100% + 8px); right: 0;
     background: #1e2433; border: 1px solid rgba(255,255,255,0.12);
     border-radius: 10px; padding: 6px; min-width: 160px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.35); z-index: 1000;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35); z-index: 45;
     display: none;
   }
   .n-dropdown.open { display: block; }
@@ -461,7 +464,7 @@
 
   /* ── ITINERARIO MODAL ── */
   #itin-modal-ov {
-    display: none; position: fixed; inset: 0; z-index: 600;
+    display: none; position: fixed; inset: 0; z-index: 50;
     background: rgba(13,31,60,0.55); backdrop-filter: blur(3px);
     align-items: center; justify-content: center;
   }
@@ -552,7 +555,7 @@
 
   /* ─────────── MODAL ─────────── */
   .overlay {
-    display: none; position: fixed; inset: 0; z-index: 500;
+    display: none; position: fixed; inset: 0; z-index: 50;
     background: rgba(8,16,32,0.65); backdrop-filter: blur(4px);
     align-items: center; justify-content: center; padding: 24px;
   }
@@ -721,7 +724,7 @@
   /* ── DROPDOWNS BARRA DE BÚSQUEDA ── */
   .sb-field { position: relative; cursor: pointer; user-select: none; }
   .sb-drop {
-    display: none; position: absolute; top: calc(100% + 12px); left: -12px; z-index: 9999;
+    display: none; position: absolute; top: calc(100% + 12px); left: -12px; z-index: 45;
     background: #fff; border: 1px solid var(--border); border-radius: 14px;
     box-shadow: 0 8px 32px rgba(13,31,60,0.14);
     min-width: 240px;
@@ -845,6 +848,42 @@
     footer { flex-direction: column; gap: 12px; text-align: center; padding: 16px; }
     .ft-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
     .pax-modal-inner { width: 95vw !important; }
+    .sb-drop, .sb-drop-wide, .sb-drop-sm { min-width: 0; width: calc(100vw - 24px); left: -14px; }
+    .hero-title { font-size: 18px; }
+    .m-close { width: 40px; height: 40px; font-size: 16px; }
+    .pg-btn { width: 40px; height: 40px; }
+    .cb-sq { width: 22px; height: 22px; border-radius: 5px; font-size: 11px; }
+  }
+
+  @media (max-width: 480px) {
+    nav { padding: 0 10px; }
+    .n-name { font-size: 14px; }
+    .hero-inner { padding: 10px 10px 0; }
+    .main { padding: 10px; gap: 10px; }
+    .rt-head { display: none; }
+    .rt-row { grid-template-columns: 1fr; gap: 0; padding: 12px; }
+    .rta { padding: 4px 0; }
+    .rta-action { justify-content: stretch; }
+    .rta-btn, .rta-btn-info { flex: 1; text-align: center; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+    .price-summary { grid-template-columns: 1fr; }
+    .ship-stats { grid-template-columns: repeat(2, 1fr); }
+    .pax-modal-inner { padding: 16px !important; }
+  }
+
+  @supports (padding: env(safe-area-inset-bottom)) {
+    nav { padding-left: max(32px, env(safe-area-inset-left)); padding-right: max(32px, env(safe-area-inset-right)); }
+    footer { padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+  }
+  @media (max-width: 600px) {
+    input, select, textarea { font-size: 16px !important; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
 </style>
@@ -885,7 +924,7 @@
     <!-- Título izquierda -->
     <div class="hero-title-block">
       <div class="hero-eyebrow">⚓ Portal mayorista</div>
-      <div class="hero-title">Buscador<br>de Cruceros</div>
+      <h1 class="hero-title">Buscador<br>de Cruceros</h1>
       <div class="hero-stats">
         <div class="hs"><span class="hs-n">60+</span><span class="hs-l">Navieras</span></div>
         <div class="hs-div"></div>
@@ -922,7 +961,7 @@
 
         <!-- DESTINO -->
         <div class="sb-field sb-destination" onclick="toggleDrop('drop-destino', event)">
-          <div class="sb-icon">🌍</div>
+          <div class="sb-icon"><span aria-hidden="true">🌍</span></div>
           <div class="sb-content">
             <div class="sb-label">Destino</div>
             <div class="sb-value" id="val-destino">Cualquier destino</div>
@@ -942,7 +981,7 @@
 
         <!-- FECHAS -->
         <div class="sb-field sb-dates" onclick="toggleDrop('drop-fechas', event)">
-          <div class="sb-icon">📅</div>
+          <div class="sb-icon"><span aria-hidden="true">📅</span></div>
           <div class="sb-content">
             <div class="sb-label">Fechas</div>
             <div class="sb-value" id="val-fechas">Cualquier fecha</div>
@@ -976,7 +1015,7 @@
 
         <!-- PUERTO DE SALIDA -->
         <div class="sb-field" onclick="toggleDrop('drop-puerto', event)">
-          <div class="sb-icon">⚓</div>
+          <div class="sb-icon"><span aria-hidden="true">⚓</span></div>
           <div class="sb-content">
             <div class="sb-label">Puerto de salida</div>
             <div class="sb-value" id="val-puerto">Cualquier puerto</div>
@@ -995,7 +1034,7 @@
 
         <!-- PUERTO ESCALA -->
         <div class="sb-field" onclick="toggleDrop('drop-escala', event)">
-          <div class="sb-icon">📍</div>
+          <div class="sb-icon"><span aria-hidden="true">📍</span></div>
           <div class="sb-content">
             <div class="sb-label">Puerto Escala</div>
             <div class="sb-value" id="val-escala">Cualquier escala</div>
@@ -1014,7 +1053,7 @@
 
         <!-- DURACIÓN -->
         <div class="sb-field" onclick="toggleDrop('drop-duracion', event)">
-          <div class="sb-icon">🌙</div>
+          <div class="sb-icon"><span aria-hidden="true">🌙</span></div>
           <div class="sb-content">
             <div class="sb-label">Duración</div>
             <div class="sb-value" id="val-duracion">Cualquier duración</div>
@@ -1033,7 +1072,7 @@
 
         <!-- BARCO -->
         <div class="sb-field" onclick="toggleDrop('drop-barco', event)">
-          <div class="sb-icon">🚢</div>
+          <div class="sb-icon"><span aria-hidden="true">🚢</span></div>
           <div class="sb-content">
             <div class="sb-label">Barco</div>
             <div class="sb-value" id="val-barco">Barco</div>
@@ -1123,7 +1162,7 @@
     <div class="r-header">
       <div class="r-count" id="resultsCount"><strong>12 cruceros</strong> encontrados</div>
       <div class="r-controls">
-        <select class="r-sel" onchange="handleSortSelect(this)">
+        <select class="r-sel" aria-label="Ordenar resultados" onchange="handleSortSelect(this)">
           <option value="">⭐ Recomendado</option>
           <option value="precio-asc">↑ Menor precio</option>
           <option value="precio-desc">↓ Mayor precio</option>
@@ -1169,9 +1208,9 @@
 </footer>
 
 <!-- MODAL -->
-<div class="overlay" id="ov" onclick="handleOv(event)">
+<div class="overlay" id="ov" role="dialog" aria-modal="true" aria-label="Detalle de crucero" onclick="handleOv(event)">
   <div class="modal">
-    <button class="m-close" onclick="closeModal()">✕</button>
+    <button class="m-close" aria-label="Cerrar" onclick="closeModal()">✕</button>
     <div class="m-sidebar">
       <div class="m-cruise-info">
         <div class="m-cruise-name">Norwegian Pearl</div>
@@ -1278,7 +1317,7 @@
 <style>
   /* ── LOGIN ── */
   .login-screen {
-    position: fixed; inset: 0; z-index: 1000;
+    position: fixed; inset: 0; z-index: 60;
     background: var(--navy);
     display: flex; align-items: center; justify-content: center;
   }
@@ -1339,7 +1378,6 @@
   .spinner span:nth-child(4){height:26px;animation-delay:0.45s;}
   .spinner span:nth-child(5){height:14px;animation-delay:0.6s;}
   @keyframes wave-bar{0%,100%{transform:scaleY(0.35);opacity:0.35;}50%{transform:scaleY(1);opacity:1;}}
-  @keyframes sail{0%,100%{transform:translateX(-6px) rotate(-2deg);}50%{transform:translateX(6px) rotate(2deg);}}
 
   /* Inline small spinner (for dropdowns / inline use) */
   .spin-sm{display:inline-flex;align-items:center;gap:2px;}
@@ -1368,11 +1406,11 @@
     <p class="login-sub">Ingresá con tu cuenta de agencia para acceder al portal B2B.</p>
     <div class="login-error" id="loginError">Email o contraseña incorrectos.</div>
     <div class="login-field">
-      <label>Email</label>
+      <label for="loginEmail">Email</label>
       <input type="email" id="loginEmail" placeholder="agencia@ejemplo.com" autocomplete="email">
     </div>
     <div class="login-field">
-      <label>Contraseña</label>
+      <label for="loginPass">Contraseña</label>
       <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
     </div>
     <button class="btn-login" id="btnLogin" onclick="doLogin()">Ingresar al portal</button>
@@ -1521,6 +1559,18 @@
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.sb-field') && !e.target.closest('.sa-chip')) {
       document.querySelectorAll('.sb-drop.open').forEach(d => d.classList.remove('open'));
+    }
+  });
+
+  // Cerrar modales con Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const ov = document.getElementById('ov');
+      if (ov && ov.classList.contains('open')) { closeModal(); return; }
+      const itinOv = document.getElementById('itin-modal-ov');
+      if (itinOv && itinOv.classList.contains('open')) { closeItinModal(); return; }
+      document.querySelectorAll('.sb-drop.open').forEach(d => d.classList.remove('open'));
+      document.getElementById('userDropdown')?.classList.remove('open');
     }
   });
 
@@ -2800,14 +2850,14 @@
 </script>
 
 <!-- ITINERARIO MODAL -->
-<div id="itin-modal-ov" onclick="if(event.target===this)closeItinModal()">
+<div id="itin-modal-ov" role="dialog" aria-modal="true" aria-label="Itinerario" onclick="if(event.target===this)closeItinModal()">
   <div class="itin-modal">
     <div class="itin-modal-head">
       <div>
         <div class="itin-modal-title" id="itin-modal-title">Itinerario</div>
         <div class="itin-modal-sub" id="itin-modal-sub"></div>
       </div>
-      <button class="itin-close" onclick="closeItinModal()">✕</button>
+      <button class="itin-close" aria-label="Cerrar" onclick="closeItinModal()">✕</button>
     </div>
     <div class="itin-modal-body">
       <table class="itin-table" id="itin-modal-table">

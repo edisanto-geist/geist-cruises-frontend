@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Detalle de crucero — Geist Cruceros, portal B2B para agencias">
+<meta name="theme-color" content="#0d1f3c">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚢</text></svg>">
 <title>Detalle de Crucero — Geist Cruceros</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -250,6 +253,32 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     .bottom-bar { flex-direction: column; gap: 8px; padding: 12px; }
     .btn-confirm, .btn-add { width: 100%; text-align: center; }
     .ov .modal { width: 95vw; }
+    input, select, textarea { font-size: 16px !important; }
+    .cm-specs { grid-template-columns: 1fr !important; }
+    .cm-pricing { grid-template-columns: 1fr !important; }
+  }
+
+  @media (max-width: 480px) {
+    nav { padding: 0 10px; }
+    .detail-grid { gap: 12px; }
+    .sidebar-right { padding: 14px; }
+    .type-row { grid-template-columns: 1fr !important; }
+    .ship-stats-grid { grid-template-columns: 1fr 1fr !important; }
+    .cabin-table { font-size: 12px; }
+    .cabin-table td, .cabin-table th { padding: 8px 6px; }
+  }
+
+  @supports (padding: env(safe-area-inset-bottom)) {
+    nav { padding-left: max(32px, env(safe-area-inset-left)); padding-right: max(32px, env(safe-area-inset-right)); }
+    footer { padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 </style>
 </head>
@@ -260,7 +289,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     <span class="n-name">GEIST <em>Cruceros</em></span>
   </a>
   <div class="n-links">
-    <a href="index.html" class="on">🚢 Cruceros</a>
+    <a href="index.html" class="on"><span aria-hidden="true">🚢</span> Cruceros</a>
     <a href="#">Mis reservas</a>
     <a href="#">Mis presupuestos</a>
   </div>
@@ -317,8 +346,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     </div>
 
     <div class="bottom-bar" id="bottomBar" style="display:none;">
-      <button class="bb-add" onclick="addToBudget()">📄 &nbsp;Agregar al presupuesto</button>
-      <button class="bb-confirm" onclick="showToast('✅ Reserva confirmada')">✅ &nbsp;Confirmar y continuar</button>
+      <button class="bb-add" onclick="addToBudget()"><span aria-hidden="true">📄</span> &nbsp;Agregar al presupuesto</button>
+      <button class="bb-confirm" onclick="showToast('✅ Reserva confirmada')"><span aria-hidden="true">✅</span> &nbsp;Confirmar y continuar</button>
     </div>
   </div>
 
@@ -330,7 +359,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       </div>
       <div id="shipBannerCard" style="padding:14px 18px;border-bottom:1px solid var(--border);"></div>
       <div class="itin-trigger" onclick="toggleItin()">
-        <div class="itin-trigger-label">🗓 Ver itinerario completo</div>
+        <div class="itin-trigger-label"><span aria-hidden="true">🗓</span> Ver itinerario completo</div>
         <div class="itin-trigger-arrow" id="itinArr">▾</div>
       </div>
       <div class="itin-panel" id="itinPanel">
@@ -339,13 +368,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
         </div>
       </div>
       <div class="sum-meta">
-        <div class="sm-row"><span class="sm-lbl">📅 Salida</span><span class="sm-val" id="metaSalida">—</span></div>
-        <div class="sm-row"><span class="sm-lbl">🏁 Regreso</span><span class="sm-val" id="metaRegreso">—</span></div>
-        <div class="sm-row"><span class="sm-lbl">🌙 Noches</span><span class="sm-val" id="metaNoches">—</span></div>
-        <div class="sm-row"><span class="sm-lbl">📍 Sale de</span><span class="sm-val" id="metaSaleDe">—</span></div>
-        <div class="sm-row"><span class="sm-lbl">📍 Llega a</span><span class="sm-val" id="metaLlegaA">—</span></div>
+        <div class="sm-row"><span class="sm-lbl"><span aria-hidden="true">📅</span> Salida</span><span class="sm-val" id="metaSalida">—</span></div>
+        <div class="sm-row"><span class="sm-lbl"><span aria-hidden="true">🏁</span> Regreso</span><span class="sm-val" id="metaRegreso">—</span></div>
+        <div class="sm-row"><span class="sm-lbl"><span aria-hidden="true">🌙</span> Noches</span><span class="sm-val" id="metaNoches">—</span></div>
+        <div class="sm-row"><span class="sm-lbl"><span aria-hidden="true">📍</span> Sale de</span><span class="sm-val" id="metaSaleDe">—</span></div>
+        <div class="sm-row"><span class="sm-lbl"><span aria-hidden="true">📍</span> Llega a</span><span class="sm-val" id="metaLlegaA">—</span></div>
         <div class="sm-row">
-          <span class="sm-lbl">👥 Pasajeros</span>
+          <span class="sm-lbl"><span aria-hidden="true">👥</span> Pasajeros</span>
           <span class="sm-val" style="display:flex;align-items:center;gap:8px;">
             <span id="paxSumVal">— pasajeros</span>
             <button onclick="togglePaxEditor()" style="background:none;border:none;color:var(--blue);font-size:11.5px;font-weight:600;font-family:inherit;cursor:pointer;text-decoration:underline;">Editar</button>
@@ -355,17 +384,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
             <div><div style="font-size:13px;font-weight:600;">Adultos</div><div style="font-size:11px;color:var(--muted);">+18 años</div></div>
             <div style="display:flex;align-items:center;gap:10px;">
-              <button onclick="changePax('a',-1)" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:15px;cursor:pointer;">−</button>
+              <button onclick="changePax('a',-1)" style="width:38px;height:38px;min-width:44px;min-height:44px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:15px;cursor:pointer;">−</button>
               <span id="paxA" style="font-size:15px;font-weight:700;min-width:18px;text-align:center;">2</span>
-              <button onclick="changePax('a',1)" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:15px;cursor:pointer;">+</button>
+              <button onclick="changePax('a',1)" style="width:38px;height:38px;min-width:44px;min-height:44px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:15px;cursor:pointer;">+</button>
             </div>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
             <div><div style="font-size:13px;font-weight:600;">Niños</div><div style="font-size:11px;color:var(--muted);">Hasta 17 años</div></div>
             <div style="display:flex;align-items:center;gap:10px;">
-              <button onclick="changePax('k',-1)" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:15px;cursor:pointer;">−</button>
+              <button onclick="changePax('k',-1)" style="width:38px;height:38px;min-width:44px;min-height:44px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:15px;cursor:pointer;">−</button>
               <span id="paxK" style="font-size:15px;font-weight:700;min-width:18px;text-align:center;">0</span>
-              <button onclick="changePax('k',1)" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:15px;cursor:pointer;">+</button>
+              <button onclick="changePax('k',1)" style="width:38px;height:38px;min-width:44px;min-height:44px;border-radius:50%;border:1.5px solid var(--border2);background:#fff;font-size:15px;cursor:pointer;">+</button>
             </div>
           </div>
           <button onclick="togglePaxEditor()" style="width:100%;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;padding:9px;cursor:pointer;">Confirmar</button>
@@ -391,12 +420,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
         <div class="st-price" id="stPrice">—</div>
       </div>
       <div class="sum-actions">
-        <button class="btn-confirm" onclick="showToast('✅ Reserva confirmada')">✅ &nbsp;Confirmar y continuar</button>
-        <button class="btn-add" onclick="addToBudget()">📄 &nbsp;Incluir en el presupuesto</button>
+        <button class="btn-confirm" onclick="showToast('✅ Reserva confirmada')"><span aria-hidden="true">✅</span> &nbsp;Confirmar y continuar</button>
+        <button class="btn-add" onclick="addToBudget()"><span aria-hidden="true">📄</span> &nbsp;Incluir en el presupuesto</button>
       </div>
     </div>
     <div class="budget-pill" id="bPill">
-      <span class="bp-ic">📁</span>
+      <span class="bp-ic" aria-hidden="true">📁</span>
       <span class="bp-txt" id="bPillTxt">1 crucero</span>
       <span class="bp-badge" id="bPillN">1</span>
       <button class="bp-link" onclick="openModal()">Ver y enviar →</button>
@@ -406,7 +435,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
 
 
 <!-- CABIN DETAIL MODAL -->
-<div id="cabin-modal-ov" onclick="if(event.target.id==='cabin-modal-ov')closeCabinModal()">
+<div id="cabin-modal-ov" onclick="if(event.target.id==='cabin-modal-ov')closeCabinModal()" role="dialog" aria-modal="true" aria-label="Detalle de cabina">
   <div class="cm" id="cabinModal">
     <div id="cmImgWrap"></div>
     <div class="cm-body">
@@ -416,7 +445,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
           <div class="cm-title" id="cmTitle">Aft-Facing Balcony</div>
           <div class="cm-code" id="cmCode">Código: B1</div>
         </div>
-        <button class="cm-close" onclick="closeCabinModal()">✕</button>
+        <button class="cm-close" onclick="closeCabinModal()" aria-label="Cerrar">✕</button>
       </div>
 
       <!-- Disponibilidad -->
@@ -463,18 +492,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
 
 <div class="toast" id="toast"></div>
 
-<div class="ov" id="ov" onclick="if(event.target.id==='ov')closeModal()">
+<div class="ov" id="ov" onclick="if(event.target.id==='ov')closeModal()" role="dialog" aria-modal="true" aria-label="Mis presupuestos">
   <div class="modal">
     <div class="modal-hd">
-      <div class="modal-ht">📁 Mis presupuestos</div>
-      <button class="modal-x" onclick="closeModal()">✕</button>
+      <div class="modal-ht"><span aria-hidden="true">📁</span> Mis presupuestos</div>
+      <button class="modal-x" onclick="closeModal()" aria-label="Cerrar">✕</button>
     </div>
     <div class="modal-bd">
       <div id="bList"></div>
       <div style="margin-top:16px;">
         <label class="email-lbl">Enviar por email a la agencia</label>
         <input class="email-in" type="email" id="emailIn" placeholder="agencia@ejemplo.com">
-        <button class="btn-send" onclick="sendBudgets()">✉️ &nbsp;Enviar todos los presupuestos</button>
+        <button class="btn-send" onclick="sendBudgets()"><span aria-hidden="true">✉️</span> &nbsp;Enviar todos los presupuestos</button>
       </div>
     </div>
   </div>
@@ -1117,6 +1146,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     clearTimeout(tt);
     tt = setTimeout(() => t.classList.remove('show'), 3000);
   }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.ov.open, #cabin-modal-ov.open').forEach(ov => ov.classList.remove('open'));
+    }
+  });
 </script>
 </body>
 </html>
