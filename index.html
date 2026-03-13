@@ -1550,12 +1550,12 @@
 
   // ─── LOGOS NAVIERAS ───
   const CRUISE_LINE_LOGOS = {
-    'royal caribbean': 'cruise-lines/royal-caribbean.jpg',
+    'royal caribbean': 'cruise-lines/royal-caribbean.png',
     'celebrity': 'cruise-lines/celebrity.svg',
     'celebrity cruises': 'cruise-lines/celebrity.svg',
-    'norwegian': 'cruise-lines/norwegian.jpg',
-    'norwegian cruise line': 'cruise-lines/norwegian.jpg',
-    'ncl': 'cruise-lines/norwegian.jpg',
+    'norwegian': 'cruise-lines/norwegian.png',
+    'norwegian cruise line': 'cruise-lines/norwegian.png',
+    'ncl': 'cruise-lines/norwegian.png',
     'princess': 'cruise-lines/princess.svg',
     'princess cruises': 'cruise-lines/princess.svg',
     'msc': 'cruise-lines/msc.svg',
@@ -2522,7 +2522,7 @@
             <div class="rta-route">${puertoText}</div>
           </div>
           <div class="rta rta-line" style="display:flex;align-items:center;gap:10px;">
-            ${(() => { const logo = getCruiseLineLogo(naviera); return logo ? `<img src="${logo}" alt="${naviera}" width="32" height="32" style="border-radius:4px;flex-shrink:0;object-fit:contain;background:#fff;" onerror="this.style.display='none'">` : ''; })()}
+            ${(() => { const logo = getCruiseLineLogo(naviera); return logo ? `<img src="${logo}" alt="${naviera}" width="32" height="32" style="border-radius:4px;flex-shrink:0;object-fit:contain;" onerror="this.style.display='none'">` : ''; })()}
             <div>
               <div class="rta-ship" style="font-weight:600;color:var(--text);">${barco !== '—' ? barco : '—'}</div>
               <div class="rta-nights">${naviera}</div>

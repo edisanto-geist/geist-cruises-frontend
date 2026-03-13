@@ -3,7 +3,15 @@
     "allow": [
       "Bash(grep -n \"appendChild\\\\|textContent\\\\|innerText\" /c/Users/User/Documents/GitHub/geist-cruises-frontend/*.html)",
       "Bash(node -e \":*)",
-      "Bash(npx jest:*)"
+      "Bash(npx jest:*)",
+      "Bash(py --version)",
+      "Bash(node -e \"require\\(''sharp''\\); console.log\\(''sharp OK''\\)\")",
+      "Bash(node -e \"require\\(''jimp''\\); console.log\\(''jimp OK''\\)\")",
+      "Bash(npm install:*)",
+      "Bash(node remove-bg.js)",
+      "Bash(node -e \"const j = require\\(''jimp''\\); console.log\\(Object.keys\\(j\\).slice\\(0,20\\)\\)\")",
+      "Bash(node -e \"const {Jimp} = require\\(''jimp''\\); console.log\\(Object.getOwnPropertyNames\\(Jimp\\).filter\\(k => k.startsWith\\(''from''\\) || k === ''read''\\)\\)\")",
+      "Bash(node -e \"const {Jimp} = require\\(''jimp''\\); const j = new Jimp\\({width:1,height:1}\\); console.log\\(Object.getOwnPropertyNames\\(Object.getPrototypeOf\\(j\\)\\).filter\\(k=>k.includes\\(''write''\\)||k.includes\\(''save''\\)||k.includes\\(''toBuffer''\\)\\)\\)\")"
     ]
   }
 }
