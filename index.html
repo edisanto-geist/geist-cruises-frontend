@@ -33,6 +33,23 @@
 
   * { margin:0; padding:0; box-sizing:border-box; }
 
+  /* ─── A11Y: Focus visible ─── */
+  :focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  /* ─── A11Y: Hidden checkbox inputs (visually hidden, screen-reader accessible) ─── */
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
   body {
     font-family: 'Outfit', sans-serif;
     background: var(--bg);
@@ -54,16 +71,14 @@
     text-decoration: none; margin-right: 32px;
   }
   .n-mark {
-    width: 32px; height: 32px; border-radius: 8px;
-    background: linear-gradient(135deg, var(--blue), var(--cyan));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; font-weight: 800; color: #fff;
+    height: 28px; width: auto;
+    object-fit: contain;
   }
   .n-name { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: 0.03em; }
-  .n-name em { color: var(--cyan); font-style: normal; }
+  .n-name em { color: rgba(255,255,255,0.85); font-style: normal; }
   .n-links { display: flex; flex: 1; }
   .n-links a {
-    color: rgba(255,255,255,0.55); text-decoration: none;
+    color: rgba(255,255,255,0.75); text-decoration: none;
     font-size: 13.5px; font-weight: 500;
     padding: 6px 14px; border-radius: 6px;
     transition: all 0.15s;
@@ -74,12 +89,13 @@
     display: flex; align-items: center; gap: 8px;
     background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.14);
     border-radius: 100px; padding: 4px 14px 4px 6px; cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.15s; font-family: inherit; font-size: inherit; color: inherit;
   }
   .n-user:hover { background: rgba(255,255,255,0.14); }
   .n-av {
     width: 26px; height: 26px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    background: var(--navy2);
+    border: 1.5px solid rgba(255,255,255,0.2);
     display: flex; align-items: center; justify-content: center;
     font-size: 11px; font-weight: 700; color: #fff;
   }
@@ -95,8 +111,9 @@
   .n-dropdown-item {
     display: flex; align-items: center; gap: 8px;
     padding: 8px 12px; border-radius: 7px; cursor: pointer;
-    font-size: 13px; color: rgba(255,255,255,0.75);
-    transition: background 0.12s;
+    font-size: 13px; color: rgba(255,255,255,0.88);
+    transition: background 0.12s; border: none; background: none;
+    width: 100%; text-align: left; font-family: inherit;
   }
   .n-dropdown-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
   .n-dropdown-item.danger { color: #ff6b6b; }
@@ -112,29 +129,15 @@
   .hero::after {
     content: '';
     position: absolute; inset: 0;
-    background: url('https://images.unsplash.com/photo-1548574505-5e239809ee19?w=1600&q=80') center/cover no-repeat;
-    opacity: 0.1; pointer-events: none;
+    background: radial-gradient(ellipse at 30% 80%, rgba(30,94,255,0.08) 0%, transparent 60%);
+    pointer-events: none;
   }
   .hero-inner {
     position: relative; z-index: 2;
     max-width: 1280px; margin: 0 auto;
-    padding: 32px 32px 32px;
-    display: flex; align-items: flex-end; gap: 40px;
+    padding: 20px 32px 20px;
   }
-  .hero-title-block { flex-shrink: 0; padding-bottom: 28px; min-width: 200px; }
-  .hero-eyebrow {
-    font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--cyan); margin-bottom: 8px;
-  }
-  .hero-title {
-    font-size: 28px; font-weight: 700; color: #fff;
-    line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 20px;
-  }
-  .hero-stats { display: flex; align-items: center; gap: 12px; }
-  .hs { display: flex; flex-direction: column; gap: 2px; }
-  .hs-n { font-size: 15px; font-weight: 700; color: #fff; }
-  .hs-l { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.08em; }
-  .hs-div { width: 1px; height: 28px; background: rgba(255,255,255,0.15); }
+  .hero-title-block { display: none; }
 
   /* ─────────── SEARCH PANEL ─────────── */
   .search-panel {
@@ -159,7 +162,9 @@
     padding: 0 14px; flex: 1 1 0;
     cursor: pointer; transition: background 0.15s;
     border-right: 1px solid var(--border);
-    min-width: 0;
+    border-top: none; border-bottom: none; border-left: none;
+    min-width: 0; background: transparent;
+    font-family: inherit; font-size: inherit; color: inherit; text-align: left;
   }
   .sb-field:hover { background: #f5f8ff; }
   .sb-field.sb-destination { flex: 1.4; }
@@ -181,7 +186,7 @@
     display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   }
   .sa-label {
-    font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.35);
+    font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.7);
     text-transform: uppercase; letter-spacing: 0.1em;
     flex-shrink: 0;
   }
@@ -199,8 +204,8 @@
   .sa-chip-icon { font-size: 12px; }
   .sa-remove { margin-left: 3px; opacity: 0.6; font-size: 10px; cursor: pointer; }
   .sa-remove:hover { opacity: 1; }
-  .sa-clear { margin-left: auto; background: none; border: none; color: rgba(255,255,255,0.3); font-size: 12px; font-family: inherit; cursor: pointer; transition: color 0.15s; }
-  .sa-clear:hover { color: rgba(255,255,255,0.65); }
+  .sa-clear { margin-left: auto; background: none; border: none; color: rgba(255,255,255,0.7); font-size: 12px; font-family: inherit; cursor: pointer; transition: color 0.15s; }
+  .sa-clear:hover { color: #fff; }
 
   /* ─────────── AI SEARCH ─────────── */
   .ai-search-wrapper {
@@ -214,15 +219,17 @@
     border-radius: 12px;
     cursor: pointer; user-select: none;
     transition: background 0.2s, border-color 0.2s;
+    font-family: inherit; font-size: inherit; color: inherit;
+    width: 100%; text-align: left;
   }
   .ai-search-toggle:hover { background: rgba(0,180,216,0.14); border-color: rgba(0,180,216,0.4); }
   .ai-search-toggle.active { border-radius: 12px 12px 0 0; border-bottom: none; background: rgba(0,180,216,0.12); }
   .ai-search-toggle-icon { font-size: 18px; flex-shrink: 0; }
   .ai-search-toggle-label {
-    flex: 1; font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.75);
+    flex: 1; font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.9);
   }
   .ai-search-toggle-arrow {
-    font-size: 12px; color: rgba(255,255,255,0.4);
+    font-size: 12px; color: rgba(255,255,255,0.75);
     transition: transform 0.25s;
   }
   .ai-search-toggle.active .ai-search-toggle-arrow { transform: rotate(180deg); }
@@ -242,15 +249,15 @@
     font-family: inherit; font-size: 13.5px; font-weight: 500;
     color: #fff; outline: none; transition: border-color 0.2s;
   }
-  .ai-search-input::placeholder { color: rgba(255,255,255,0.4); }
+  .ai-search-input::placeholder { color: rgba(255,255,255,0.6); }
   .ai-search-input:focus { border-color: var(--cyan); }
   .ai-search-status {
     font-size: 12px; font-weight: 500; white-space: nowrap;
-    color: rgba(255,255,255,0.6); flex-shrink: 0;
+    color: rgba(255,255,255,0.8); flex-shrink: 0;
   }
   .ai-search-status.error { color: #ff6b6b; }
   .ai-search-btn {
-    background: linear-gradient(135deg, var(--cyan), #0090b0);
+    background: var(--navy2);
     color: #fff; border: none; font-family: inherit;
     font-size: 13px; font-weight: 700; padding: 10px 20px;
     border-radius: 8px; cursor: pointer; display: flex;
@@ -269,8 +276,8 @@
   .ai-spinner span:nth-child(2) { animation-delay: 0.15s; }
   .ai-spinner span:nth-child(3) { animation-delay: 0.3s; }
   @keyframes aiBounce {
-    0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
-    40% { opacity: 1; transform: scale(1.1); }
+    0%, 80%, 100% { opacity: 0.3; }
+    40% { opacity: 1; }
   }
 
   @media (max-width: 768px) {
@@ -307,11 +314,11 @@
   }
   .fc-head {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 11px 15px;
+    padding: 11px 15px; width: 100%;
     font-size: 11px; font-weight: 700; letter-spacing: 0.09em;
     text-transform: uppercase; color: var(--text);
-    background: var(--bg2); border-bottom: 1px solid var(--border);
-    cursor: pointer; user-select: none;
+    background: var(--bg2); border: none; border-bottom: 1px solid var(--border);
+    cursor: pointer; user-select: none; font-family: inherit;
   }
   .fc-head .ic { color: var(--muted); font-size: 10px; transition: transform 0.2s; }
   .fc-body { padding: 13px 15px; display: flex; flex-direction: column; gap: 9px; }
@@ -338,7 +345,8 @@
   }
   .rad.on { border-color: var(--blue); color: var(--blue); background: #eef2ff; }
 
-  .cb { display: flex; align-items: flex-start; gap: 9px; cursor: pointer; padding: 3px 0; }
+  .cb { display: flex; align-items: flex-start; gap: 9px; cursor: pointer; padding: 3px 0; border-radius: 4px; }
+  .cb:focus-within { outline: 2px solid var(--blue); outline-offset: 1px; }
   .cb-sq {
     width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; margin-top: 1px;
     border: 1.5px solid var(--border2); background: #fff;
@@ -400,6 +408,7 @@
     display: flex; align-items: center; gap: 4px;
     cursor: pointer; user-select: none;
     transition: color 0.15s;
+    background: none; border: none; font-family: inherit;
   }
   .rth:hover { color: var(--text); }
   .rth.sort-asc::after { content: ' ↑'; color: var(--blue); }
@@ -465,6 +474,7 @@
     font-size: 12px; font-weight: 600; color: var(--blue);
     cursor: pointer; text-decoration: underline;
     text-underline-offset: 2px;
+    background: none; border: none; padding: 0; font-family: inherit;
   }
   .itin-link:hover { color: var(--navy); }
 
@@ -536,12 +546,11 @@
     border: none; border-radius: 8px;
     font-family: inherit; font-size: 12.5px; font-weight: 600;
     padding: 9px 16px; cursor: pointer;
-    transition: background 0.15s, transform 0.12s;
-    box-shadow: 0 2px 10px rgba(30,94,255,0.25);
+    transition: background 0.15s;
     opacity: 0.85;
     white-space: nowrap;
   }
-  .rta-btn:hover { background: var(--blue-h); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(30,94,255,0.35); }
+  .rta-btn:hover { background: var(--blue-h); }
 
   /* pagination */
   .pagination {
@@ -567,69 +576,22 @@
   }
   .overlay.open { display: flex; }
 
-  .modal {
-    background: #fff; border-radius: 18px;
-    width: 960px; max-width: 100%;
-    max-height: 90vh; overflow: hidden;
-    display: flex; box-shadow: var(--shadow-lg);
+  .preview-modal {
+    background: #fff; border-radius: 14px;
+    width: 560px; max-width: 100%;
+    max-height: 90vh; overflow-y: auto;
+    box-shadow: var(--shadow-lg);
     border: 1px solid var(--border);
     position: relative;
-    animation: modalIn 0.22s ease;
+    animation: modalIn 0.18s ease;
   }
   @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.97) translateY(8px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); }
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
-
-  .m-sidebar {
-    width: 196px; flex-shrink: 0;
-    background: var(--bg2); border-right: 1px solid var(--border);
-    display: flex; flex-direction: column;
-  }
-  .m-cruise-info {
-    padding: 20px 16px 14px;
-    border-bottom: 1px solid var(--border);
-  }
-  .m-cruise-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
-  .m-cruise-sub { font-size: 12px; color: var(--muted); }
-  .m-nav { flex: 1; padding: 8px 0; }
-  .mni {
-    display: flex; align-items: center; gap: 9px;
-    padding: 10px 16px; font-size: 13px; font-weight: 500;
-    color: var(--text2); cursor: pointer;
-    transition: all 0.15s; border-left: 2px solid transparent;
-  }
-  .mni:hover { color: var(--text); background: rgba(30,94,255,0.05); }
-  .mni.on { color: var(--blue); background: #eef2ff; border-left-color: var(--blue); font-weight: 600; }
-  .mni-ic { width: 18px; text-align: center; font-size: 15px; }
-
-  .m-actions {
-    padding: 14px;
-    border-top: 1px solid var(--border);
-    display: flex; flex-direction: column; gap: 7px;
-  }
-  .m-btn-pdf {
-    width: 100%; background: var(--navy); color: #fff;
-    border: none; border-radius: 8px; font-family: inherit;
-    font-size: 13px; font-weight: 600; padding: 11px;
-    cursor: pointer; transition: background 0.15s;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-  }
-  .m-btn-pdf:hover { background: var(--navy2); }
-  .m-btn-book {
-    width: 100%; background: var(--blue); color: #fff;
-    border: none; border-radius: 8px; font-family: inherit;
-    font-size: 13px; font-weight: 600; padding: 11px;
-    cursor: pointer; transition: background 0.15s;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    box-shadow: 0 3px 12px rgba(30,94,255,0.3);
-  }
-  .m-btn-book:hover { background: var(--blue-h); }
-
-  .m-body { flex: 1; overflow-y: auto; padding: 28px 30px; }
   .m-close {
-    position: absolute; top: 14px; right: 14px; z-index: 10;
-    width: 30px; height: 30px; border-radius: 50%;
+    position: absolute; top: 12px; right: 12px; z-index: 10;
+    width: 28px; height: 28px; border-radius: 50%;
     background: var(--bg2); border: 1px solid var(--border);
     color: var(--text2); font-size: 13px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
@@ -637,71 +599,73 @@
   }
   .m-close:hover { background: var(--border); }
 
-  /* modal content */
-  .ship-banner {
-    border-radius: 12px; overflow: hidden;
-    height: 200px; position: relative; margin-bottom: 18px;
+  /* Preview content */
+  .pv-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
   }
-  .ship-banner img { width: 100%; height: 100%; object-fit: cover; }
-  .ship-banner-overlay {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    padding: 24px 18px 14px;
-    background: linear-gradient(0deg, rgba(8,18,40,0.88) 0%, transparent 100%);
-    font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.3px;
+  .pv-naviera {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 6px;
   }
+  .pv-naviera-logo { width: 20px; height: 20px; border-radius: 3px; object-fit: contain; }
+  .pv-title { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .pv-meta {
+    display: flex; gap: 14px; font-size: 12.5px; color: var(--text2); flex-wrap: wrap;
+  }
+  .pv-meta span { display: flex; align-items: center; gap: 4px; }
 
-  .ship-stats {
-    display: grid; grid-template-columns: repeat(7,1fr);
-    border: 1px solid var(--border); border-radius: 10px;
-    overflow: hidden; margin-bottom: 18px;
+  .pv-route {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px; color: var(--text2); line-height: 1.6;
   }
-  .sc {
-    padding: 11px 6px; text-align: center;
-    border-right: 1px solid var(--border); background: var(--bg2);
+  .pv-route-label {
+    font-size: 10px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;
   }
-  .sc:last-child { border-right: none; }
-  .sc-v { display: block; font-size: 14px; font-weight: 700; color: var(--navy); }
-  .sc-l { font-size: 9.5px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.07em; }
+  .pv-route-ports { font-weight: 500; color: var(--text); }
 
-  .m-desc { font-size: 13.5px; color: var(--text2); line-height: 1.75; }
-  .m-section-title { font-size: 19px; font-weight: 700; color: var(--navy); margin-bottom: 18px; }
+  .pv-prices {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--border);
+  }
+  .pv-price-cell {
+    padding: 14px 10px; text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .pv-price-cell:last-child { border-right: none; }
+  .pv-price-type {
+    font-size: 10px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;
+  }
+  .pv-price-val { font-size: 15px; font-weight: 700; color: var(--navy); }
+  .pv-price-val.na { font-size: 12px; font-weight: 500; color: var(--muted); }
+  .pv-price-per { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
-  .itin-list { display: flex; flex-direction: column; }
-  .iday { display: grid; grid-template-columns: 50px 1fr; }
-  .iday-left { display: flex; flex-direction: column; align-items: center; padding-bottom: 24px; }
-  .iday-dot {
-    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px;
-    background: var(--blue); border: 2px solid #fff;
-    box-shadow: 0 0 0 2px var(--blue);
+  .pv-actions {
+    padding: 16px 24px;
+    display: flex; gap: 10px;
   }
-  .iday-dot.sea { background: var(--muted); box-shadow: 0 0 0 2px var(--muted); }
-  .iday-line { width: 1px; flex:1; background: var(--border); margin-top: 4px; }
-  .iday-right { padding-bottom: 24px; display: flex; gap: 10px; align-items: flex-start; }
-  .iday-text { flex: 1; }
-  .iday-img { width: 80px; height: 56px; object-fit: cover; border-radius: 7px; flex-shrink: 0; order: 2; }
-  .iday-n { font-size: 10.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
-  .iday-p { font-size: 14.5px; font-weight: 600; color: var(--text); margin: 3px 0 4px; }
-  .iday-d { font-size: 12.5px; color: var(--text2); line-height: 1.55; }
-  .iday-num { font-size: 10px; font-weight: 700; color: var(--blue); margin-bottom: 4px; white-space: nowrap; }
-  .iday-sea { color: var(--muted) !important; font-style: italic; }
-  .iday-meta { display: flex; gap: 10px; font-size: 11.5px; color: var(--muted); flex-wrap: wrap; margin-top: 2px; }
-
-  /* price summary in modal */
-  .price-summary {
-    display: grid; grid-template-columns: repeat(4,1fr); gap: 10px;
-    margin-bottom: 20px;
+  .pv-btn-detail {
+    flex: 1; background: var(--blue); color: #fff;
+    border: none; border-radius: 8px; font-family: inherit;
+    font-size: 13.5px; font-weight: 700; padding: 12px;
+    cursor: pointer; transition: background 0.15s;
+    text-align: center; text-decoration: none;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
   }
-  .ps-card {
-    border: 1.5px solid var(--border); border-radius: 10px;
-    padding: 14px; text-align: center; background: var(--bg2);
-    transition: border-color 0.15s;
+  .pv-btn-detail:hover { background: var(--blue-h); }
+  .pv-btn-itin {
+    background: #fff; color: var(--text); border: 1.5px solid var(--border);
+    border-radius: 8px; font-family: inherit;
+    font-size: 13px; font-weight: 600; padding: 12px 16px;
+    cursor: pointer; transition: all 0.15s;
+    white-space: nowrap;
   }
-  .ps-card.promo { border-color: var(--promo); background: var(--promo-bg); }
-  .ps-type { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
-  .ps-price { font-size: 20px; font-weight: 700; color: var(--navy); }
-  .ps-card.promo .ps-price { color: var(--promo); }
-  .ps-per { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
-  .ps-badge { display: inline-block; background: var(--promo); color: #fff; font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 3px; margin-top: 5px; letter-spacing: 0.06em; }
+  .pv-btn-itin:hover { border-color: var(--blue); color: var(--blue); }
 
   /* footer */
   footer {
@@ -792,7 +756,7 @@
     display: inline-flex; align-items: center; gap: 5px;
     background: rgba(30,94,255,0.15); border: 1px solid rgba(30,94,255,0.3);
     border-radius: 100px; padding: 4px 10px 4px 12px;
-    font-size: 12px; font-weight: 500; color: #a8c4ff;
+    font-size: 12px; font-weight: 500; color: #a8c4ff; font-family: inherit;
   }
   .filter-chip-x {
     background: none; border: none; color: #a8c4ff; font-size: 14px;
@@ -807,9 +771,7 @@
      RESPONSIVE — TABLET (≤900px)
   ══════════════════════════════════════ */
   @media (max-width: 900px) {
-    .hero-inner { flex-direction: column; align-items: stretch; padding: 20px 16px 0; gap: 16px; }
-    .hero-title-block { padding-bottom: 0; min-width: 0; }
-    .hero-title { font-size: 22px; }
+    .hero-inner { padding: 14px 16px 14px; }
     .search-panel { border-radius: 12px 12px 0 0; padding: 14px 14px 16px; }
     .search-bar { flex-wrap: wrap; height: auto; border-radius: 10px; }
     .sb-field { flex: 1 1 45%; border-right: none; border-bottom: 1px solid var(--border); min-height: 52px; }
@@ -820,13 +782,7 @@
     .rt-head { grid-template-columns: 2fr 1.4fr 0.5fr 1fr 90px; }
     .rt-row  { grid-template-columns: 2fr 1.4fr 0.5fr 1fr 90px; }
     .rta:nth-child(4) { display: none; } /* Fecha salida hidden on tablet */
-    .modal { flex-direction: column; max-height: 95vh; }
-    .m-sidebar { width: 100%; flex-direction: row; align-items: center; flex-wrap: wrap; }
-    .m-nav { display: flex; flex-direction: row; flex: 1; overflow-x: auto; padding: 0 8px; }
-    .mni { padding: 10px 12px; white-space: nowrap; border-left: none; border-bottom: 2px solid transparent; }
-    .mni.on { border-left: none; border-bottom-color: var(--blue); }
-    .m-actions { flex-direction: row; padding: 8px 12px; border-top: none; border-left: 1px solid var(--border); }
-    .m-cruise-info { padding: 12px 14px 10px; }
+    .preview-modal { max-width: 95vw; }
   }
 
   /* ══════════════════════════════════════
@@ -835,8 +791,7 @@
   @media (max-width: 600px) {
     nav { padding: 0 14px; }
     .n-links { display: none; }
-    .hero-inner { padding: 14px 12px 0; }
-    .hero-stats { display: none; }
+    .hero-inner { padding: 10px 12px 10px; }
     .search-advanced { display: none; }
     .main { padding: 12px; }
     .sidebar { grid-template-columns: 1fr; }
@@ -848,15 +803,13 @@
     .itin-modal { max-height: 92vh; border-radius: 12px 12px 0 0; width: 100%; }
     #itin-modal-ov { align-items: flex-end; }
     .itin-table th:nth-child(2), .itin-table td:nth-child(2) { display: none; }
-    .modal { border-radius: 12px 12px 0 0; }
-    .price-summary { grid-template-columns: repeat(2,1fr); }
-    .ship-stats { grid-template-columns: repeat(3,1fr); }
+    .preview-modal { border-radius: 12px 12px 0 0; width: 100%; }
+    .pv-prices { grid-template-columns: repeat(2,1fr); }
     footer { flex-direction: column; gap: 12px; text-align: center; padding: 16px; }
     .ft-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
     .pax-modal-inner { width: 95vw !important; }
     .sb-drop, .sb-drop-wide, .sb-drop-sm { min-width: 0; width: calc(100vw - 24px); left: -14px; }
-    .hero-title { font-size: 18px; }
-    .m-close { width: 40px; height: 40px; font-size: 16px; }
+    .m-close { width: 36px; height: 36px; font-size: 15px; }
     .pg-btn { width: 40px; height: 40px; }
     .cb-sq { width: 22px; height: 22px; border-radius: 5px; font-size: 11px; }
   }
@@ -864,15 +817,15 @@
   @media (max-width: 480px) {
     nav { padding: 0 10px; }
     .n-name { font-size: 14px; }
-    .hero-inner { padding: 10px 10px 0; }
+    .hero-inner { padding: 8px 10px 8px; }
     .main { padding: 10px; gap: 10px; }
     .rt-head { display: none; }
     .rt-row { grid-template-columns: 1fr; gap: 0; padding: 12px; }
     .rta { padding: 4px 0; }
     .rta-action { justify-content: stretch; }
     .rta-btn, .rta-btn-info { flex: 1; text-align: center; min-height: 44px; display: flex; align-items: center; justify-content: center; }
-    .price-summary { grid-template-columns: 1fr; }
-    .ship-stats { grid-template-columns: repeat(2, 1fr); }
+    .pv-prices { grid-template-columns: repeat(2,1fr); }
+    .pv-actions { flex-direction: column; }
     .pax-modal-inner { padding: 16px !important; }
   }
 
@@ -899,7 +852,7 @@
 <!-- NAV -->
 <nav>
   <a href="#" class="n-logo">
-    <div class="n-mark">G</div>
+    <img src="https://www.geist.tur.ar/images/logoblanco.png" alt="Geist" class="n-mark">
     <span class="n-name">GEIST <em>Cruceros</em></span>
   </a>
   <div class="n-links">
@@ -908,23 +861,24 @@
     <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente">Mis presupuestos <span style="font-size:9px;font-weight:700;background:rgba(255,255,255,0.12);border-radius:3px;padding:1px 5px;letter-spacing:0.06em;vertical-align:middle;">PRONTO</span></a>
   </div>
   <div class="n-user-wrap">
-    <div class="n-user" onclick="toggleUserMenu()">
+    <button class="n-user" onclick="toggleUserMenu()" aria-expanded="false" aria-controls="userDropdown" aria-label="Menú de usuario">
       <div class="n-av">AG</div>
       <span class="n-uname">Agencia Demo &nbsp;▾</span>
-    </div>
-    <div class="n-dropdown" id="userDropdown">
-      <div class="n-dropdown-item" onclick="window.location.href='#mis-presupuestos'">
+    </button>
+    <div class="n-dropdown" id="userDropdown" role="menu">
+      <button class="n-dropdown-item" role="menuitem" onclick="window.location.href='#mis-presupuestos'">
         📋 Mis presupuestos
-      </div>
-      <div class="n-dropdown-item danger" onclick="logout()">
+      </button>
+      <button class="n-dropdown-item danger" role="menuitem" onclick="logout()">
         🚪 Cerrar sesión
-      </div>
+      </button>
     </div>
   </div>
 </nav>
 
 <!-- HERO + SEARCH -->
 <div class="hero">
+  <h1 class="sr-only">Buscador de Cruceros — Geist</h1>
   <div class="hero-inner">
 
     <!-- Título izquierda -->
@@ -945,11 +899,11 @@
 
       <!-- Búsqueda por IA -->
       <div class="ai-search-wrapper" id="ai-search-wrapper">
-        <div class="ai-search-toggle" id="ai-search-toggle" onclick="toggleAISearch()">
-          <div class="ai-search-toggle-icon">✨</div>
+        <button class="ai-search-toggle" id="ai-search-toggle" onclick="toggleAISearch()" aria-expanded="false" aria-controls="ai-search-row">
+          <div class="ai-search-toggle-icon" aria-hidden="true">✨</div>
           <div class="ai-search-toggle-label">¿Querés buscar con IA?</div>
-          <div class="ai-search-toggle-arrow">▼</div>
-        </div>
+          <div class="ai-search-toggle-arrow" aria-hidden="true">▼</div>
+        </button>
         <div class="ai-search-row" id="ai-search-row">
           <input type="text" class="ai-search-input" id="ai-search-input"
             placeholder="Describí el crucero que buscás... ej: Caribe julio 2026, 7 noches, familia de 4"
@@ -966,27 +920,27 @@
       <div class="search-bar">
 
         <!-- DESTINO -->
-        <div class="sb-field sb-destination" onclick="toggleDrop('drop-destino', event)">
+        <button class="sb-field sb-destination" onclick="toggleDrop('drop-destino', event)" aria-expanded="false" aria-controls="drop-destino" aria-label="Destino: Cualquier destino" type="button">
           <div class="sb-icon"><span aria-hidden="true">🌍</span></div>
           <div class="sb-content">
             <div class="sb-label">Destino</div>
             <div class="sb-value" id="val-destino">Cualquier destino</div>
           </div>
           <!-- Dropdown destino -->
-          <div class="sb-drop" id="drop-destino">
+          <div class="sb-drop" id="drop-destino" role="listbox" aria-label="Seleccionar destino">
             <div class="drop-search-wrap">
-              <input class="drop-search" id="drop-destino-search" placeholder="Buscar región..." oninput="filterDrop('drop-destino',this.value)" onclick="event.stopPropagation()">
+              <input class="drop-search" id="drop-destino-search" placeholder="Buscar región..." aria-label="Buscar región" oninput="filterDrop('drop-destino',this.value)" onclick="event.stopPropagation()">
             </div>
             <div class="drop-list" id="drop-destino-list">
-              <div class="drop-item on" onclick="selectDrop('destino','','Cualquier destino',this)">Cualquier destino</div>
+              <button class="drop-item on" role="option" aria-selected="true" onclick="selectDrop('destino','','Cualquier destino',this)" type="button">Cualquier destino</button>
             </div>
           </div>
-        </div>
+        </button>
 
         <div class="sb-sep"></div>
 
         <!-- FECHAS -->
-        <div class="sb-field sb-dates" onclick="toggleDrop('drop-fechas', event)">
+        <button class="sb-field sb-dates" onclick="toggleDrop('drop-fechas', event)" aria-expanded="false" aria-controls="drop-fechas" aria-label="Fechas: Cualquier fecha" type="button">
           <div class="sb-icon"><span aria-hidden="true">📅</span></div>
           <div class="sb-content">
             <div class="sb-label">Fechas</div>
@@ -1015,82 +969,26 @@
               </div>
             </div>
           </div>
-        </div>
+        </button>
 
         <div class="sb-sep"></div>
 
         <!-- PUERTO DE SALIDA -->
-        <div class="sb-field" onclick="toggleDrop('drop-puerto', event)">
+        <button class="sb-field" onclick="toggleDrop('drop-puerto', event)" aria-expanded="false" aria-controls="drop-puerto" aria-label="Puerto de salida: Cualquier puerto" type="button">
           <div class="sb-icon"><span aria-hidden="true">⚓</span></div>
           <div class="sb-content">
             <div class="sb-label">Puerto de salida</div>
             <div class="sb-value" id="val-puerto">Cualquier puerto</div>
           </div>
-          <div class="sb-drop" id="drop-puerto">
+          <div class="sb-drop" id="drop-puerto" role="listbox" aria-label="Seleccionar puerto">
             <div class="drop-search-wrap">
-              <input class="drop-search" id="drop-puerto-search" placeholder="Buscar puerto..." oninput="filterDrop('drop-puerto',this.value)" onclick="event.stopPropagation()">
+              <input class="drop-search" id="drop-puerto-search" placeholder="Buscar puerto..." aria-label="Buscar puerto" oninput="filterDrop('drop-puerto',this.value)" onclick="event.stopPropagation()">
             </div>
             <div class="drop-list" id="drop-puerto-list">
-              <div class="drop-item on" onclick="selectDrop('puerto','','Cualquier puerto',this)">Cualquier puerto</div>
+              <button class="drop-item on" role="option" aria-selected="true" onclick="selectDrop('puerto','','Cualquier puerto',this)" type="button">Cualquier puerto</button>
             </div>
           </div>
-        </div>
-
-        <div class="sb-sep"></div>
-
-        <!-- PUERTO ESCALA -->
-        <div class="sb-field" onclick="toggleDrop('drop-escala', event)">
-          <div class="sb-icon"><span aria-hidden="true">📍</span></div>
-          <div class="sb-content">
-            <div class="sb-label">Puerto Escala</div>
-            <div class="sb-value" id="val-escala">Cualquier escala</div>
-          </div>
-          <div class="sb-drop" id="drop-escala">
-            <div class="drop-search-wrap">
-              <input class="drop-search" id="drop-escala-search" placeholder="Buscar escala..." oninput="filterDrop('drop-escala',this.value)" onclick="event.stopPropagation()">
-            </div>
-            <div class="drop-list" id="drop-escala-list">
-              <div class="drop-item on" onclick="selectDrop('escala','','Cualquier escala',this)">Cualquier escala</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="sb-sep"></div>
-
-        <!-- DURACIÓN -->
-        <div class="sb-field" onclick="toggleDrop('drop-duracion', event)">
-          <div class="sb-icon"><span aria-hidden="true">🌙</span></div>
-          <div class="sb-content">
-            <div class="sb-label">Duración</div>
-            <div class="sb-value" id="val-duracion">Cualquier duración</div>
-          </div>
-          <div class="sb-drop sb-drop-sm" id="drop-duracion" onclick="event.stopPropagation()">
-            <div class="drop-list">
-              <div class="drop-item on" onclick="selectDuracion('','Cualquier duración',this)">Cualquier duración</div>
-              <div class="drop-item" onclick="selectDuracion('1,4','1 a 4 noches',this)">1 a 4 noches</div>
-              <div class="drop-item" onclick="selectDuracion('5,7','5 a 7 noches',this)">5 a 7 noches</div>
-              <div class="drop-item" onclick="selectDuracion('8,10','8 a 10 noches',this)">8 a 10 noches</div>
-              <div class="drop-item" onclick="selectDuracion('11,14','11 a 14 noches',this)">11 a 14 noches</div>
-              <div class="drop-item" onclick="selectDuracion('15,99','15+ noches',this)">15+ noches</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- BARCO -->
-        <div class="sb-field" onclick="toggleDrop('drop-barco', event)">
-          <div class="sb-icon"><span aria-hidden="true">🚢</span></div>
-          <div class="sb-content">
-            <div class="sb-label">Barco</div>
-            <div class="sb-value" id="val-barco">Barco</div>
-          </div>
-          <div class="sb-drop sb-drop-wide" id="drop-barco" onclick="event.stopPropagation()">
-            <div class="drop-search-wrap">
-              <input class="drop-search" id="drop-barco-search" placeholder="Buscar barco..." oninput="filterBarcoList(this.value)" onclick="event.stopPropagation()">
-            </div>
-            <div class="drop-list" id="drop-barco-list" style="max-height:300px;">
-            </div>
-          </div>
-        </div>
+        </button>
 
         <button class="sb-btn" onclick="handleBuscarClick()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -1122,35 +1020,55 @@
 
     <!-- NAVIERA -->
     <div class="fc">
-      <div class="fc-head" onclick="toggleFc(this)">Naviera <span class="ic">▾</span></div>
-      <div class="fc-body">
+      <button class="fc-head" onclick="toggleFc(this)" aria-expanded="true" type="button">Naviera <span class="ic" aria-hidden="true">▾</span></button>
+      <div class="fc-body" role="group" aria-label="Filtrar por naviera">
         <div id="sidebar-navieras">
-          <div class="cb on" onclick="sidebarNaviera('','Todas',this)">
-            <div class="cb-sq on">✓</div>
+          <label class="cb on">
+            <input type="radio" name="naviera" class="sr-only" checked onchange="sidebarNaviera('','Todas',this.closest('.cb'))">
+            <div class="cb-sq on" aria-hidden="true">✓</div>
             <span class="cb-lbl">Todas las navieras</span>
-          </div>
+          </label>
         </div>
       </div>
     </div>
 
     <!-- DURACIÓN -->
+    <fieldset class="fc">
+      <button class="fc-head" onclick="toggleFc(this)" aria-expanded="true" type="button"><legend class="sr-only">Duración</legend>Duración <span class="ic" aria-hidden="true">▾</span></button>
+      <div class="fc-body" role="radiogroup" aria-label="Filtrar por duración">
+        <label class="cb on"><input type="radio" name="duracion" class="sr-only" checked onchange="sidebarDuracion('','','Cualquier duración',this.closest('.cb'))"><div class="cb-sq on" aria-hidden="true">✓</div><span class="cb-lbl">Cualquier duración</span></label>
+        <label class="cb"><input type="radio" name="duracion" class="sr-only" onchange="sidebarDuracion('1','4','1 a 4 noches',this.closest('.cb'))"><div class="cb-sq" aria-hidden="true"></div><span class="cb-lbl">1 a 4 noches</span></label>
+        <label class="cb"><input type="radio" name="duracion" class="sr-only" onchange="sidebarDuracion('5','7','5 a 7 noches',this.closest('.cb'))"><div class="cb-sq" aria-hidden="true"></div><span class="cb-lbl">5 a 7 noches</span></label>
+        <label class="cb"><input type="radio" name="duracion" class="sr-only" onchange="sidebarDuracion('8','10','8 a 10 noches',this.closest('.cb'))"><div class="cb-sq" aria-hidden="true"></div><span class="cb-lbl">8 a 10 noches</span></label>
+        <label class="cb"><input type="radio" name="duracion" class="sr-only" onchange="sidebarDuracion('11','14','11 a 14 noches',this.closest('.cb'))"><div class="cb-sq" aria-hidden="true"></div><span class="cb-lbl">11 a 14 noches</span></label>
+        <label class="cb"><input type="radio" name="duracion" class="sr-only" onchange="sidebarDuracion('15','99','15+ noches',this.closest('.cb'))"><div class="cb-sq" aria-hidden="true"></div><span class="cb-lbl">15+ noches</span></label>
+      </div>
+    </fieldset>
+
+    <!-- PUERTO DE ESCALA -->
     <div class="fc">
-      <div class="fc-head" onclick="toggleFc(this)">Duración <span class="ic">▾</span></div>
-      <div class="fc-body">
-        <div class="cb on" onclick="sidebarDuracion('','','Cualquier duración',this)"><div class="cb-sq on">✓</div><span class="cb-lbl">Cualquier duración</span></div>
-        <div class="cb" onclick="sidebarDuracion('1','4','1 a 4 noches',this)"><div class="cb-sq"></div><span class="cb-lbl">1 a 4 noches</span></div>
-        <div class="cb" onclick="sidebarDuracion('5','7','5 a 7 noches',this)"><div class="cb-sq"></div><span class="cb-lbl">5 a 7 noches</span></div>
-        <div class="cb" onclick="sidebarDuracion('8','10','8 a 10 noches',this)"><div class="cb-sq"></div><span class="cb-lbl">8 a 10 noches</span></div>
-        <div class="cb" onclick="sidebarDuracion('11','14','11 a 14 noches',this)"><div class="cb-sq"></div><span class="cb-lbl">11 a 14 noches</span></div>
-        <div class="cb" onclick="sidebarDuracion('15','99','15+ noches',this)"><div class="cb-sq"></div><span class="cb-lbl">15+ noches</span></div>
+      <button class="fc-head" onclick="toggleFc(this)" aria-expanded="true" type="button">Puerto de Escala <span class="ic" aria-hidden="true">▾</span></button>
+      <div class="fc-body" role="group" aria-label="Filtrar por puerto de escala">
+        <div id="sidebar-escalas">
+          <label class="cb on">
+            <input type="radio" name="escala" class="sr-only" checked onchange="sidebarEscala('','Cualquier escala',this.closest('.cb'))">
+            <div class="cb-sq on" aria-hidden="true">✓</div>
+            <span class="cb-lbl">Cualquier escala</span>
+          </label>
+        </div>
       </div>
     </div>
 
-    <!-- PUERTO DE SALIDA (sidebar) -->
+    <!-- BARCO -->
     <div class="fc">
-      <div class="fc-head" onclick="toggleFc(this)">Puerto de Salida <span class="ic">▾</span></div>
-      <div class="fc-body">
-        <div id="sidebar-puertos">
+      <button class="fc-head" onclick="toggleFc(this)" aria-expanded="true" type="button">Barco <span class="ic" aria-hidden="true">▾</span></button>
+      <div class="fc-body" role="group" aria-label="Filtrar por barco">
+        <div id="sidebar-barcos">
+          <label class="cb on">
+            <input type="radio" name="barco" class="sr-only" checked onchange="sidebarBarco('','Cualquier barco',this.closest('.cb'))">
+            <div class="cb-sq on" aria-hidden="true">✓</div>
+            <span class="cb-lbl">Cualquier barco</span>
+          </label>
         </div>
       </div>
     </div>
@@ -1166,7 +1084,7 @@
   <div class="results-area">
 
     <div class="r-header">
-      <div class="r-count" id="resultsCount"><strong>12 cruceros</strong> encontrados</div>
+      <div class="r-count" id="resultsCount" aria-live="polite"><strong>12 cruceros</strong> encontrados</div>
       <div class="r-controls">
         <select class="r-sel" aria-label="Ordenar resultados" onchange="handleSortSelect(this)">
           <option value="">⭐ Recomendado</option>
@@ -1180,13 +1098,13 @@
 
     <div class="results-table">
       <!-- HEAD -->
-      <div class="rt-head">
-        <div class="rth" onclick="sortTable('nombre')">Puerto de Salida <span class="sort-ic" id="sort-nombre"></span></div>
-        <div class="rth" onclick="sortTable('barco')">Barco / Naviera <span class="sort-ic" id="sort-barco"></span></div>
-        <div class="rth rth-center" onclick="sortTable('noches')">Noches <span class="sort-ic" id="sort-noches"></span></div>
-        <div class="rth rth-center" onclick="sortTable('fecha')">Fecha salida <span class="sort-ic" id="sort-fecha"></span></div>
+      <div class="rt-head" role="row">
+        <button class="rth" type="button" onclick="sortTable('nombre')" aria-label="Ordenar por puerto de salida">Puerto de Salida <span class="sort-ic" id="sort-nombre" aria-hidden="true"></span></button>
+        <button class="rth" type="button" onclick="sortTable('barco')" aria-label="Ordenar por barco o naviera">Barco / Naviera <span class="sort-ic" id="sort-barco" aria-hidden="true"></span></button>
+        <button class="rth rth-center" type="button" onclick="sortTable('noches')" aria-label="Ordenar por noches">Noches <span class="sort-ic" id="sort-noches" aria-hidden="true"></span></button>
+        <button class="rth rth-center" type="button" onclick="sortTable('fecha')" aria-label="Ordenar por fecha de salida">Fecha salida <span class="sort-ic" id="sort-fecha" aria-hidden="true"></span></button>
         <div class="rth rth-center">Itinerario</div>
-        <div class="rth rth-center" onclick="sortTable('precio')">Tarifa desde <span class="sort-ic" id="sort-precio"></span></div>
+        <button class="rth rth-center" type="button" onclick="sortTable('precio')" aria-label="Ordenar por tarifa">Tarifa desde <span class="sort-ic" id="sort-precio" aria-hidden="true"></span></button>
         <div class="rth"></div>
       </div>
 
@@ -1213,109 +1131,12 @@
   </div>
 </footer>
 
-<!-- MODAL -->
-<div class="overlay" id="ov" role="dialog" aria-modal="true" aria-label="Detalle de crucero" onclick="handleOv(event)">
-  <div class="modal">
+<!-- PREVIEW MODAL -->
+<div class="overlay" id="ov" role="dialog" aria-modal="true" aria-label="Vista rápida del crucero" onclick="handleOv(event)">
+  <div class="preview-modal">
     <button class="m-close" aria-label="Cerrar" onclick="closeModal()">✕</button>
-    <div class="m-sidebar">
-      <div class="m-cruise-info">
-        <div class="m-cruise-name">Norwegian Pearl</div>
-        <div class="m-cruise-sub">10 may 2026 · 7 noches</div>
-      </div>
-      <div class="m-nav">
-        <div class="mni" onclick="setTab('itin',this)"><span class="mni-ic">🗓</span> Itinerario</div>
-        <div class="mni on" onclick="setTab('barco',this)"><span class="mni-ic">🚢</span> El Barco</div>
-        <div class="mni" onclick="setTab('precios',this)"><span class="mni-ic">💰</span> Precios</div>
-        <div class="mni" onclick="setTab('entret',this)"><span class="mni-ic">🎭</span> Entretenimiento</div>
-        <div class="mni" onclick="setTab('cabinas',this)"><span class="mni-ic">🛏</span> Cabinas</div>
-        <div class="mni" onclick="setTab('fotos',this)"><span class="mni-ic">📷</span> Fotos</div>
-        <div class="mni" onclick="setTab('specs',this)"><span class="mni-ic">📋</span> Especificaciones</div>
-      </div>
-      <div class="m-actions">
-        <button class="m-btn-pdf">📄 &nbsp;Presupuesto PDF</button>
-        <button class="m-btn-book">✅ &nbsp;Reservar ahora</button>
-      </div>
-    </div>
-    <div class="m-body">
-
-      <div id="tab-barco">
-        <div class="ship-banner">
-          <img src="https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80" alt="Norwegian Pearl">
-          <div class="ship-banner-overlay">Norwegian Pearl</div>
-        </div>
-        <div class="ship-stats">
-          <div class="sc"><span class="sc-v">Medio</span><span class="sc-l">Tamaño</span></div>
-          <div class="sc"><span class="sc-v">2006</span><span class="sc-l">Inauguración</span></div>
-          <div class="sc"><span class="sc-v">2021</span><span class="sc-l">Última reforma</span></div>
-          <div class="sc"><span class="sc-v">15</span><span class="sc-l">Decks</span></div>
-          <div class="sc"><span class="sc-v">2.394</span><span class="sc-l">Pasajeros</span></div>
-          <div class="sc"><span class="sc-v">1.197</span><span class="sc-l">Cabinas</span></div>
-          <div class="sc"><span class="sc-v">1.072</span><span class="sc-l">Tripulantes</span></div>
-        </div>
-        <p class="m-desc">El Norwegian Pearl es un barco de tamaño medio de Norwegian Cruise Line, reconocido por su diseño con obras de arte en el casco. Ofrece Freestyle Cruising con libertad total de horarios, más de 15 restaurantes y una amplia propuesta de entretenimiento nocturno.</p>
-      </div>
-
-      <div id="tab-itin" style="display:none">
-        <div class="m-section-title">Itinerario — 7 noches · Mediterráneo</div>
-        <div class="itin-list">
-          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 1 · 10 may</div><div class="iday-p">Atenas (Pireo), Grecia — Embarque</div><div class="iday-d">Embarque 14:00 · Salida 20:00.</div></div></div>
-          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 2 · 11 may</div><div class="iday-p">Mykonos, Grecia</div><div class="iday-d">Llegada 08:00 · Salida 20:00. Molinos de viento y playas.</div></div></div>
-          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 3 · 12 may</div><div class="iday-p">Katakolo, Grecia</div><div class="iday-d">Llegada 08:00 · Salida 16:00. Excursiones a Olimpia.</div></div></div>
-          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 4 · 13 may</div><div class="iday-p">Corfú, Grecia</div><div class="iday-d">Llegada 08:00 · Salida 18:00. Casco histórico UNESCO.</div></div></div>
-          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 5 · 14 may</div><div class="iday-p">Kotor, Montenegro</div><div class="iday-d">Llegada 08:00 · Salida 19:00. Ciudad medieval amurallada UNESCO.</div></div></div>
-          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 6 · 15 may</div><div class="iday-p">Split, Croacia</div><div class="iday-d">Llegada 08:00 · Salida 19:00. Palacio de Diocleciano.</div></div></div>
-          <div class="iday"><div class="iday-left"><div class="iday-dot"></div><div class="iday-line"></div></div><div class="iday-right"><div class="iday-n">Día 7 · 16 may</div><div class="iday-p">Koper, Eslovenia</div><div class="iday-d">Llegada 08:00 · Salida 18:00. Acceso a Venecia.</div></div></div>
-          <div class="iday"><div class="iday-left"><div class="iday-dot"></div></div><div class="iday-right"><div class="iday-n">Día 8 · 17 may</div><div class="iday-p">Ravena, Italia — Desembarque</div><div class="iday-d">Llegada 06:00 · Desembarque desde las 08:00.</div></div></div>
-        </div>
-      </div>
-
-      <div id="tab-precios" style="display:none">
-        <div class="m-section-title">Precios por cabina — 2 adultos</div>
-        <div class="price-summary">
-          <div class="ps-card promo">
-            <div class="ps-type">Interior</div>
-            <div class="ps-price">US$ 1.221</div>
-            <div class="ps-per">por huésped</div>
-            <span class="ps-badge">PROMO</span>
-          </div>
-          <div class="ps-card promo">
-            <div class="ps-type">Exterior</div>
-            <div class="ps-price">US$ 1.661</div>
-            <div class="ps-per">por huésped</div>
-            <span class="ps-badge">PROMO</span>
-          </div>
-          <div class="ps-card">
-            <div class="ps-type">Balcón</div>
-            <div class="ps-price">US$ 3.073</div>
-            <div class="ps-per">por huésped</div>
-          </div>
-          <div class="ps-card promo">
-            <div class="ps-type">Suite</div>
-            <div class="ps-price">US$ 3.136</div>
-            <div class="ps-per">por huésped</div>
-            <span class="ps-badge">PROMO</span>
-          </div>
-        </div>
-        <p class="m-desc">Precios en USD por persona, base doble, impuestos incluidos. Sujeto a disponibilidad.</p>
-      </div>
-
-      <div id="tab-entret" style="display:none">
-        <div class="m-section-title">Entretenimiento a bordo</div>
-        <p class="m-desc">Shows en vivo, casino, spa Mandara, piscinas, restaurantes temáticos, club nocturno y actividades deportivas en cubierta. Más de 15 opciones gastronómicas y entretenimiento cada noche.</p>
-      </div>
-      <div id="tab-cabinas" style="display:none">
-        <div class="m-section-title">Selección de Cabinas</div>
-        <p class="m-desc">El deck plan interactivo estará disponible al conectar con la API de Widgety — permitirá seleccionar cabinas individuales con visualización en el plano del buque.</p>
-      </div>
-      <div id="tab-fotos" style="display:none">
-        <div class="m-section-title">Galería de fotos</div>
-        <p class="m-desc">Galería disponible al integrar con la API de contenido.</p>
-      </div>
-      <div id="tab-specs" style="display:none">
-        <div class="m-section-title">Especificaciones técnicas</div>
-        <p class="m-desc">Eslora: 294m &nbsp;·&nbsp; Manga: 32m &nbsp;·&nbsp; Arqueo: 93.530 GT &nbsp;·&nbsp; Velocidad: 25 nudos &nbsp;·&nbsp; Bandera: Bahamas</p>
-      </div>
-
+    <div id="preview-content">
+      <div class="loading-row"><div class="spinner"><span></span><span></span><span></span><span></span><span></span></div>Cargando...</div>
     </div>
   </div>
 </div>
@@ -1338,13 +1159,11 @@
     margin-bottom: 28px;
   }
   .login-logo .lm {
-    width: 38px; height: 38px; border-radius: 9px;
-    background: linear-gradient(135deg, var(--blue), var(--cyan));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 17px; font-weight: 800; color: #fff;
+    height: 34px; width: auto;
+    object-fit: contain;
   }
   .login-logo-text { font-size: 20px; font-weight: 700; color: var(--navy); }
-  .login-logo-text em { color: var(--blue); font-style: normal; }
+  .login-logo-text em { color: var(--navy2); font-style: normal; }
   .login-title { font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
   .login-sub { font-size: 13.5px; color: var(--muted); margin-bottom: 26px; }
   .login-field { margin-bottom: 14px; }
@@ -1362,7 +1181,6 @@
     border: none; border-radius: 9px; font-family: inherit;
     font-size: 14px; font-weight: 700; padding: 13px;
     cursor: pointer; transition: background 0.15s;
-    box-shadow: 0 4px 14px rgba(30,94,255,0.35);
     margin-top: 4px;
   }
   .btn-login:hover { background: var(--blue-h); }
@@ -1405,7 +1223,7 @@
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
     <div class="login-logo">
-      <div class="lm">G</div>
+      <img src="https://www.geist.tur.ar/images/logochico.png" alt="Geist" class="lm">
       <span class="login-logo-text">GEIST <em>Cruceros</em></span>
     </div>
     <div class="login-title">Bienvenido</div>
@@ -1515,7 +1333,10 @@
 
   function toggleUserMenu() {
     const dd = document.getElementById('userDropdown');
+    const btn = document.querySelector('.n-user');
     dd.classList.toggle('open');
+    const isOpen = dd.classList.contains('open');
+    if (btn) btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
   }
 
   // Cerrar dropdown al hacer click afuera
@@ -1523,6 +1344,8 @@
     const wrap = document.querySelector('.n-user-wrap');
     if (wrap && !wrap.contains(e.target)) {
       document.getElementById('userDropdown')?.classList.remove('open');
+      const btn = document.querySelector('.n-user');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
     }
   });
 
@@ -1598,12 +1421,25 @@
     const target = document.getElementById(id);
     if (!target) return;
     const isOpen = target.classList.contains('open');
-    document.querySelectorAll('.sb-drop.open').forEach(d => d.classList.remove('open'));
-    if (!isOpen) target.classList.add('open');
+    // Close all dropdowns and reset aria-expanded
+    document.querySelectorAll('.sb-drop.open').forEach(d => {
+      d.classList.remove('open');
+      const ctrl = document.querySelector(`[aria-controls="${d.id}"]`);
+      if (ctrl) ctrl.setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) {
+      target.classList.add('open');
+      const ctrl = document.querySelector(`[aria-controls="${id}"]`);
+      if (ctrl) ctrl.setAttribute('aria-expanded', 'true');
+    }
   }
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.sb-field') && !e.target.closest('.sa-chip')) {
-      document.querySelectorAll('.sb-drop.open').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('.sb-drop.open').forEach(d => {
+        d.classList.remove('open');
+        const ctrl = document.querySelector(`[aria-controls="${d.id}"]`);
+        if (ctrl) ctrl.setAttribute('aria-expanded', 'false');
+      });
     }
   });
 
@@ -1614,16 +1450,29 @@
       if (ov && ov.classList.contains('open')) { closeModal(); return; }
       const itinOv = document.getElementById('itin-modal-ov');
       if (itinOv && itinOv.classList.contains('open')) { closeItinModal(); return; }
-      document.querySelectorAll('.sb-drop.open').forEach(d => d.classList.remove('open'));
-      document.getElementById('userDropdown')?.classList.remove('open');
+      document.querySelectorAll('.sb-drop.open').forEach(d => {
+        d.classList.remove('open');
+        const ctrl = document.querySelector(`[aria-controls="${d.id}"]`);
+        if (ctrl) ctrl.setAttribute('aria-expanded', 'false');
+      });
+      const userDd = document.getElementById('userDropdown');
+      if (userDd) {
+        userDd.classList.remove('open');
+        const userBtn = document.querySelector('.n-user');
+        if (userBtn) userBtn.setAttribute('aria-expanded', 'false');
+      }
     }
   });
 
   function selectDrop(field, value, label, el, evt) {
     searchState[field] = value;
     document.getElementById('val-' + field).textContent = label;
-    el.closest('.drop-list')?.querySelectorAll('.drop-item').forEach(i => i.classList.remove('on'));
+    el.closest('.drop-list')?.querySelectorAll('.drop-item').forEach(i => {
+      i.classList.remove('on');
+      i.setAttribute?.('aria-selected', 'false');
+    });
     el.classList.add('on');
+    el.setAttribute?.('aria-selected', 'true');
     el.closest('.sb-drop')?.classList.remove('open');
     rebuildFilterOptions();
     updateClearChip();
@@ -1634,10 +1483,9 @@
   function selectDuracion(val, label, el) {
     if (val) { const [a,b] = val.split(','); searchState.durMin=a; searchState.durMax=b; }
     else { searchState.durMin=''; searchState.durMax=''; }
-    document.getElementById('val-duracion').textContent = label;
-    el.closest('.drop-list')?.querySelectorAll('.drop-item').forEach(i => i.classList.remove('on'));
-    el.classList.add('on');
-    el.closest('.sb-drop')?.classList.remove('open');
+    el?.closest('.drop-list')?.querySelectorAll('.drop-item').forEach(i => i.classList.remove('on'));
+    el?.classList.add('on');
+    el?.closest('.sb-drop')?.classList.remove('open');
     updateClearChip();
     renderFilterChips();
   }
@@ -1772,21 +1620,16 @@
     document.getElementById('val-destino').textContent  = 'Cualquier destino';
     document.getElementById('val-fechas').textContent   = 'Cualquier fecha';
     document.getElementById('val-puerto').textContent   = 'Cualquier puerto';
-    document.getElementById('val-escala').textContent   = 'Cualquier escala';
-    document.getElementById('val-duracion').textContent = 'Cualquier duración';
     clearFechas();
     document.querySelectorAll('.drop-item.on').forEach(i => i.classList.remove('on'));
     document.querySelector('#drop-destino-list .drop-item')?.classList.add('on');
+    document.querySelector('#drop-puerto-list .drop-item')?.classList.add('on');
     // Reset sidebar checkboxes visually
     document.querySelectorAll('.sidebar .cb').forEach(c => {
       c.classList.remove('on');
       const sq = c.querySelector('.cb-sq'); if (sq) { sq.classList.remove('on'); sq.textContent=''; }
+      const inp = c.querySelector('input.sr-only'); if (inp) inp.checked = false;
     });
-    document.querySelector('#sidebar-navieras .cb')?.classList.add('on');
-    const firstSq = document.querySelector('#sidebar-navieras .cb .cb-sq');
-    if (firstSq) { firstSq.classList.add('on'); firstSq.textContent='✓'; }
-    document.querySelector('#drop-puerto-list .drop-item')?.classList.add('on');
-    document.querySelector('#drop-escala-list .drop-item')?.classList.add('on');
     rebuildFilterOptions();
     populateSidebarFilters();
     updateClearChip();
@@ -1802,40 +1645,41 @@
     if (!row) return;
     let html = '';
     if (searchState.destino) {
-      html += `<span class="filter-chip">${searchState.destino}<button class="filter-chip-x" onclick="searchState.destino='';document.getElementById('val-destino').textContent='Cualquier destino';rebuildFilterOptions();renderFilterChips();updateClearChip();">×</button></span>`;
+      html += `<span class="filter-chip">${searchState.destino}<button class="filter-chip-x" aria-label="Quitar filtro" onclick="searchState.destino='';document.getElementById('val-destino').textContent='Cualquier destino';rebuildFilterOptions();renderFilterChips();updateClearChip();">×</button></span>`;
     }
     if (searchState.dateFrom) {
       const lbl = searchState.dateTo ? formatDateShort(searchState.dateFrom)+' → '+formatDateShort(searchState.dateTo) : 'Desde '+formatDateShort(searchState.dateFrom);
-      html += `<span class="filter-chip">${lbl}<button class="filter-chip-x" onclick="clearFechas();renderFilterChips();updateClearChip();">×</button></span>`;
+      html += `<span class="filter-chip">${lbl}<button class="filter-chip-x" aria-label="Quitar filtro" onclick="clearFechas();renderFilterChips();updateClearChip();">×</button></span>`;
     }
     if (searchState.durMin) {
-      const lbl = document.getElementById('val-duracion').textContent;
-      html += `<span class="filter-chip">${lbl}<button class="filter-chip-x" onclick="searchState.durMin='';searchState.durMax='';document.getElementById('val-duracion').textContent='Cualquier duración';renderFilterChips();updateClearChip();">×</button></span>`;
+      const durLabels = {'1':'1–4 noches','5':'5–7 noches','8':'8–10 noches','11':'11–14 noches','15':'15+ noches'};
+      const durLbl = durLabels[searchState.durMin] || searchState.durMin+'–'+searchState.durMax+' noches';
+      html += `<span class="filter-chip">${durLbl}<button class="filter-chip-x" aria-label="Quitar filtro" onclick="searchState.durMin='';searchState.durMax='';populateSidebarFilters();renderFilterChips();updateClearChip();renderCruises(_cruisesData,false);">×</button></span>`;
     }
     if (searchState.puerto) {
-      html += `<span class="filter-chip">${searchState.puerto}<button class="filter-chip-x" onclick="searchState.puerto='';document.getElementById('val-puerto').textContent='Cualquier puerto';rebuildFilterOptions();renderFilterChips();updateClearChip();">×</button></span>`;
+      html += `<span class="filter-chip">${searchState.puerto}<button class="filter-chip-x" aria-label="Quitar filtro" onclick="searchState.puerto='';document.getElementById('val-puerto').textContent='Cualquier puerto';rebuildFilterOptions();renderFilterChips();updateClearChip();">×</button></span>`;
     }
     if (searchState.escala) {
-      html += `<span class="filter-chip">${searchState.escala}<button class="filter-chip-x" onclick="searchState.escala='';document.getElementById('val-escala').textContent='Cualquier escala';rebuildFilterOptions();renderFilterChips();updateClearChip();">×</button></span>`;
+      html += `<span class="filter-chip">${searchState.escala}<button class="filter-chip-x" aria-label="Quitar filtro" onclick="searchState.escala='';populateSidebarFilters();renderFilterChips();updateClearChip();renderCruises(_cruisesData,false);">×</button></span>`;
     }
     if (searchState.naviera) {
-      html += `<span class="filter-chip">${searchState.naviera}<button class="filter-chip-x" onclick="searchState.naviera='';renderFilterChips();updateClearChip();">×</button></span>`;
+      html += `<span class="filter-chip">${searchState.naviera}<button class="filter-chip-x" aria-label="Quitar filtro" onclick="searchState.naviera='';renderFilterChips();updateClearChip();">×</button></span>`;
     }
     searchState.ships.forEach(ship => {
-      html += `<span class="filter-chip">${ship}<button class="filter-chip-x" onclick="searchState.ships=searchState.ships.filter(s=>s!=='${ship.replace(/'/g,"\\'")}');rebuildFilterOptions();renderFilterChips();updateClearChip();">×</button></span>`;
+      html += `<span class="filter-chip">${ship}<button class="filter-chip-x" aria-label="Quitar filtro" onclick="searchState.ships=searchState.ships.filter(s=>s!=='${ship.replace(/'/g,"\\'")}');populateSidebarFilters();renderFilterChips();updateClearChip();renderCruises(_cruisesData,false);">×</button></span>`;
     });
     if (searchState.sidebarNavieras) {
       searchState.sidebarNavieras.forEach(nav => {
-        html += `<span class="filter-chip">${nav}<button class="filter-chip-x" onclick="searchState.sidebarNavieras=searchState.sidebarNavieras.filter(n=>n!=='${nav.replace(/'/g,"\\'")}');populateSidebarFilters();renderFilterChips();renderCruises(_cruisesData,false);">×</button></span>`;
+        html += `<span class="filter-chip">${nav}<button class="filter-chip-x" aria-label="Quitar filtro" onclick="searchState.sidebarNavieras=searchState.sidebarNavieras.filter(n=>n!=='${nav.replace(/'/g,"\\'")}');populateSidebarFilters();renderFilterChips();renderCruises(_cruisesData,false);">×</button></span>`;
       });
     }
     if (searchState.sidebarPuertos) {
       searchState.sidebarPuertos.forEach(port => {
-        html += `<span class="filter-chip">${port}<button class="filter-chip-x" onclick="searchState.sidebarPuertos=searchState.sidebarPuertos.filter(p=>p!=='${port.replace(/'/g,"\\'")}');populateSidebarFilters();renderFilterChips();renderCruises(_cruisesData,false);">×</button></span>`;
+        html += `<span class="filter-chip">${port}<button class="filter-chip-x" aria-label="Quitar filtro" onclick="searchState.sidebarPuertos=searchState.sidebarPuertos.filter(p=>p!=='${port.replace(/'/g,"\\'")}');populateSidebarFilters();renderFilterChips();renderCruises(_cruisesData,false);">×</button></span>`;
       });
     }
     if (html) {
-      html += `<span class="filter-chip" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);cursor:pointer;" onclick="clearAllFilters()">Limpiar todo <button class="filter-chip-x" style="margin-left:2px;">×</button></span>`;
+      html += `<button class="filter-chip" type="button" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);cursor:pointer;" onclick="clearAllFilters()" aria-label="Limpiar todos los filtros">Limpiar todo ×</button>`;
     }
     row.innerHTML = html;
     row.style.display = html ? 'flex' : 'none';
@@ -1848,6 +1692,7 @@
     const open = body.style.display !== 'none';
     body.style.display = open ? 'none' : 'block';
     head.querySelector('.ic').textContent = open ? '▸' : '▾';
+    head.setAttribute('aria-expanded', open ? 'false' : 'true');
   }
 
   function sidebarNaviera(val, label, el) {
@@ -1866,19 +1711,25 @@
 
   function populateSidebarFilters() {
     // ── Helper para crear un item .cb ──
-    function makeCbItem(labelText, isOn, onClickFn) {
-      const el = document.createElement('div');
+    function makeCbItem(labelText, isOn, onChangeFn, groupName) {
+      const el = document.createElement('label');
       el.className = 'cb' + (isOn ? ' on' : '');
       el.title = labelText;
+      const input = document.createElement('input');
+      input.type = groupName ? 'radio' : 'checkbox';
+      if (groupName) input.name = groupName;
+      input.className = 'sr-only';
+      input.checked = isOn;
+      input.onchange = function() { onChangeFn.call(el); };
       const sq = document.createElement('div');
       sq.className = 'cb-sq' + (isOn ? ' on' : '');
       sq.textContent = isOn ? '✓' : '';
       const lbl = document.createElement('span');
       lbl.className = 'cb-lbl';
       lbl.textContent = labelText;
+      el.appendChild(input);
       el.appendChild(sq);
       el.appendChild(lbl);
-      el.onclick = onClickFn;
       return el;
     }
 
@@ -1898,10 +1749,10 @@
         populateSidebarFilters();
         renderFilterChips();
         renderCruises(_cruisesData, false);
-      }));
+      }, null));
       [...navSet].sort((a,b) => a.localeCompare(b)).forEach(nav => {
         const isOn = searchState.sidebarNavieras.includes(nav);
-        sbNav.appendChild(makeCbItem(nav, isOn, function() { toggleSidebarNaviera(nav, this); }));
+        sbNav.appendChild(makeCbItem(nav, isOn, function() { toggleSidebarNaviera(nav, this); }, null));
       });
     }
 
@@ -1921,10 +1772,51 @@
         populateSidebarFilters();
         renderFilterChips();
         renderCruises(_cruisesData, false);
-      }));
+      }, null));
       [...portSet].sort((a,b) => a.localeCompare(b)).forEach(port => {
         const isOn = searchState.sidebarPuertos.includes(port);
-        sbPuerto.appendChild(makeCbItem(port, isOn, function() { toggleSidebarPuerto(port, this); }));
+        sbPuerto.appendChild(makeCbItem(port, isOn, function() { toggleSidebarPuerto(port, this); }, null));
+      });
+    }
+
+    // ── Puertos de escala ──
+    const sbEscala = document.getElementById('sidebar-escalas');
+    if (sbEscala) {
+      const escalaSet = new Set();
+      _cruisesData.forEach(c => {
+        (c.itinerary_days || []).forEach(d => {
+          if (d.port_name && !d.at_sea) escalaSet.add(d.port_name.split(',')[0].trim());
+        });
+      });
+      sbEscala.innerHTML = '';
+      sbEscala.appendChild(makeCbItem('Cualquier escala', !searchState.escala, function() {
+        sidebarEscala('', 'Cualquier escala', this);
+      }, 'escala'));
+      [...escalaSet].sort((a,b) => a.localeCompare(b)).forEach(port => {
+        const isOn = searchState.escala === port;
+        sbEscala.appendChild(makeCbItem(port, isOn, function() {
+          sidebarEscala(port, port, this);
+        }, 'escala'));
+      });
+    }
+
+    // ── Barcos ──
+    const sbBarco = document.getElementById('sidebar-barcos');
+    if (sbBarco) {
+      const shipSet = new Set();
+      _cruisesData.forEach(c => {
+        const ship = c.ship_title || c.ship_name || '';
+        if (ship) shipSet.add(ship);
+      });
+      sbBarco.innerHTML = '';
+      sbBarco.appendChild(makeCbItem('Cualquier barco', !searchState.ships.length, function() {
+        sidebarBarco('', 'Cualquier barco', this);
+      }, 'barco'));
+      [...shipSet].sort((a,b) => a.localeCompare(b)).forEach(ship => {
+        const isOn = searchState.ships.includes(ship);
+        sbBarco.appendChild(makeCbItem(ship, isOn, function() {
+          sidebarBarco(ship, ship, this);
+        }, 'barco'));
       });
     }
   }
@@ -1952,8 +1844,6 @@
   function sidebarDuracion(min, max, label, el) {
     searchState.durMin = min;
     searchState.durMax = max;
-    // sync con barra superior
-    document.getElementById('val-duracion').textContent = label;
     el.closest('.fc-body').querySelectorAll('.cb').forEach(c => {
       c.classList.remove('on');
       c.querySelector('.cb-sq').classList.remove('on');
@@ -1964,6 +1854,37 @@
     el.querySelector('.cb-sq').textContent = '✓';
     renderFilterChips();
     updateClearChip();
+    renderCruises(_cruisesData, false);
+  }
+
+  function sidebarEscala(val, label, el) {
+    searchState.escala = val;
+    el.closest('.fc-body').querySelectorAll('.cb').forEach(c => {
+      c.classList.remove('on');
+      c.querySelector('.cb-sq').classList.remove('on');
+      c.querySelector('.cb-sq').textContent = '';
+    });
+    el.classList.add('on');
+    el.querySelector('.cb-sq').classList.add('on');
+    el.querySelector('.cb-sq').textContent = '✓';
+    renderFilterChips();
+    updateClearChip();
+    renderCruises(_cruisesData, false);
+  }
+
+  function sidebarBarco(val, label, el) {
+    searchState.ships = val ? [val] : [];
+    el.closest('.fc-body').querySelectorAll('.cb').forEach(c => {
+      c.classList.remove('on');
+      c.querySelector('.cb-sq').classList.remove('on');
+      c.querySelector('.cb-sq').textContent = '';
+    });
+    el.classList.add('on');
+    el.querySelector('.cb-sq').classList.add('on');
+    el.querySelector('.cb-sq').textContent = '✓';
+    renderFilterChips();
+    updateClearChip();
+    renderCruises(_cruisesData, false);
   }
 
   function sidebarCabina(tipo, el) {
@@ -2024,10 +1945,9 @@
         const sbNav = document.getElementById('sidebar-navieras');
         if (sbNav) {
           Object.entries(navierasMap).forEach(([slug, label]) => {
-            const el = document.createElement('div');
+            const el = document.createElement('label');
             el.className = 'cb';
-            el.onclick = function() { sidebarNaviera(slug, label, this); };
-            el.innerHTML = `<div class="cb-sq"></div><span class="cb-lbl">${label}</span>`;
+            el.innerHTML = `<input type="checkbox" class="sr-only" onchange="sidebarNaviera('${slug.replace(/'/g,"\\'")}', '${label.replace(/'/g,"\\'")}', this.closest('.cb'))"><div class="cb-sq"></div><span class="cb-lbl">${label}</span>`;
             sbNav.appendChild(el);
           });
         }
@@ -2077,13 +1997,19 @@
     filteredForDestino.forEach(c => { (c.regions || []).forEach(r => regionesSet.add(r)); });
     const destList = document.getElementById('drop-destino-list');
     destList.innerHTML = '';
-    const destDefault = document.createElement('div');
+    const destDefault = document.createElement('button');
+    destDefault.type = 'button';
+    destDefault.setAttribute('role', 'option');
+    destDefault.setAttribute('aria-selected', !currentDestino ? 'true' : 'false');
     destDefault.className = 'drop-item' + (!currentDestino ? ' on' : '');
     destDefault.textContent = 'Cualquier destino';
     destDefault.onclick = (e) => { selectDrop('destino', '', 'Cualquier destino', destDefault); e.stopPropagation(); };
     destList.appendChild(destDefault);
     [...regionesSet].sort().forEach(r => {
-      const el = document.createElement('div');
+      const el = document.createElement('button');
+      el.type = 'button';
+      el.setAttribute('role', 'option');
+      el.setAttribute('aria-selected', currentDestino === r ? 'true' : 'false');
       el.className = 'drop-item' + (currentDestino === r ? ' on' : '');
       el.textContent = r;
       el.onclick = (e) => { selectDrop('destino', r, r, el); e.stopPropagation(); };
@@ -2117,13 +2043,19 @@
     });
     const puertoList = document.getElementById('drop-puerto-list');
     puertoList.innerHTML = '';
-    const puertoDefault = document.createElement('div');
+    const puertoDefault = document.createElement('button');
+    puertoDefault.type = 'button';
+    puertoDefault.setAttribute('role', 'option');
+    puertoDefault.setAttribute('aria-selected', !currentPuerto ? 'true' : 'false');
     puertoDefault.className = 'drop-item' + (!currentPuerto ? ' on' : '');
     puertoDefault.textContent = 'Cualquier puerto';
     puertoDefault.onclick = (e) => { selectDrop('puerto', '', 'Cualquier puerto', puertoDefault); e.stopPropagation(); };
     puertoList.appendChild(puertoDefault);
     [...puertosSet].sort((a, b) => a.localeCompare(b)).forEach(name => {
-      const el = document.createElement('div');
+      const el = document.createElement('button');
+      el.type = 'button';
+      el.setAttribute('role', 'option');
+      el.setAttribute('aria-selected', currentPuerto === name ? 'true' : 'false');
       el.className = 'drop-item' + (currentPuerto === name ? ' on' : '');
       el.textContent = name;
       el.onclick = (e) => { selectDrop('puerto', name, name, el); e.stopPropagation(); };
@@ -2135,96 +2067,8 @@
       puertoDefault.classList.add('on');
     }
 
-    // --- Rebuild BARCO dropdown ---
-    const filteredForBarco = _allCruisesForFilters.filter(c => {
-      if (searchState.destino) {
-        if (!(c.regions || []).includes(searchState.destino)) return false;
-      }
-      if (searchState.puerto) {
-        const port = c.starts_at?.name || c.departure_port_name || '';
-        if (port !== searchState.puerto) return false;
-      }
-      if (currentEscala) {
-        const ports = (c.itinerary_days || []).filter(d => d.port_name && !d.at_sea).map(d => d.port_name);
-        if (!ports.includes(currentEscala)) return false;
-      }
-      return true;
-    });
-    const barcoMap = {};
-    filteredForBarco.forEach(c => {
-      const nav = c.operator_title || c.operator_name || '';
-      const ship = c.ship_title || c.ship_name || '';
-      if (!nav || !ship) return;
-      if (!barcoMap[nav]) barcoMap[nav] = new Set();
-      barcoMap[nav].add(ship);
-    });
-    const availableShips = new Set();
-    Object.values(barcoMap).forEach(s => s.forEach(ship => availableShips.add(ship)));
-    // Remove invalid ships from selection
-    searchState.ships = searchState.ships.filter(s => availableShips.has(s));
-    const list = document.getElementById('drop-barco-list');
-    list.innerHTML = '';
-    Object.keys(barcoMap).sort((a, b) => a.localeCompare(b)).forEach(nav => {
-      const header = document.createElement('div');
-      header.className = 'drop-item';
-      header.style.cssText = 'font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);cursor:default;padding:10px 14px 4px;';
-      header.textContent = nav;
-      header.dataset.naviera = nav;
-      list.appendChild(header);
-      [...barcoMap[nav]].sort((a, b) => a.localeCompare(b)).forEach(ship => {
-        const item = document.createElement('div');
-        item.className = 'drop-item';
-        item.dataset.ship = ship;
-        item.dataset.naviera = nav;
-        const isChecked = searchState.ships.includes(ship);
-        item.innerHTML = `<div class="cb-sq ${isChecked?'on':''}" style="width:14px;height:14px;border-radius:3px;flex-shrink:0;border:1.5px solid var(--border2);background:${isChecked?'var(--blue)':'#fff'};display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;">${isChecked?'✓':''}</div>${ship}`;
-        item.onclick = (e) => { e.stopPropagation(); toggleShipSelection(ship, item); };
-        list.appendChild(item);
-      });
-    });
-    updateBarcoLabel();
-
-    // --- Rebuild ESCALA dropdown ---
-    const filteredForEscala = _allCruisesForFilters.filter(c => {
-      if (searchState.destino) {
-        if (!(c.regions || []).includes(searchState.destino)) return false;
-      }
-      if (searchState.puerto) {
-        const port = c.starts_at?.name || c.departure_port_name || '';
-        if (port !== searchState.puerto) return false;
-      }
-      if (currentShips.length) {
-        const ship = c.ship_title || c.ship_name || '';
-        if (!currentShips.includes(ship)) return false;
-      }
-      return true;
-    });
-    const escalasSet = new Set();
-    filteredForEscala.forEach(c => {
-      (c.itinerary_days || []).forEach(d => {
-        if (d.port_name && !d.at_sea) escalasSet.add(d.port_name);
-      });
-    });
- 
-    const escalaList = document.getElementById('drop-escala-list');
-    escalaList.innerHTML = '';
-    const escalaDefault = document.createElement('div');
-    escalaDefault.className = 'drop-item' + (!currentEscala ? ' on' : '');
-    escalaDefault.textContent = 'Cualquier escala';
-    escalaDefault.onclick = (e) => { selectDrop('escala', '', 'Cualquier escala', escalaDefault); e.stopPropagation(); };
-    escalaList.appendChild(escalaDefault);
-    [...escalasSet].sort((a, b) => a.localeCompare(b)).forEach(name => {
-      const el = document.createElement('div');
-      el.className = 'drop-item' + (currentEscala === name ? ' on' : '');
-      el.textContent = name;
-      el.onclick = (e) => { selectDrop('escala', name, name, el); e.stopPropagation(); };
-      escalaList.appendChild(el);
-    });
-    if (currentEscala && !escalasSet.has(currentEscala)) {
-      searchState.escala = '';
-      document.getElementById('val-escala').textContent = 'Cualquier escala';
-      escalaDefault.classList.add('on');
-    }
+    // Barco and Escala filters are now in the sidebar — no search bar dropdowns to rebuild.
+    // Sidebar populations happen via populateSidebarFilters().
   }
 
   // ─────────────────────────────────────────
@@ -2286,13 +2130,6 @@
     if (filters.duration_min || filters.duration_max) {
       searchState.durMin = filters.duration_min || '';
       searchState.durMax = filters.duration_max || '';
-      const min = filters.duration_min || '';
-      const max = filters.duration_max || '';
-      if (min && max && min !== max) {
-        document.getElementById('val-duracion').textContent = `${min}–${max} noches`;
-      } else if (min || max) {
-        document.getElementById('val-duracion').textContent = `${min || max} noches`;
-      }
     }
     if (filters.departure_port) {
       searchState.puerto = filters.departure_port;
@@ -2331,9 +2168,11 @@
     if (isOpen) {
       row.classList.remove('open');
       toggle.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
     } else {
       row.classList.add('open');
       toggle.classList.add('active');
+      toggle.setAttribute('aria-expanded', 'true');
       document.getElementById('ai-search-input').focus();
     }
   }
@@ -2482,6 +2321,25 @@
       });
     }
 
+    // Client-side duration filter
+    if (searchState.durMin || searchState.durMax) {
+      const dMin = parseInt(searchState.durMin) || 0;
+      const dMax = parseInt(searchState.durMax) || 999;
+      filtered = filtered.filter(c => {
+        const n = parseInt(c.cruise_nights || c.duration) || 0;
+        return n >= dMin && n <= dMax;
+      });
+    }
+
+    // Client-side escala (port of call) filter
+    if (searchState.escala) {
+      const esc = searchState.escala.toLowerCase();
+      filtered = filtered.filter(c => {
+        const days = c.itinerary_days || [];
+        return days.some(d => (d.port_name || '').toLowerCase().includes(esc));
+      });
+    }
+
     // Default sort by departure date ascending
     filtered.sort((a, b) => new Date(a.date_from || 0) - new Date(b.date_from || 0));
 
@@ -2531,7 +2389,7 @@
           <div class="rta rta-center" style="font-size:15px;font-weight:700;">${noches}</div>
           <div class="rta rta-center">${fechaDdMm}</div>
           <div class="rta rta-center">
-            <a class="itin-link" onclick="event.stopPropagation();openItinerarioModal('${ref}', this)">Ver</a>
+            <button class="itin-link" type="button" onclick="event.stopPropagation();openItinerarioModal('${ref}', this)" aria-label="Ver itinerario">Ver</button>
           </div>
           <div class="rta rta-center">
             ${minPrecio
@@ -2596,169 +2454,103 @@
   // ─────────────────────────────────────────
   async function openCruiseDetail(ref) {
     document.getElementById('ov').classList.add('open');
-    document.getElementById('tab-barco').innerHTML = `
-      <div class="loading-row"><div class="spinner"><span></span><span></span><span></span><span></span><span></span></div>Cargando información...</div>`;
+    document.getElementById('preview-content').innerHTML = `
+      <div class="loading-row"><div class="spinner"><span></span><span></span><span></span><span></span><span></span></div>Cargando...</div>`;
 
     try {
       const data = await apiFetch(`/cruises/${ref}`);
       if (!data?.success) throw new Error();
       currentCruise = data.data;
-
-      // Fetch ship data in parallel (real Promise.all)
-      const shipUrl  = data.data.operating_seasons?.[0]?.dates?.[0]?.ship || '';
-      const shipSlug = shipUrl.split('/ships/')[1]?.replace('.json','') || '';
-      let shipData = null;
-      if (shipSlug) {
-        try {
-          const [shipRes] = await Promise.all([apiFetch(`/ships/${encodeURIComponent(shipSlug)}`)]);
-          if (shipRes?.success) shipData = shipRes.data;
-        } catch(e) {}
-      }
-      renderCruiseModal(data.data, shipData);
+      renderPreview(data.data, ref);
     } catch(e) {
-      renderExampleModal();
+      document.getElementById('preview-content').innerHTML = `
+        <div style="padding:40px;text-align:center;color:var(--muted);">
+          <div style="font-size:28px;margin-bottom:10px;">⚠️</div>
+          <p>No se pudo cargar el crucero.</p>
+          <button class="pv-btn-itin" style="margin-top:14px;" onclick="closeModal()">Cerrar</button>
+        </div>`;
     }
   }
 
-  function renderCruiseModal(c, ship) {
-    // Extraer datos de la estructura real de Widgety
+  function renderPreview(c, ref) {
     const season   = c.operating_seasons?.[0] || {};
     const date     = season.dates?.[0] || {};
     const naviera  = c.operator_title || '—';
     const barco    = date.ship_title || c.ship_title || '—';
     const noches   = c.cruise_nights || '—';
     const fechaSal = formatDate(date.date_from || c.date_from);
-    const fechaLleg = formatDate(date.date_to || c.date_to);
     const salida   = (date.starts_at || c.starts_at)?.name || '—';
     const llegada  = (date.ends_at   || c.ends_at)?.name   || '—';
-    const regiones = (c.regions || []).join(' · ') || '—';
-    const rating   = c.rating || '—';
-    const navBadge = naviera.includes('Norwegian') ? 'NCL'
-                   : naviera.includes('Royal')      ? 'RCI'
-                   : naviera.substring(0,3).toUpperCase();
+    const navLogo  = getCruiseLineLogo(naviera);
 
     // Precios
-    const hp      = date.headline_prices?.cruise?.double || {};
-    const pInt    = hp.from_inside  || c.inside_price;
-    const pExt    = hp.from_outside || c.outside_price;
-    const pBal    = hp.from_balcony || c.balcony_price;
-    const pSui    = hp.from_suite   || c.suite_price;
-    const fmtP    = p => p ? `US$ ${Number(p).toLocaleString('es-AR')}` : '<span style="color:var(--muted)">Consultar</span>';
+    const hp   = date.headline_prices?.cruise?.double || {};
+    const pInt = hp.from_inside  || c.inside_price;
+    const pExt = hp.from_outside || c.outside_price;
+    const pBal = hp.from_balcony || c.balcony_price;
+    const pSui = hp.from_suite   || c.suite_price;
+    const fmtP = p => p ? `$${Number(p).toLocaleString('es-AR')}` : '—';
+    const pCls = p => p ? 'pv-price-val' : 'pv-price-val na';
 
-    // Sidebar del modal
-    document.querySelector('.m-cruise-name').textContent = c.name || barco;
-    document.querySelector('.m-cruise-sub').textContent  = `${naviera} · ${noches} noches`;
-
-    // Tab: El Barco
-    const imgSrc = ship?.image || (c.images?.[0]?.url) || 'https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80';
-    const shipDesc = ship?.description || c.description || '';
-    document.getElementById('tab-barco').innerHTML = `
-      <div class="ship-banner">
-        <img src="${imgSrc}" alt="${barco}" onerror="this.src='https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80'">
-        <div class="ship-banner-overlay">${barco}</div>
-      </div>
-      <div class="ship-stats">
-        <div class="sc"><span class="sc-v">${noches}</span><span class="sc-l">Noches</span></div>
-        <div class="sc"><span class="sc-v">${rating}</span><span class="sc-l">Categoría</span></div>
-        <div class="sc"><span class="sc-v">${salida === llegada ? salida : salida+' → '+llegada}</span><span class="sc-l">Ruta</span></div>
-        <div class="sc"><span class="sc-v">${fechaSal}</span><span class="sc-l">Salida</span></div>
-        <div class="sc"><span class="sc-v">${fechaLleg}</span><span class="sc-l">Regreso</span></div>
-        ${ship?.year_built ? `<div class="sc"><span class="sc-v">${ship.year_built}${ship.refit_year?' / '+ship.refit_year:''}</span><span class="sc-l">Año / Refurb</span></div>` : `<div class="sc"><span class="sc-v">${regiones}</span><span class="sc-l">Región</span></div>`}
-        ${ship?.passengers ? `<div class="sc"><span class="sc-v">${Number(ship.passengers).toLocaleString('es-AR')}</span><span class="sc-l">Pasajeros</span></div>` : `<div class="sc"><div class="line-chip" style="margin:0 auto;">${navBadge}</div><span class="sc-l">${naviera.split(' ')[0]}</span></div>`}
-        ${ship?.crew ? `<div class="sc"><span class="sc-v">${Number(ship.crew).toLocaleString('es-AR')}</span><span class="sc-l">Tripulación</span></div>` : ''}
-        ${ship?.decks ? `<div class="sc"><span class="sc-v">${ship.decks}</span><span class="sc-l">Decks</span></div>` : ''}
-        ${ship?.tonnage ? `<div class="sc"><span class="sc-v">${Number(ship.tonnage).toLocaleString('es-AR')} GT</span><span class="sc-l">Tonelaje</span></div>` : ''}
-        ${ship?.ship_class ? `<div class="sc"><span class="sc-v">${ship.ship_class}</span><span class="sc-l">Clase</span></div>` : ''}
-      </div>
-      ${shipDesc ? `<p class="m-desc">${shipDesc}</p>` : ''}`;
-
-    // Tab: Itinerario — agrupar por día, rellenar días de mar faltantes
+    // Puertos del itinerario (resumen)
     const idays = c.itinerary_days || [];
-    const startDateItin = (() => { const d = date.date_from || c.date_from; return d ? new Date(d) : null; })();
-    const totalNightsItin = c.cruise_nights || (idays[idays.length-1]?.day || idays.length);
+    const ports = idays
+      .filter(d => d.port_name && !d.at_sea)
+      .map(d => d.port_name.split(',')[0].trim());
+    const uniquePorts = [...new Set(ports)];
+    const routeSummary = uniquePorts.length
+      ? uniquePorts.join(' · ')
+      : (c.regions || []).join(' · ') || c.name || '—';
 
-    // Agrupar puertos por número de día (puede haber 2 puertos en el mismo día)
-    const dayMapItin = {};
-    idays.forEach(d => {
-      if (!dayMapItin[d.day]) dayMapItin[d.day] = [];
-      dayMapItin[d.day].push(d);
-    });
+    // Determine detail URL
+    const dateRef = date.date_ref || '';
+    const detailUrl = dateRef
+      ? `detalle.html?ref=${encodeURIComponent(ref)}&date_ref=${encodeURIComponent(dateRef)}`
+      : `detalle.html?ref=${encodeURIComponent(ref)}`;
 
-    // Construir lista completa rellenando días de mar faltantes
-    const fullDaysItin = [];
-    for (let n = 1; n <= totalNightsItin + 1; n++) {
-      if (dayMapItin[n]) {
-        fullDaysItin.push({ day: n, ports: dayMapItin[n], at_sea: false });
-      } else if (n <= totalNightsItin) {
-        fullDaysItin.push({ day: n, ports: [], at_sea: true });
-      }
-    }
-
-    document.getElementById('tab-itin').innerHTML = fullDaysItin.length ? `
-      <div class="m-section-title">Itinerario — ${noches} noches</div>
-      <div class="itin-list">
-        ${fullDaysItin.map((dayGroup, i) => {
-          const isLast  = i === fullDaysItin.length - 1;
-          const isSea   = dayGroup.at_sea || !dayGroup.ports.length;
-          const fecha   = startDateItin ? (() => { const dd = new Date(startDateItin); dd.setDate(dd.getDate() + dayGroup.day - 1); return dd.toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'short' }); })() : '';
-          const dotCls  = isLast ? 'end' : isSea ? 'sea' : '';
-          const portsHtml = isSea
-            ? `<div class="iday-p iday-sea">🌊 Disfrutando del mar</div>`
-            : dayGroup.ports.map((p, pi) => `
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:${pi<dayGroup.ports.length-1?'6px':'0'};">
-                  ${p.image ? `<img src="${p.image}" alt="${p.port_name}" loading="lazy" style="width:52px;height:38px;object-fit:cover;border-radius:6px;flex-shrink:0;">` : ''}
-                  <div>
-                    <div class="iday-p" style="margin:0;">${p.port_name || '—'}</div>
-                    <div class="iday-meta">
-                      ${p.arrival_time ? `<span>🛬 ${p.arrival_time}</span>` : ''}
-                      ${p.departure_time ? `<span>🛫 ${p.departure_time}</span>` : ''}
-                    </div>
-                  </div>
-                </div>`).join('');
-          return `
-            <div class="iday">
-              <div class="iday-left">
-                <div class="iday-num">Día ${dayGroup.day}${fecha ? ' · '+fecha : ''}</div>
-                <div class="iday-dot ${dotCls}"></div>
-                ${!isLast ? '<div class="iday-line"></div>' : ''}
-              </div>
-              <div class="iday-right">${portsHtml}</div>
-            </div>`;
-        }).join('')}
-      </div>` : `
-      <div style="text-align:center;padding:40px 0;color:var(--muted);">
-        <div style="font-size:32px;margin-bottom:12px;">🗺️</div>
-        <p>Itinerario detallado no disponible para este crucero.</p>
+    document.getElementById('preview-content').innerHTML = `
+      <div class="pv-header">
+        <div class="pv-naviera">
+          ${navLogo ? `<img src="${navLogo}" alt="${naviera}" class="pv-naviera-logo">` : ''}
+          ${naviera}
+        </div>
+        <div class="pv-title">${c.name || barco}</div>
+        <div class="pv-meta">
+          <span>📅 ${fechaSal}</span>
+          <span>🌙 ${noches} noches</span>
+          <span>⚓ ${salida}${salida !== llegada ? ' → '+llegada : ''}</span>
+        </div>
+      </div>
+      <div class="pv-route">
+        <div class="pv-route-label">Itinerario · ${uniquePorts.length} puertos</div>
+        <div class="pv-route-ports">${routeSummary}</div>
+      </div>
+      <div class="pv-prices">
+        <div class="pv-price-cell">
+          <div class="pv-price-type">Interior</div>
+          <div class="${pCls(pInt)}">${fmtP(pInt)}</div>
+          ${pInt ? '<div class="pv-price-per">p/p</div>' : ''}
+        </div>
+        <div class="pv-price-cell">
+          <div class="pv-price-type">Exterior</div>
+          <div class="${pCls(pExt)}">${fmtP(pExt)}</div>
+          ${pExt ? '<div class="pv-price-per">p/p</div>' : ''}
+        </div>
+        <div class="pv-price-cell">
+          <div class="pv-price-type">Balcón</div>
+          <div class="${pCls(pBal)}">${fmtP(pBal)}</div>
+          ${pBal ? '<div class="pv-price-per">p/p</div>' : ''}
+        </div>
+        <div class="pv-price-cell">
+          <div class="pv-price-type">Suite</div>
+          <div class="${pCls(pSui)}">${fmtP(pSui)}</div>
+          ${pSui ? '<div class="pv-price-per">p/p</div>' : ''}
+        </div>
+      </div>
+      <div class="pv-actions">
+        <button class="pv-btn-itin" onclick="closeModal();openItinerarioModal('${ref}',null)">Itinerario</button>
+        <a href="${detailUrl}" class="pv-btn-detail">Ver detalle completo →</a>
       </div>`;
-
-    // Tab: Precios
-    document.getElementById('tab-precios').innerHTML = `
-      <div class="m-section-title">Tarifas</div>
-      <div class="price-summary">
-        <div class="ps-card"><div class="ps-type">Interior</div><div class="ps-price">${fmtP(pInt)}</div><div class="ps-per">por huésped</div></div>
-        <div class="ps-card"><div class="ps-type">Exterior</div><div class="ps-price">${fmtP(pExt)}</div><div class="ps-per">por huésped</div></div>
-        <div class="ps-card"><div class="ps-type">Balcón</div><div class="ps-price">${fmtP(pBal)}</div><div class="ps-per">por huésped</div></div>
-        <div class="ps-card"><div class="ps-type">Suite</div><div class="ps-price">${fmtP(pSui)}</div><div class="ps-per">por huésped</div></div>
-      </div>
-      <p style="font-size:12px;color:var(--muted);margin-top:8px;">* Tarifas en USD por persona en base doble. Sujetas a disponibilidad.</p>`;
-  }
-
-  function renderExampleModal() {
-    document.getElementById('tab-barco').innerHTML = `
-      <div class="ship-banner">
-        <img src="https://images.unsplash.com/photo-1548574505-5e239809ee19?w=900&q=80" alt="Norwegian Pearl">
-        <div class="ship-banner-overlay">Norwegian Pearl</div>
-      </div>
-      <div class="ship-stats">
-        <div class="sc"><span class="sc-v">Medio</span><span class="sc-l">Tamaño</span></div>
-        <div class="sc"><span class="sc-v">2006</span><span class="sc-l">Inauguración</span></div>
-        <div class="sc"><span class="sc-v">2021</span><span class="sc-l">Última reforma</span></div>
-        <div class="sc"><span class="sc-v">15</span><span class="sc-l">Decks</span></div>
-        <div class="sc"><span class="sc-v">2.394</span><span class="sc-l">Pasajeros</span></div>
-        <div class="sc"><span class="sc-v">1.197</span><span class="sc-l">Cabinas</span></div>
-        <div class="sc"><span class="sc-v">1.072</span><span class="sc-l">Tripulantes</span></div>
-      </div>
-      <p class="m-desc">Datos de ejemplo — se reemplazarán con datos reales de Widgety cuando lleguen las keys.</p>`;
   }
 
   // ─────────────────────────────────────────
@@ -2893,20 +2685,8 @@
     window.location.href = `${base}/detalle.html?ref=${encodeURIComponent(_cotizarRef)}&adults=${adults}&children=${children}`;
   }
 
-  function openModal() {
-    document.getElementById('ov').classList.add('open');
-    renderExampleModal();
-  }
   function closeModal() { document.getElementById('ov').classList.remove('open'); }
   function handleOv(e) { if(e.target.id==='ov') closeModal(); }
-
-  function setTab(t, el) {
-    ['barco','itin','precios','entret','cabinas','fotos','specs'].forEach(x => {
-      document.getElementById('tab-'+x).style.display = x===t ? 'block' : 'none';
-    });
-    document.querySelectorAll('.mni').forEach(n => n.classList.remove('on'));
-    el.classList.add('on');
-  }
 
   function radClick(el) {
     el.closest('.rad-row').querySelectorAll('.rad').forEach(r => r.classList.remove('on'));
@@ -2952,7 +2732,7 @@
 </div>
 
 <!-- PAX MODAL -->
-<div id="pax-modal-ov" onclick="if(event.target===this)closePaxModal()" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(13,31,60,0.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+<div id="pax-modal-ov" role="dialog" aria-modal="true" aria-label="Seleccionar pasajeros" onclick="if(event.target===this)closePaxModal()" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(13,31,60,0.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:18px;width:380px;max-width:95vw;box-shadow:0 20px 60px rgba(13,31,60,0.25);animation:dropIn 0.2s ease;overflow:hidden;">
     <div style="padding:22px 24px 0;">
       <div style="font-size:18px;font-weight:800;color:var(--navy);margin-bottom:4px;">¿Cuántos viajan?</div>
