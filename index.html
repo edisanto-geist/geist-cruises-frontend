@@ -346,7 +346,7 @@
     font-size: 9px; color: #fff; transition: all 0.15s;
   }
   .cb-sq.on { background: var(--blue); border-color: var(--blue); }
-  .cb-lbl { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
+  .cb-lbl { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .cb-val { font-size: 11px; color: var(--muted); }
 
   .pr-row { display: flex; gap: 7px; align-items: center; }
@@ -1869,6 +1869,7 @@
     function makeCbItem(labelText, isOn, onClickFn) {
       const el = document.createElement('div');
       el.className = 'cb' + (isOn ? ' on' : '');
+      el.title = labelText;
       const sq = document.createElement('div');
       sq.className = 'cb-sq' + (isOn ? ' on' : '');
       sq.textContent = isOn ? '✓' : '';
