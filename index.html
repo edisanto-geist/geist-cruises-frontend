@@ -1876,8 +1876,16 @@
       sbNav.innerHTML = '';
       [...navSet].sort((a,b) => a.localeCompare(b)).forEach(nav => {
         const el = document.createElement('div');
-        el.className = 'cb' + (searchState.sidebarNavieras.includes(nav) ? ' on' : '');
-        el.innerHTML = `<div class="cb-sq${searchState.sidebarNavieras.includes(nav) ? ' on' : ''}">${searchState.sidebarNavieras.includes(nav) ? '✓' : ''}</div><span class="cb-lbl">${nav}</span>`;
+        const isOn = searchState.sidebarNavieras.includes(nav);
+        el.className = 'cb' + (isOn ? ' on' : '');
+        const sq = document.createElement('div');
+        sq.className = 'cb-sq' + (isOn ? ' on' : '');
+        sq.textContent = isOn ? '✓' : '';
+        const lbl = document.createElement('span');
+        lbl.className = 'cb-lbl';
+        lbl.textContent = nav;
+        el.appendChild(sq);
+        el.appendChild(lbl);
         el.onclick = function() { toggleSidebarNaviera(nav, this); };
         sbNav.appendChild(el);
       });
@@ -1894,8 +1902,16 @@
       sbPuerto.innerHTML = '';
       [...portSet].sort((a,b) => a.localeCompare(b)).forEach(port => {
         const el = document.createElement('div');
-        el.className = 'cb' + (searchState.sidebarPuertos.includes(port) ? ' on' : '');
-        el.innerHTML = `<div class="cb-sq${searchState.sidebarPuertos.includes(port) ? ' on' : ''}">${searchState.sidebarPuertos.includes(port) ? '✓' : ''}</div><span class="cb-lbl">${port}</span>`;
+        const isOn = searchState.sidebarPuertos.includes(port);
+        el.className = 'cb' + (isOn ? ' on' : '');
+        const sq = document.createElement('div');
+        sq.className = 'cb-sq' + (isOn ? ' on' : '');
+        sq.textContent = isOn ? '✓' : '';
+        const lbl = document.createElement('span');
+        lbl.className = 'cb-lbl';
+        lbl.textContent = port;
+        el.appendChild(sq);
+        el.appendChild(lbl);
         el.onclick = function() { toggleSidebarPuerto(port, this); };
         sbPuerto.appendChild(el);
       });

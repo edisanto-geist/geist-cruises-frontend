@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n \"appendChild\\\\|textContent\\\\|innerText\" /c/Users/User/Documents/GitHub/geist-cruises-frontend/*.html)",
+      "Bash(node -e \":*)",
+      "Bash(npx jest:*)"
+    ]
+  }
+}

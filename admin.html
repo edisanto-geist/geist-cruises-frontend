@@ -781,6 +781,17 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 <script>
 const API = 'https://geist-cruises-backend-production.up.railway.app/api';
 let TOKEN = localStorage.getItem('geist_token') || null;
+
+// ── Seguridad: escapar texto antes de insertar en innerHTML ──
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 let _currentPanel = 'dashboard';
 let _shipsData = [];
 let _currentShipSlug = '';
@@ -1068,22 +1079,22 @@ function renderShipsTable(ships) {
           <tr>
             <td class="td-img">
               ${s.image
-                ? `<img src="${s.image}" alt="${s.name||s.slug}" onerror="this.style.display='none'">`
+                ? `<img src="${escapeHtml(s.image)}" alt="${escapeHtml(s.name||s.slug)}" onerror="this.style.display='none'">`
                 : `<div style="width:48px;height:34px;border-radius:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;">🚢</div>`
               }
             </td>
             <td>
-              <div class="td-main">${s.name || s.slug}</div>
-              <div style="font-size:11px;color:var(--muted);">${s.operator || '—'}</div>
-              <div class="td-mono" style="margin-top:2px;">${s.slug}</div>
+              <div class="td-main">${escapeHtml(s.name || s.slug)}</div>
+              <div style="font-size:11px;color:var(--muted);">${escapeHtml(s.operator) || '—'}</div>
+              <div class="td-mono" style="margin-top:2px;">${escapeHtml(s.slug)}</div>
             </td>
             <td>
-              ${s.ship_class ? `<span class="badge blue">${s.ship_class}</span>` : '—'}
-              ${s.style ? `<div style="font-size:11px;color:var(--muted);margin-top:3px;">${s.style}</div>` : ''}
+              ${s.ship_class ? `<span class="badge blue">${escapeHtml(s.ship_class)}</span>` : '—'}
+              ${s.style ? `<div style="font-size:11px;color:var(--muted);margin-top:3px;">${escapeHtml(s.style)}</div>` : ''}
             </td>
             <td>
               ${s.passengers ? `<div style="font-size:12px;"><strong>${s.passengers.toLocaleString('es-AR')}</strong> <span style="color:var(--muted);">pax</span></div>` : ''}
-              ${s.year_built ? `<div style="font-size:11.5px;color:var(--muted);">Año: ${s.year_built}${s.refit_year?' · Refurb '+s.refit_year:''}</div>` : ''}
+              ${s.year_built ? `<div style="font-size:11.5px;color:var(--muted);">Año: ${escapeHtml(s.year_built)}${s.refit_year?' · Refurb '+escapeHtml(s.refit_year):''}</div>` : ''}
               ${s.tonnage ? `<div style="font-size:11px;color:var(--muted);">${s.tonnage.toLocaleString('es-AR')} GT</div>` : ''}
             </td>
             <td>
@@ -1100,8 +1111,8 @@ function renderShipsTable(ships) {
             </td>
             <td>
               <div class="row-actions">
-                <button class="ra-btn" onclick="openShipModal('${s.slug}')">✏️ Editar</button>
-                <button class="ra-btn" onclick="viewShipCabins('${s.slug}')">🛏 Cabinas</button>
+                <button class="ra-btn" onclick="openShipModal(${JSON.stringify(s.slug)})">✏️ Editar</button>
+                <button class="ra-btn" onclick="viewShipCabins(${JSON.stringify(s.slug)})">🛏 Cabinas</button>
               </div>
             </td>
           </tr>`).join('')}
@@ -1270,17 +1281,17 @@ function renderCabinsTable(accommodation) {
           <tr>
             <td class="td-img">
               ${a.image
-                ? `<img src="${a.image}" alt="${a.name}" onerror="this.parentNode.innerHTML='<div style=width:48px;height:34px;border-radius:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;>🛏</div>'">`
+                ? `<img src="${escapeHtml(a.image)}" alt="${escapeHtml(a.name)}" onerror="this.style.display='none'">`
                 : `<div style="width:48px;height:34px;border-radius:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;">🛏</div>`
               }
             </td>
             <td>
-              <div class="td-main" style="max-width:200px;">${a.name}</div>
+              <div class="td-main" style="max-width:200px;">${escapeHtml(a.name)}</div>
               ${a.floorplan ? '<div style="font-size:10.5px;color:var(--blue);margin-top:2px;">📐 Tiene plano</div>' : ''}
             </td>
-            <td><span class="badge ${tc}">${a.room_type || '—'}</span></td>
-            <td><div class="td-mono" style="font-size:11px;">${(a.grade_codes||[]).join(', ')}</div></td>
-            <td style="font-size:12.5px;">${sizeM}</td>
+            <td><span class="badge ${tc}">${escapeHtml(a.room_type) || '—'}</span></td>
+            <td><div class="td-mono" style="font-size:11px;">${escapeHtml((a.grade_codes||[]).join(', '))}</div></td>
+            <td style="font-size:12.5px;">${escapeHtml(sizeM)}</td>
             <td style="font-size:12.5px;">1–${a.max_occupancy||'—'}</td>
             <td>
               <div class="tog on" onclick="toggleCabinVisibility(this,${i})" title="Click para ocultar/mostrar"></div>
@@ -1332,13 +1343,13 @@ async function loadDestinos() {
         <tbody>
           ${regions.map(r => `
             <tr>
-              <td class="td-mono">${r}</td>
-              <td><div class="td-main">${DEST_LABELS[r] || r}</div></td>
+              <td class="td-mono">${escapeHtml(r)}</td>
+              <td><div class="td-main">${escapeHtml(DEST_LABELS[r] || r)}</div></td>
               <td><span class="badge blue">En catálogo</span></td>
               <td><div class="tog on" onclick="this.classList.toggle('on');showToast(this.classList.contains('on')?'Destino activado':'Destino ocultado')"></div></td>
               <td>
                 <div class="row-actions">
-                  <button class="ra-btn" onclick="editDestinoModal('${r}')">✏️ Editar nombre</button>
+                  <button class="ra-btn" onclick="editDestinoModal(${JSON.stringify(r)})">✏️ Editar nombre</button>
                 </div>
               </td>
             </tr>`).join('')}
@@ -1391,16 +1402,16 @@ async function loadAgencias() {
               : 'Nunca';
             const isActive  = a.active !== false;
             return `<tr>
-              <td><div class="td-main">${a.name}</div>${a.legajo ? `<div style="font-size:11px;color:var(--muted);">Leg. ${a.legajo}</div>` : ''}</td>
-              <td class="td-mono">${a.email}</td>
+              <td><div class="td-main">${escapeHtml(a.name)}</div>${a.legajo ? `<div style="font-size:11px;color:var(--muted);">Leg. ${escapeHtml(a.legajo)}</div>` : ''}</td>
+              <td class="td-mono">${escapeHtml(a.email)}</td>
               <td><span class="badge blue">${a.budget_count || 0} presupuestos</span></td>
-              <td style="font-size:12px;color:var(--muted);">${lastLogin}</td>
+              <td style="font-size:12px;color:var(--muted);">${escapeHtml(lastLogin)}</td>
               <td><span class="badge ${isActive?'green':'red'}">${isActive?'✓ Activa':'Suspendida'}</span></td>
               <td>
                 <div class="row-actions">
                   ${isActive
-                    ? `<button class="ra-btn danger" onclick="toggleAgencia(${a.id}, false, '${a.name}')">⛔ Suspender</button>`
-                    : `<button class="ra-btn" onclick="toggleAgencia(${a.id}, true, '${a.name}')">✅ Activar</button>`
+                    ? `<button class="ra-btn danger" onclick="toggleAgencia(${a.id}, false, ${JSON.stringify(a.name)})">⛔ Suspender</button>`
+                    : `<button class="ra-btn" onclick="toggleAgencia(${a.id}, true, ${JSON.stringify(a.name)})">✅ Activar</button>`
                   }
                 </div>
               </td>
@@ -1554,22 +1565,22 @@ async function loadOfflineCruises() {
         </tr></thead>
         <tbody>
           ${cruises.map(c => {
-            const st = STATUS_LABELS[c.status] || { label: c.status, cls: 'muted' };
+            const st = STATUS_LABELS[c.status] || { label: escapeHtml(c.status), cls: 'muted' };
             const fecha = c.departure_date
               ? new Date(c.departure_date).toLocaleDateString('es-AR', {day:'2-digit',month:'short',year:'numeric'})
               : '—';
             return `<tr>
               <td>
-                <div class="td-main">${c.cruise_name}</div>
-                <div style="font-size:11px;color:var(--muted);">${c.departure_port} → ${c.arrival_port}</div>
+                <div class="td-main">${escapeHtml(c.cruise_name)}</div>
+                <div style="font-size:11px;color:var(--muted);">${escapeHtml(c.departure_port)} → ${escapeHtml(c.arrival_port)}</div>
               </td>
               <td>
-                <div class="td-main">${c.ship_name || '—'}</div>
-                <div style="font-size:11px;color:var(--muted);">${c.operator_name || ''}</div>
+                <div class="td-main">${escapeHtml(c.ship_name) || '—'}</div>
+                <div style="font-size:11px;color:var(--muted);">${escapeHtml(c.operator_name) || ''}</div>
               </td>
-              <td style="font-size:13px;">${fecha}</td>
+              <td style="font-size:13px;">${escapeHtml(fecha)}</td>
               <td style="text-align:center;">${c.nights}</td>
-              <td><span class="badge muted">${c.source_type || 'MANUAL'}</span></td>
+              <td><span class="badge muted">${escapeHtml(c.source_type) || 'MANUAL'}</span></td>
               <td><span class="badge ${st.cls}">${st.label}</span></td>
               <td>
                 <div class="row-actions">

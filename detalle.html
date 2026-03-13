@@ -512,6 +512,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
 <script>
   const API   = 'https://geist-cruises-backend-production.up.railway.app/api';
   let   TOKEN = localStorage.getItem('geist_token') || null;
+
+  // ── Seguridad: escapar texto antes de insertar en innerHTML ──
+  function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
   const S = { adults:2, kids:0, cabinType:null, cabinName:null, price:0, budgets:[], cruise:null };
 
   // Fallback Unsplash si no hay imágenes del barco
@@ -865,8 +876,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
   };
 
   function facIcon(f) {
-    for (const [k,v] of Object.entries(FAC_ICONS)) { if (f.includes(k)) return v+' '+f; }
-    return '✓ '+f;
+    for (const [k,v] of Object.entries(FAC_ICONS)) { if (f.includes(k)) return v+' '+escapeHtml(f); }
+    return '✓ '+escapeHtml(f);
   }
 
   function openCabinModalFromBtn(btn) {
@@ -976,7 +987,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     if (locTxt !== '—') {
       const locDiv = document.createElement('div');
       locDiv.className = 'cm-spec cm-spec-loc';
-      locDiv.innerHTML = `<div class="cm-spec-v" style="font-size:13px;">${locTxt}</div><div class="cm-spec-l">Ubicación</div>`;
+      const locVal = document.createElement('div');
+      locVal.className = 'cm-spec-v';
+      locVal.style.fontSize = '13px';
+      locVal.textContent = locTxt;
+      const locLabel = document.createElement('div');
+      locLabel.className = 'cm-spec-l';
+      locLabel.textContent = 'Ubicación';
+      locDiv.appendChild(locVal);
+      locDiv.appendChild(locLabel);
       cmSpecs.appendChild(locDiv);
     }
 
