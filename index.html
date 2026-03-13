@@ -1865,7 +1865,23 @@
   }
 
   function populateSidebarFilters() {
-    // Populate Navieras dynamically
+    // ── Helper para crear un item .cb ──
+    function makeCbItem(labelText, isOn, onClickFn) {
+      const el = document.createElement('div');
+      el.className = 'cb' + (isOn ? ' on' : '');
+      const sq = document.createElement('div');
+      sq.className = 'cb-sq' + (isOn ? ' on' : '');
+      sq.textContent = isOn ? '✓' : '';
+      const lbl = document.createElement('span');
+      lbl.className = 'cb-lbl';
+      lbl.textContent = labelText;
+      el.appendChild(sq);
+      el.appendChild(lbl);
+      el.onclick = onClickFn;
+      return el;
+    }
+
+    // ── Navieras ──
     const sbNav = document.getElementById('sidebar-navieras');
     if (sbNav) {
       const navSet = new Set();
@@ -1874,24 +1890,21 @@
         if (nav) navSet.add(nav);
       });
       sbNav.innerHTML = '';
+      // "Todas las navieras" como primera opción — seleccionada cuando no hay filtro activo
+      const noNavFilter = searchState.sidebarNavieras.length === 0;
+      sbNav.appendChild(makeCbItem('Todas las navieras', noNavFilter, function() {
+        searchState.sidebarNavieras = [];
+        populateSidebarFilters();
+        renderFilterChips();
+        renderCruises(_cruisesData, false);
+      }));
       [...navSet].sort((a,b) => a.localeCompare(b)).forEach(nav => {
-        const el = document.createElement('div');
         const isOn = searchState.sidebarNavieras.includes(nav);
-        el.className = 'cb' + (isOn ? ' on' : '');
-        const sq = document.createElement('div');
-        sq.className = 'cb-sq' + (isOn ? ' on' : '');
-        sq.textContent = isOn ? '✓' : '';
-        const lbl = document.createElement('span');
-        lbl.className = 'cb-lbl';
-        lbl.textContent = nav;
-        el.appendChild(sq);
-        el.appendChild(lbl);
-        el.onclick = function() { toggleSidebarNaviera(nav, this); };
-        sbNav.appendChild(el);
+        sbNav.appendChild(makeCbItem(nav, isOn, function() { toggleSidebarNaviera(nav, this); }));
       });
     }
 
-    // Populate Puerto de Salida dynamically
+    // ── Puertos de salida ──
     const sbPuerto = document.getElementById('sidebar-puertos');
     if (sbPuerto) {
       const portSet = new Set();
@@ -1900,20 +1913,17 @@
         if (port) portSet.add(port);
       });
       sbPuerto.innerHTML = '';
+      // "Todos los puertos" como primera opción
+      const noPortFilter = searchState.sidebarPuertos.length === 0;
+      sbPuerto.appendChild(makeCbItem('Todos los puertos', noPortFilter, function() {
+        searchState.sidebarPuertos = [];
+        populateSidebarFilters();
+        renderFilterChips();
+        renderCruises(_cruisesData, false);
+      }));
       [...portSet].sort((a,b) => a.localeCompare(b)).forEach(port => {
-        const el = document.createElement('div');
         const isOn = searchState.sidebarPuertos.includes(port);
-        el.className = 'cb' + (isOn ? ' on' : '');
-        const sq = document.createElement('div');
-        sq.className = 'cb-sq' + (isOn ? ' on' : '');
-        sq.textContent = isOn ? '✓' : '';
-        const lbl = document.createElement('span');
-        lbl.className = 'cb-lbl';
-        lbl.textContent = port;
-        el.appendChild(sq);
-        el.appendChild(lbl);
-        el.onclick = function() { toggleSidebarPuerto(port, this); };
-        sbPuerto.appendChild(el);
+        sbPuerto.appendChild(makeCbItem(port, isOn, function() { toggleSidebarPuerto(port, this); }));
       });
     }
   }
@@ -1922,11 +1932,8 @@
     const idx = searchState.sidebarNavieras.indexOf(nav);
     if (idx >= 0) searchState.sidebarNavieras.splice(idx, 1);
     else searchState.sidebarNavieras.push(nav);
-    const sq = el.querySelector('.cb-sq');
-    const on = searchState.sidebarNavieras.includes(nav);
-    el.classList.toggle('on', on);
-    sq.classList.toggle('on', on);
-    sq.textContent = on ? '✓' : '';
+    // Reconstruye la lista completa para que "Todas las navieras" se actualice también
+    populateSidebarFilters();
     renderFilterChips();
     renderCruises(_cruisesData, false);
   }
@@ -1935,11 +1942,8 @@
     const idx = searchState.sidebarPuertos.indexOf(port);
     if (idx >= 0) searchState.sidebarPuertos.splice(idx, 1);
     else searchState.sidebarPuertos.push(port);
-    const sq = el.querySelector('.cb-sq');
-    const on = searchState.sidebarPuertos.includes(port);
-    el.classList.toggle('on', on);
-    sq.classList.toggle('on', on);
-    sq.textContent = on ? '✓' : '';
+    // Reconstruye la lista completa para que "Todos los puertos" se actualice también
+    populateSidebarFilters();
     renderFilterChips();
     renderCruises(_cruisesData, false);
   }
