@@ -54,13 +54,10 @@
     text-decoration: none; margin-right: 32px;
   }
   .n-mark {
-    width: 32px; height: 32px; border-radius: 8px;
-    background: linear-gradient(135deg, var(--blue), var(--cyan));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; font-weight: 800; color: #fff;
+    height: 28px; width: auto;
+    object-fit: contain;
   }
-  .n-name { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: 0.03em; }
-  .n-name em { color: var(--cyan); font-style: normal; }
+  .n-name { font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.7); letter-spacing: 0.03em; }
   .n-links { display: flex; flex: 1; }
   .n-links a {
     color: rgba(255,255,255,0.55); text-decoration: none;
@@ -79,7 +76,7 @@
   .n-user:hover { background: rgba(255,255,255,0.14); }
   .n-av {
     width: 26px; height: 26px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    background: var(--blue);
     display: flex; align-items: center; justify-content: center;
     font-size: 11px; font-weight: 700; color: #fff;
   }
@@ -109,49 +106,28 @@
     background: var(--navy);
     position: relative; overflow: visible;
   }
-  .hero::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: url('https://images.unsplash.com/photo-1548574505-5e239809ee19?w=1600&q=80') center/cover no-repeat;
-    opacity: 0.1; pointer-events: none;
-  }
   .hero-inner {
     position: relative; z-index: 2;
     max-width: 1280px; margin: 0 auto;
-    padding: 32px 32px 32px;
-    display: flex; align-items: flex-end; gap: 40px;
+    padding: 18px 32px 20px;
   }
-  .hero-title-block { flex-shrink: 0; padding-bottom: 28px; min-width: 200px; }
-  .hero-eyebrow {
-    font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--cyan); margin-bottom: 8px;
+
+  .hero-cta {
+    font-size: 14.5px; font-weight: 400; color: rgba(255,255,255,0.55);
+    margin-bottom: 14px; letter-spacing: 0.01em;
   }
-  .hero-title {
-    font-size: 28px; font-weight: 700; color: #fff;
-    line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 20px;
-  }
-  .hero-stats { display: flex; align-items: center; gap: 12px; }
-  .hs { display: flex; flex-direction: column; gap: 2px; }
-  .hs-n { font-size: 15px; font-weight: 700; color: #fff; }
-  .hs-l { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.08em; }
-  .hs-div { width: 1px; height: 28px; background: rgba(255,255,255,0.15); }
 
   /* ─────────── SEARCH PANEL ─────────── */
   .search-panel {
     overflow: visible;
-    flex: 1;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px;
-    padding: 20px 20px 22px;
-    backdrop-filter: blur(10px);
+    width: 100%;
   }
   .search-bar {
     display: flex; align-items: stretch;
-    background: #fff; border-radius: 12px;
+    background: #fff; border-radius: 100px;
     overflow: visible;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.2);
-    margin-bottom: 14px; min-height: 58px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    margin-bottom: 14px; min-height: 54px;
     flex-wrap: wrap;
   }
   .sb-field {
@@ -161,6 +137,7 @@
     border-right: 1px solid var(--border);
     min-width: 0;
   }
+  .sb-field:first-child { border-radius: 100px 0 0 100px; }
   .sb-field:hover { background: #f5f8ff; }
   .sb-field.sb-destination { flex: 1.4; }
   .sb-icon { font-size: 18px; flex-shrink: 0; }
@@ -172,6 +149,7 @@
     border: none; font-family: inherit;
     font-size: 14px; font-weight: 700;
     padding: 0 26px;
+    border-radius: 0 100px 100px 0;
     cursor: pointer; display: flex; align-items: center; gap: 8px;
     transition: background 0.15s; flex-shrink: 0;
     white-space: nowrap;
@@ -302,7 +280,7 @@
   .fc {
     background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 12px; overflow: hidden;
+    border-radius: 12px;
     box-shadow: var(--shadow);
   }
   .fc-head {
@@ -314,7 +292,7 @@
     cursor: pointer; user-select: none;
   }
   .fc-head .ic { color: var(--muted); font-size: 10px; transition: transform 0.2s; }
-  .fc-body { padding: 13px 15px; display: flex; flex-direction: column; gap: 9px; }
+  .fc-body { padding: 13px 15px 15px; display: flex; flex-direction: column; gap: 9px; }
 
   .tog-row { display: flex; align-items: center; justify-content: space-between; }
   .tog-lbl { font-size: 13px; font-weight: 500; color: var(--text); }
@@ -388,7 +366,7 @@
 
   .rt-head {
     display: grid;
-    grid-template-columns: 2fr 1.6fr 0.5fr 1fr 1fr 90px 140px;
+    grid-template-columns: 2fr 1.6fr 0.5fr 1fr 1fr 110px 150px;
     background: var(--bg2);
     border-bottom: 2px solid var(--border);
   }
@@ -404,11 +382,11 @@
   .rth:hover { color: var(--text); }
   .rth.sort-asc::after { content: ' ↑'; color: var(--blue); }
   .rth.sort-desc::after { content: ' ↓'; color: var(--blue); }
-  .rth-price { border-left: 1px solid var(--border); justify-content: center; text-align: center; }
+  .rth-price { justify-content: center; text-align: center; }
 
   .rt-row {
     display: grid;
-    grid-template-columns: 2fr 1.6fr 0.5fr 1fr 1fr 90px 140px;
+    grid-template-columns: 2fr 1.6fr 0.5fr 1fr 1fr 110px 150px;
     border-bottom: 1px solid var(--border);
     align-items: center;
     transition: background 0.15s;
@@ -442,7 +420,6 @@
 
   /* precio cells */
   .rta-price {
-    border-left: 1px solid var(--border);
     padding: 13px 10px;
     text-align: center;
   }
@@ -523,7 +500,7 @@
   .btn-copy-sec:hover { border-color: var(--blue); color: var(--blue); }
 
   /* accion cell */
-  .rta-action { padding: 13px 12px; display: flex; justify-content: flex-end; }
+  .rta-action { padding: 13px 12px; display: flex; justify-content: flex-end; gap: 8px; }
   .rta-btn-info {
     background: #fff !important;
     color: var(--blue) !important;
@@ -807,14 +784,11 @@
      RESPONSIVE — TABLET (≤900px)
   ══════════════════════════════════════ */
   @media (max-width: 900px) {
-    .hero-inner { flex-direction: column; align-items: stretch; padding: 20px 16px 0; gap: 16px; }
-    .hero-title-block { padding-bottom: 0; min-width: 0; }
-    .hero-title { font-size: 22px; }
-    .search-panel { border-radius: 12px 12px 0 0; padding: 14px 14px 16px; }
-    .search-bar { flex-wrap: wrap; height: auto; border-radius: 10px; }
+    .hero-inner { padding: 14px 16px 16px; }
+    .search-bar { flex-wrap: wrap; height: auto; border-radius: 18px; }
     .sb-field { flex: 1 1 45%; border-right: none; border-bottom: 1px solid var(--border); min-height: 52px; }
     .sb-field.sb-destination { flex: 1 1 100%; }
-    .sb-btn { width: 100%; border-radius: 0 0 10px 10px; padding: 14px; justify-content: center; font-size: 15px; }
+    .sb-btn { width: 100%; border-radius: 0 0 18px 18px; padding: 14px; justify-content: center; font-size: 15px; }
     .main { grid-template-columns: 1fr; padding: 16px; gap: 14px; }
     .sidebar { position: static; display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; max-height: none; overflow-y: visible; }
     .rt-head { grid-template-columns: 2fr 1.4fr 0.5fr 1fr 90px; }
@@ -835,8 +809,7 @@
   @media (max-width: 600px) {
     nav { padding: 0 14px; }
     .n-links { display: none; }
-    .hero-inner { padding: 14px 12px 0; }
-    .hero-stats { display: none; }
+    .hero-inner { padding: 10px 12px 12px; }
     .search-advanced { display: none; }
     .main { padding: 12px; }
     .sidebar { grid-template-columns: 1fr; }
@@ -855,7 +828,6 @@
     .ft-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
     .pax-modal-inner { width: 95vw !important; }
     .sb-drop, .sb-drop-wide, .sb-drop-sm { min-width: 0; width: calc(100vw - 24px); left: -14px; }
-    .hero-title { font-size: 18px; }
     .m-close { width: 40px; height: 40px; font-size: 16px; }
     .pg-btn { width: 40px; height: 40px; }
     .cb-sq { width: 22px; height: 22px; border-radius: 5px; font-size: 11px; }
@@ -864,7 +836,7 @@
   @media (max-width: 480px) {
     nav { padding: 0 10px; }
     .n-name { font-size: 14px; }
-    .hero-inner { padding: 10px 10px 0; }
+    .hero-inner { padding: 8px 10px 10px; }
     .main { padding: 10px; gap: 10px; }
     .rt-head { display: none; }
     .rt-row { grid-template-columns: 1fr; gap: 0; padding: 12px; }
@@ -899,11 +871,10 @@
 <!-- NAV -->
 <nav>
   <a href="#" class="n-logo">
-    <div class="n-mark">G</div>
-    <span class="n-name">GEIST <em>Cruceros</em></span>
+    <img class="n-mark" src="https://www.geist.tur.ar/images/logoblanco.png" alt="Geist">
   </a>
   <div class="n-links">
-    <a href="#" class="on">🚢 Cruceros</a>
+    <a href="#" class="on">Cruceros</a>
     <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente">Mis reservas <span style="font-size:9px;font-weight:700;background:rgba(255,255,255,0.12);border-radius:3px;padding:1px 5px;letter-spacing:0.06em;vertical-align:middle;">PRONTO</span></a>
     <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente">Mis presupuestos <span style="font-size:9px;font-weight:700;background:rgba(255,255,255,0.12);border-radius:3px;padding:1px 5px;letter-spacing:0.06em;vertical-align:middle;">PRONTO</span></a>
   </div>
@@ -914,10 +885,12 @@
     </div>
     <div class="n-dropdown" id="userDropdown">
       <div class="n-dropdown-item" onclick="window.location.href='#mis-presupuestos'">
-        📋 Mis presupuestos
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 13H8"/><path d="M16 17H8"/><path d="M16 13h-2"/></svg>
+        Mis presupuestos
       </div>
       <div class="n-dropdown-item danger" onclick="logout()">
-        🚪 Cerrar sesión
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Cerrar sesión
       </div>
     </div>
   </div>
@@ -926,27 +899,13 @@
 <!-- HERO + SEARCH -->
 <div class="hero">
   <div class="hero-inner">
-
-    <!-- Título izquierda -->
-    <div class="hero-title-block">
-      <div class="hero-eyebrow">⚓ Portal mayorista</div>
-      <h1 class="hero-title">Buscador<br>de Cruceros</h1>
-      <div class="hero-stats">
-        <div class="hs"><span class="hs-n">60+</span><span class="hs-l">Navieras</span></div>
-        <div class="hs-div"></div>
-        <div class="hs"><span class="hs-n">1.000+</span><span class="hs-l">Barcos</span></div>
-        <div class="hs-div"></div>
-        <div class="hs"><span class="hs-n">Real time</span><span class="hs-l">Disponibilidad</span></div>
-      </div>
-    </div>
-
-    <!-- Buscador derecha -->
     <div class="search-panel">
+      <p class="hero-cta">Explorá rutas, compará tarifas y armá la propuesta perfecta para tu cliente</p>
 
       <!-- Búsqueda por IA -->
       <div class="ai-search-wrapper" id="ai-search-wrapper">
         <div class="ai-search-toggle" id="ai-search-toggle" onclick="toggleAISearch()">
-          <div class="ai-search-toggle-icon">✨</div>
+          <div class="ai-search-toggle-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg></div>
           <div class="ai-search-toggle-label">¿Querés buscar con IA?</div>
           <div class="ai-search-toggle-arrow">▼</div>
         </div>
@@ -967,7 +926,7 @@
 
         <!-- DESTINO -->
         <div class="sb-field sb-destination" onclick="toggleDrop('drop-destino', event)">
-          <div class="sb-icon"><span aria-hidden="true">🌍</span></div>
+          <div class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></div>
           <div class="sb-content">
             <div class="sb-label">Destino</div>
             <div class="sb-value" id="val-destino">Cualquier destino</div>
@@ -987,7 +946,7 @@
 
         <!-- FECHAS -->
         <div class="sb-field sb-dates" onclick="toggleDrop('drop-fechas', event)">
-          <div class="sb-icon"><span aria-hidden="true">📅</span></div>
+          <div class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
           <div class="sb-content">
             <div class="sb-label">Fechas</div>
             <div class="sb-value" id="val-fechas">Cualquier fecha</div>
@@ -1021,7 +980,7 @@
 
         <!-- PUERTO DE SALIDA -->
         <div class="sb-field" onclick="toggleDrop('drop-puerto', event)">
-          <div class="sb-icon"><span aria-hidden="true">⚓</span></div>
+          <div class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2.5"/><line x1="12" y1="6.5" x2="12" y2="22"/><line x1="7" y1="9" x2="17" y2="9"/><path d="M3 20l4 4c2-3 3.5-5 5-5s3 2 5 5l4-4"/></svg></div>
           <div class="sb-content">
             <div class="sb-label">Puerto de salida</div>
             <div class="sb-value" id="val-puerto">Cualquier puerto</div>
@@ -1036,49 +995,9 @@
           </div>
         </div>
 
-        <div class="sb-sep"></div>
-
-        <!-- PUERTO ESCALA -->
-        <div class="sb-field" onclick="toggleDrop('drop-escala', event)">
-          <div class="sb-icon"><span aria-hidden="true">📍</span></div>
-          <div class="sb-content">
-            <div class="sb-label">Puerto Escala</div>
-            <div class="sb-value" id="val-escala">Cualquier escala</div>
-          </div>
-          <div class="sb-drop" id="drop-escala">
-            <div class="drop-search-wrap">
-              <input class="drop-search" id="drop-escala-search" placeholder="Buscar escala..." oninput="filterDrop('drop-escala',this.value)" onclick="event.stopPropagation()">
-            </div>
-            <div class="drop-list" id="drop-escala-list">
-              <div class="drop-item on" onclick="selectDrop('escala','','Cualquier escala',this)">Cualquier escala</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="sb-sep"></div>
-
-        <!-- DURACIÓN -->
-        <div class="sb-field" onclick="toggleDrop('drop-duracion', event)">
-          <div class="sb-icon"><span aria-hidden="true">🌙</span></div>
-          <div class="sb-content">
-            <div class="sb-label">Duración</div>
-            <div class="sb-value" id="val-duracion">Cualquier duración</div>
-          </div>
-          <div class="sb-drop sb-drop-sm" id="drop-duracion" onclick="event.stopPropagation()">
-            <div class="drop-list">
-              <div class="drop-item on" onclick="selectDuracion('','Cualquier duración',this)">Cualquier duración</div>
-              <div class="drop-item" onclick="selectDuracion('1,4','1 a 4 noches',this)">1 a 4 noches</div>
-              <div class="drop-item" onclick="selectDuracion('5,7','5 a 7 noches',this)">5 a 7 noches</div>
-              <div class="drop-item" onclick="selectDuracion('8,10','8 a 10 noches',this)">8 a 10 noches</div>
-              <div class="drop-item" onclick="selectDuracion('11,14','11 a 14 noches',this)">11 a 14 noches</div>
-              <div class="drop-item" onclick="selectDuracion('15,99','15+ noches',this)">15+ noches</div>
-            </div>
-          </div>
-        </div>
-
         <!-- BARCO -->
         <div class="sb-field" onclick="toggleDrop('drop-barco', event)">
-          <div class="sb-icon"><span aria-hidden="true">🚢</span></div>
+          <div class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.5 0 2.5 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/><path d="M12 1v4"/></svg></div>
           <div class="sb-content">
             <div class="sb-label">Barco</div>
             <div class="sb-value" id="val-barco">Barco</div>
@@ -1102,6 +1021,9 @@
 
       <!-- Active filter chips -->
       <div id="filter-chips-row" style="display:none; margin-top:10px; flex-wrap:wrap; gap:6px;"></div>
+      <!-- Hidden refs for JS compatibility -->
+      <div id="val-duracion" style="display:none;">Cualquier duración</div>
+      <div id="val-escala" style="display:none;">Cualquier escala</div>
 
     </div>
   </div>
@@ -1123,12 +1045,10 @@
     <!-- NAVIERA -->
     <div class="fc">
       <div class="fc-head" onclick="toggleFc(this)">Naviera <span class="ic">▾</span></div>
-      <div class="fc-body">
-        <div id="sidebar-navieras">
-          <div class="cb on" onclick="sidebarNaviera('','Todas',this)">
-            <div class="cb-sq on">✓</div>
-            <span class="cb-lbl">Todas las navieras</span>
-          </div>
+      <div class="fc-body" id="sidebar-navieras">
+        <div class="cb on" onclick="sidebarNaviera('','Todas',this)">
+          <div class="cb-sq on">✓</div>
+          <span class="cb-lbl">Todas las navieras</span>
         </div>
       </div>
     </div>
@@ -1146,12 +1066,10 @@
       </div>
     </div>
 
-    <!-- PUERTO DE SALIDA (sidebar) -->
+    <!-- PUERTO DE ESCALA (sidebar) -->
     <div class="fc">
-      <div class="fc-head" onclick="toggleFc(this)">Puerto de Salida <span class="ic">▾</span></div>
-      <div class="fc-body">
-        <div id="sidebar-puertos">
-        </div>
+      <div class="fc-head" onclick="toggleFc(this)">Puerto de Escala <span class="ic">▾</span></div>
+      <div class="fc-body" id="sidebar-escalas" style="max-height:220px;overflow-y:auto;scrollbar-width:thin;">
       </div>
     </div>
 
@@ -1169,11 +1087,11 @@
       <div class="r-count" id="resultsCount"><strong>12 cruceros</strong> encontrados</div>
       <div class="r-controls">
         <select class="r-sel" aria-label="Ordenar resultados" onchange="handleSortSelect(this)">
-          <option value="">⭐ Recomendado</option>
-          <option value="precio-asc">↑ Menor precio</option>
-          <option value="precio-desc">↓ Mayor precio</option>
-          <option value="fecha-asc">📅 Fecha más próxima</option>
-          <option value="noches-asc">🌙 Duración</option>
+          <option value="">Recomendado</option>
+          <option value="precio-asc">Menor precio</option>
+          <option value="precio-desc">Mayor precio</option>
+          <option value="fecha-asc">Fecha más próxima</option>
+          <option value="noches-asc">Duración</option>
         </select>
       </div>
     </div>
@@ -1223,17 +1141,17 @@
         <div class="m-cruise-sub">10 may 2026 · 7 noches</div>
       </div>
       <div class="m-nav">
-        <div class="mni" onclick="setTab('itin',this)"><span class="mni-ic">🗓</span> Itinerario</div>
-        <div class="mni on" onclick="setTab('barco',this)"><span class="mni-ic">🚢</span> El Barco</div>
-        <div class="mni" onclick="setTab('precios',this)"><span class="mni-ic">💰</span> Precios</div>
-        <div class="mni" onclick="setTab('entret',this)"><span class="mni-ic">🎭</span> Entretenimiento</div>
-        <div class="mni" onclick="setTab('cabinas',this)"><span class="mni-ic">🛏</span> Cabinas</div>
-        <div class="mni" onclick="setTab('fotos',this)"><span class="mni-ic">📷</span> Fotos</div>
-        <div class="mni" onclick="setTab('specs',this)"><span class="mni-ic">📋</span> Especificaciones</div>
+        <div class="mni" onclick="setTab('itin',this)"><span class="mni-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span> Itinerario</div>
+        <div class="mni on" onclick="setTab('barco',this)"><span class="mni-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.5 0 2.5 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/><path d="M12 1v4"/></svg></span> El Barco</div>
+        <div class="mni" onclick="setTab('precios',this)"><span class="mni-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span> Precios</div>
+        <div class="mni" onclick="setTab('entret',this)"><span class="mni-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 8-9.04 9.06a2.82 2.82 0 1 0 3.98 3.98L16 12"/><circle cx="17" cy="7" r="5"/></svg></span> Entretenimiento</div>
+        <div class="mni" onclick="setTab('cabinas',this)"><span class="mni-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></span> Cabinas</div>
+        <div class="mni" onclick="setTab('fotos',this)"><span class="mni-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span> Fotos</div>
+        <div class="mni" onclick="setTab('specs',this)"><span class="mni-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 13H8"/><path d="M16 17H8"/><path d="M16 13h-2"/></svg></span> Especificaciones</div>
       </div>
       <div class="m-actions">
-        <button class="m-btn-pdf">📄 &nbsp;Presupuesto PDF</button>
-        <button class="m-btn-book">✅ &nbsp;Reservar ahora</button>
+        <button class="m-btn-pdf"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg> Presupuesto PDF</button>
+        <button class="m-btn-book"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Reservar ahora</button>
       </div>
     </div>
     <div class="m-body">
@@ -1337,14 +1255,10 @@
     display: flex; align-items: center; gap: 10px;
     margin-bottom: 28px;
   }
-  .login-logo .lm {
-    width: 38px; height: 38px; border-radius: 9px;
-    background: linear-gradient(135deg, var(--blue), var(--cyan));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 17px; font-weight: 800; color: #fff;
+  .login-logo img {
+    height: 36px; width: auto; object-fit: contain;
   }
   .login-logo-text { font-size: 20px; font-weight: 700; color: var(--navy); }
-  .login-logo-text em { color: var(--blue); font-style: normal; }
   .login-title { font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
   .login-sub { font-size: 13.5px; color: var(--muted); margin-bottom: 26px; }
   .login-field { margin-bottom: 14px; }
@@ -1405,8 +1319,8 @@
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
     <div class="login-logo">
-      <div class="lm">G</div>
-      <span class="login-logo-text">GEIST <em>Cruceros</em></span>
+      <img src="https://www.geist.tur.ar/images/logochico.png" alt="Geist" style="height:36px;width:auto;">
+      <span class="login-logo-text">Cruceros</span>
     </div>
     <div class="login-title">Bienvenido</div>
     <p class="login-sub">Ingresá con tu cuenta de agencia para acceder al portal B2B.</p>
@@ -1905,26 +1819,26 @@
       });
     }
 
-    // ── Puertos de salida ──
-    const sbPuerto = document.getElementById('sidebar-puertos');
-    if (sbPuerto) {
-      const portSet = new Set();
+    // ── Puertos de escala ──
+    const sbEscala = document.getElementById('sidebar-escalas');
+    if (sbEscala) {
+      const escalaSet = new Set();
       _cruisesData.forEach(c => {
-        const port = c.starts_at?.name || c.departure_port_name || '';
-        if (port) portSet.add(port);
+        (c.itinerary_days || []).forEach(d => {
+          if (d.port_name && !d.at_sea) escalaSet.add(d.port_name);
+        });
       });
-      sbPuerto.innerHTML = '';
-      // "Todos los puertos" como primera opción
-      const noPortFilter = searchState.sidebarPuertos.length === 0;
-      sbPuerto.appendChild(makeCbItem('Todos los puertos', noPortFilter, function() {
-        searchState.sidebarPuertos = [];
+      sbEscala.innerHTML = '';
+      const noEscalaFilter = !searchState.escala;
+      sbEscala.appendChild(makeCbItem('Todas las escalas', noEscalaFilter, function() {
+        searchState.escala = '';
         populateSidebarFilters();
         renderFilterChips();
         renderCruises(_cruisesData, false);
       }));
-      [...portSet].sort((a,b) => a.localeCompare(b)).forEach(port => {
-        const isOn = searchState.sidebarPuertos.includes(port);
-        sbPuerto.appendChild(makeCbItem(port, isOn, function() { toggleSidebarPuerto(port, this); }));
+      [...escalaSet].sort((a,b) => a.localeCompare(b)).forEach(escala => {
+        const isOn = searchState.escala === escala;
+        sbEscala.appendChild(makeCbItem(escala, isOn, function() { toggleSidebarEscala(escala, this); }));
       });
     }
   }
@@ -1939,11 +1853,8 @@
     renderCruises(_cruisesData, false);
   }
 
-  function toggleSidebarPuerto(port, el) {
-    const idx = searchState.sidebarPuertos.indexOf(port);
-    if (idx >= 0) searchState.sidebarPuertos.splice(idx, 1);
-    else searchState.sidebarPuertos.push(port);
-    // Reconstruye la lista completa para que "Todos los puertos" se actualice también
+  function toggleSidebarEscala(escala, el) {
+    searchState.escala = searchState.escala === escala ? '' : escala;
     populateSidebarFilters();
     renderFilterChips();
     renderCruises(_cruisesData, false);
@@ -1952,8 +1863,6 @@
   function sidebarDuracion(min, max, label, el) {
     searchState.durMin = min;
     searchState.durMax = max;
-    // sync con barra superior
-    document.getElementById('val-duracion').textContent = label;
     el.closest('.fc-body').querySelectorAll('.cb').forEach(c => {
       c.classList.remove('on');
       c.querySelector('.cb-sq').classList.remove('on');
@@ -2395,7 +2304,7 @@
       const total   = data.data?.total || cruises.length;
 
       if (!cruises.length) {
-        tbody.innerHTML = `<div class="empty-state"><div class="ei">🔍</div><p>No se encontraron cruceros con esos filtros.<br>Probá con otros criterios.</p></div>`;
+        tbody.innerHTML = `<div class="empty-state"><div class="ei"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div><p>No se encontraron cruceros con esos filtros.<br>Probá con otros criterios.</p></div>`;
         countEl.innerHTML = '<strong>0 cruceros</strong> encontrados';
         return;
       }
@@ -2703,15 +2612,15 @@
           const fecha   = startDateItin ? (() => { const dd = new Date(startDateItin); dd.setDate(dd.getDate() + dayGroup.day - 1); return dd.toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'short' }); })() : '';
           const dotCls  = isLast ? 'end' : isSea ? 'sea' : '';
           const portsHtml = isSea
-            ? `<div class="iday-p iday-sea">🌊 Disfrutando del mar</div>`
+            ? `<div class="iday-p iday-sea">Navegación — Disfrutando del mar</div>`
             : dayGroup.ports.map((p, pi) => `
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:${pi<dayGroup.ports.length-1?'6px':'0'};">
                   ${p.image ? `<img src="${p.image}" alt="${p.port_name}" loading="lazy" style="width:52px;height:38px;object-fit:cover;border-radius:6px;flex-shrink:0;">` : ''}
                   <div>
                     <div class="iday-p" style="margin:0;">${p.port_name || '—'}</div>
                     <div class="iday-meta">
-                      ${p.arrival_time ? `<span>🛬 ${p.arrival_time}</span>` : ''}
-                      ${p.departure_time ? `<span>🛫 ${p.departure_time}</span>` : ''}
+                      ${p.arrival_time ? `<span>Llega ${p.arrival_time}</span>` : ''}
+                      ${p.departure_time ? `<span>Sale ${p.departure_time}</span>` : ''}
                     </div>
                   </div>
                 </div>`).join('');
@@ -2727,7 +2636,7 @@
         }).join('')}
       </div>` : `
       <div style="text-align:center;padding:40px 0;color:var(--muted);">
-        <div style="font-size:32px;margin-bottom:12px;">🗺️</div>
+        <div style="margin-bottom:12px;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg></div>
         <p>Itinerario detallado no disponible para este crucero.</p>
       </div>`;
 
@@ -2819,7 +2728,7 @@
           return [`<tr>
             <td><span class="itin-day-num">${dayGroup.day}</span></td>
             <td>${fecha}</td>
-            <td class="itin-sea">🌊 Disfrutando del mar</td>
+            <td class="itin-sea">Navegación — Disfrutando del mar</td>
             <td>—</td><td>—</td>
           </tr>`];
         }
@@ -2853,8 +2762,8 @@
     });
     navigator.clipboard.writeText(txt).then(() => {
       const btn = document.querySelector('.btn-copy');
-      btn.textContent = '✅ Copiado!';
-      setTimeout(() => btn.innerHTML = '📋 Copiar itinerario', 2000);
+      btn.textContent = 'Copiado!';
+      setTimeout(() => btn.innerHTML = 'Copiar itinerario', 2000);
     });
   }
 
@@ -2946,7 +2855,7 @@
     </div>
     <div class="itin-modal-foot">
       <button class="btn-copy-sec" onclick="closeItinModal()">Cerrar</button>
-      <button class="btn-copy" onclick="copyItinerario()">📋 Copiar itinerario</button>
+      <button class="btn-copy" onclick="copyItinerario()">Copiar itinerario</button>
     </div>
   </div>
 </div>
@@ -2988,5 +2897,164 @@
     </div>
   </div>
 </div>
+<!-- DEV PREVIEW — solo activo en localhost -->
+<script>
+(function devPreview() {
+  if (!location.hostname.match(/localhost|127\.0\.0\.1/)) return;
+
+  // Bypass login
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.querySelector('.n-av').textContent = 'AG';
+  document.querySelector('.n-uname').textContent = 'Agencia Demo ▾';
+
+  // Show search area, hide ads
+  const sidebar = document.querySelector('.sidebar');
+  const results = document.querySelector('.results-area');
+  const ads = document.getElementById('ads-container');
+  if (sidebar) sidebar.style.display = '';
+  if (results) results.style.display = '';
+  if (ads) ads.style.display = 'none';
+
+  // Mock cruise data
+  const mockCruises = [
+    { operator_title:'MSC Cruises', ship_title:'MSC Grandiosa', starts_at:{name:'Buenos Aires'}, nights:7, departure_date:'2026-04-15', regions:['Sudamérica'], holiday_ref:'MOCK1', date_ref:'MOCK1D', prices:{interior:890,exterior:1120,balcony:1450,suite:2800}, itinerary_ports:['Montevideo','Punta del Este','Ilhabela','Santos'], itinerary_days:[
+      {day:1,port_name:'Buenos Aires',arrival_time:null,departure_time:'18:00',at_sea:false},
+      {day:2,port_name:'Montevideo',arrival_time:'08:00',departure_time:'18:00',at_sea:false},
+      {day:3,port_name:'Punta del Este',arrival_time:'07:00',departure_time:'16:00',at_sea:false},
+      {day:4,port_name:null,arrival_time:null,departure_time:null,at_sea:true},
+      {day:5,port_name:'Ilhabela',arrival_time:'08:00',departure_time:'17:00',at_sea:false},
+      {day:6,port_name:'Santos',arrival_time:'09:00',departure_time:'19:00',at_sea:false},
+      {day:7,port_name:null,arrival_time:null,departure_time:null,at_sea:true},
+      {day:8,port_name:'Buenos Aires',arrival_time:'08:00',departure_time:null,at_sea:false},
+    ]},
+    { operator_title:'Royal Caribbean', ship_title:'Explorer of the Seas', starts_at:{name:'Miami'}, nights:5, departure_date:'2026-05-02', regions:['Caribe'], holiday_ref:'MOCK2', date_ref:'MOCK2D', prices:{interior:650,exterior:820,balcony:1100,suite:2200}, itinerary_ports:['Cozumel','Costa Maya','Isla Roatán'], itinerary_days:[
+      {day:1,port_name:'Miami',arrival_time:null,departure_time:'16:00',at_sea:false},
+      {day:2,port_name:null,arrival_time:null,departure_time:null,at_sea:true},
+      {day:3,port_name:'Cozumel',arrival_time:'08:00',departure_time:'17:00',at_sea:false},
+      {day:4,port_name:'Costa Maya',arrival_time:'07:00',departure_time:'16:00',at_sea:false},
+      {day:5,port_name:'Isla Roatán',arrival_time:'08:00',departure_time:'17:00',at_sea:false},
+      {day:6,port_name:'Miami',arrival_time:'07:00',departure_time:null,at_sea:false},
+    ]},
+    { operator_title:'Norwegian Cruise Line', ship_title:'Norwegian Pearl', starts_at:{name:'Atenas (Pireo)'}, nights:10, departure_date:'2026-06-10', regions:['Mediterráneo'], holiday_ref:'MOCK3', date_ref:'MOCK3D', prices:{interior:1221,exterior:1661,balcony:3073,suite:3136}, itinerary_ports:['Mykonos','Santorini','Corfú','Kotor','Split'], itinerary_days:[
+      {day:1,port_name:'Atenas (Pireo)',arrival_time:null,departure_time:'17:00',at_sea:false},
+      {day:2,port_name:'Mykonos',arrival_time:'07:00',departure_time:'18:00',at_sea:false},
+      {day:3,port_name:'Santorini',arrival_time:'07:00',departure_time:'19:00',at_sea:false},
+      {day:4,port_name:null,arrival_time:null,departure_time:null,at_sea:true},
+      {day:5,port_name:'Corfú',arrival_time:'08:00',departure_time:'18:00',at_sea:false},
+      {day:6,port_name:'Kotor',arrival_time:'08:00',departure_time:'17:00',at_sea:false},
+      {day:7,port_name:'Split',arrival_time:'09:00',departure_time:'20:00',at_sea:false},
+      {day:8,port_name:null,arrival_time:null,departure_time:null,at_sea:true},
+      {day:9,port_name:null,arrival_time:null,departure_time:null,at_sea:true},
+      {day:10,port_name:'Koper',arrival_time:'07:00',departure_time:'16:00',at_sea:false},
+      {day:11,port_name:'Ravena',arrival_time:'06:00',departure_time:null,at_sea:false},
+    ]},
+    { operator_title:'Celebrity Cruises', ship_title:'Celebrity Edge', starts_at:{name:'Barcelona'}, nights:12, departure_date:'2026-07-01', regions:['Mediterráneo'], holiday_ref:'MOCK4', date_ref:'MOCK4D', prices:{interior:1550,exterior:1980,balcony:2600,suite:4200}, itinerary_ports:['Marsella','Roma (Civitavecchia)','Nápoles','Dubrovnik','Venecia'], itinerary_days:[
+      {day:1,port_name:'Barcelona',arrival_time:null,departure_time:'18:00',at_sea:false},
+      {day:2,port_name:'Marsella',arrival_time:'08:00',departure_time:'18:00',at_sea:false},
+      {day:3,port_name:null,arrival_time:null,departure_time:null,at_sea:true},
+      {day:4,port_name:'Roma (Civitavecchia)',arrival_time:'07:00',departure_time:'19:00',at_sea:false},
+      {day:5,port_name:'Nápoles',arrival_time:'07:00',departure_time:'18:00',at_sea:false},
+      {day:6,port_name:null,arrival_time:null,departure_time:null,at_sea:true},
+      {day:7,port_name:'Dubrovnik',arrival_time:'08:00',departure_time:'17:00',at_sea:false},
+      {day:8,port_name:'Venecia',arrival_time:'09:00',departure_time:null,at_sea:false},
+    ]},
+    { operator_title:'Costa Cruises', ship_title:'Costa Smeralda', starts_at:{name:'Génova'}, nights:8, departure_date:'2026-05-20', regions:['Mediterráneo'], holiday_ref:'MOCK5', date_ref:'MOCK5D', prices:{interior:720,exterior:950,balcony:1300,suite:2100}, itinerary_ports:['Marsella','Barcelona','Palma de Mallorca','Roma'], itinerary_days:[
+      {day:1,port_name:'Génova',arrival_time:null,departure_time:'17:00',at_sea:false},
+      {day:2,port_name:'Marsella',arrival_time:'08:00',departure_time:'17:00',at_sea:false},
+      {day:3,port_name:'Barcelona',arrival_time:'08:00',departure_time:'18:00',at_sea:false},
+      {day:4,port_name:'Palma de Mallorca',arrival_time:'08:00',departure_time:'16:00',at_sea:false},
+      {day:5,port_name:null,arrival_time:null,departure_time:null,at_sea:true},
+      {day:6,port_name:'Roma (Civitavecchia)',arrival_time:'07:00',departure_time:'19:00',at_sea:false},
+      {day:7,port_name:null,arrival_time:null,departure_time:null,at_sea:true},
+      {day:8,port_name:null,arrival_time:null,departure_time:null,at_sea:true},
+      {day:9,port_name:'Génova',arrival_time:'08:00',departure_time:null,at_sea:false},
+    ]},
+    { operator_title:'MSC Cruises', ship_title:'MSC Fantasia', starts_at:{name:'Santos'}, nights:4, departure_date:'2026-04-28', regions:['Sudamérica'], holiday_ref:'MOCK6', date_ref:'MOCK6D', prices:{interior:480,exterior:620,balcony:850,suite:1500}, itinerary_ports:['Búzios','Ilha Grande'], itinerary_days:[
+      {day:1,port_name:'Santos',arrival_time:null,departure_time:'18:00',at_sea:false},
+      {day:2,port_name:'Búzios',arrival_time:'08:00',departure_time:'17:00',at_sea:false},
+      {day:3,port_name:'Ilha Grande',arrival_time:'08:00',departure_time:'17:00',at_sea:false},
+      {day:4,port_name:null,arrival_time:null,departure_time:null,at_sea:true},
+      {day:5,port_name:'Santos',arrival_time:'08:00',departure_time:null,at_sea:false},
+    ]},
+  ];
+
+  // Render mock rows
+  const tbody = document.getElementById('resultsBody');
+  const countEl = document.getElementById('resultsCount');
+  if (countEl) countEl.innerHTML = `<strong>${mockCruises.length} cruceros</strong> encontrados (modo preview)`;
+
+  function fmtDate(d) {
+    return new Date(d+'T00:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short',year:'numeric'});
+  }
+  function fmtPrice(p) { return p ? `US$ ${p.toLocaleString('es-AR')}` : '—'; }
+
+  if (tbody) {
+    tbody.innerHTML = mockCruises.map(c => {
+      const logo = getCruiseLineLogo(c.operator_title);
+      const logoHtml = logo ? `<img src="${logo}" alt="${c.operator_title}" style="height:18px;max-width:80px;object-fit:contain;margin-bottom:3px;" onerror="this.style.display='none'">` : `<div class="line-chip">${c.operator_title}</div>`;
+      return `
+      <div class="rt-row">
+        <div class="rta rta-itin">
+          <div class="rta-route">${c.starts_at.name}</div>
+          <div class="rta-stops">${c.itinerary_ports.join(' → ')}</div>
+        </div>
+        <div class="rta rta-line">
+          ${logoHtml}
+          <div class="rta-ship">${c.ship_title}</div>
+        </div>
+        <div class="rta-center">${c.nights}</div>
+        <div class="rta-center" style="font-size:13px;">${fmtDate(c.departure_date)}</div>
+        <div class="rta-center"><a class="itin-link" onclick="event.stopPropagation();openMockItinerary(${mockCruises.indexOf(c)})">Ver</a></div>
+        <div class="rta-price"><span class="price-val">${fmtPrice(c.prices.interior)}</span></div>
+        <div class="rta-action">
+          <button class="rta-btn rta-btn-info" onclick="event.stopPropagation();document.getElementById('ov').classList.add('open');">+Info</button>
+          <button class="rta-btn" onclick="event.stopPropagation();document.getElementById('ov').classList.add('open');">Cotizar</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Populate sidebar filters from mock data
+  _cruisesData = mockCruises;
+  if (typeof populateSidebarFilters === 'function') populateSidebarFilters();
+
+  // Mock itinerary modal
+  window.openMockItinerary = function(idx) {
+    const c = mockCruises[idx];
+    if (!c) return;
+    const startDate = new Date(c.departure_date + 'T00:00:00');
+    document.getElementById('itin-modal-title').textContent = `${c.ship_title} — ${c.nights} noches`;
+    document.getElementById('itin-modal-sub').textContent = `${c.starts_at.name} · ${fmtDate(c.departure_date)}`;
+
+    const days = c.itinerary_days || [];
+    const weekdays = ['dom','lun','mar','mié','jue','vie','sáb'];
+    document.getElementById('itin-modal-tbody').innerHTML = days.map(d => {
+      const dd = new Date(startDate);
+      dd.setDate(dd.getDate() + d.day - 1);
+      const fecha = dd.toLocaleDateString('es-AR', {day:'numeric', month:'short'});
+      const diaSemana = weekdays[dd.getDay()].charAt(0).toUpperCase() + weekdays[dd.getDay()].slice(1);
+      if (d.at_sea) {
+        return `<tr>
+          <td><span class="itin-day-num">${d.day}</span></td>
+          <td>${diaSemana} ${fecha}</td>
+          <td class="itin-sea">Navegación</td>
+          <td>—</td><td>—</td>
+        </tr>`;
+      }
+      return `<tr>
+        <td><span class="itin-day-num">${d.day}</span></td>
+        <td>${diaSemana} ${fecha}</td>
+        <td>${d.port_name || '—'}</td>
+        <td>${d.arrival_time || '—'}</td>
+        <td>${d.departure_time || '—'}</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('itin-modal-ov').classList.add('open');
+  };
+
+  console.log('%c[DEV PREVIEW] Modo local activo con datos mock', 'color:#1e5eff;font-weight:bold;');
+})();
+</script>
 </body>
 </html>
