@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Detalle de crucero — Geist Cruceros, portal B2B para agencias">
 <meta name="theme-color" content="#0d1f3c">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚢</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a2f5e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='4' r='2.5'/><line x1='12' y1='6.5' x2='12' y2='22'/><line x1='7' y1='9' x2='17' y2='9'/><path d='M3 20l4 4c2-3 3.5-5 5-5s3 2 5 5l4-4'/></svg>">
 <title>Detalle de Crucero — Geist Cruceros</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -23,14 +23,14 @@
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(--navy);display:flex;align-items:center;padding:0 32px;box-shadow:0 2px 16px rgba(0,0,0,0.25);}
 .n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:28px;}
-.n-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;}
-.n-name{font-size:17px;font-weight:700;color:#fff;}.n-name em{color:var(--cyan);font-style:normal;}
+.n-mark{height:28px;width:auto;object-fit:contain;}
+.n-name{font-size:15px;font-weight:600;color:rgba(255,255,255,0.7);letter-spacing:0.03em;}
 .n-links{display:flex;flex:1;}
 .n-links a{color:rgba(255,255,255,0.55);text-decoration:none;font-size:13.5px;font-weight:500;padding:6px 14px;border-radius:6px;transition:all 0.15s;}
 .n-links a:hover{color:#fff;background:rgba(255,255,255,0.08);}
 .n-links a.on{color:#fff;background:rgba(30,94,255,0.28);}
 .n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.14);border-radius:100px;padding:4px 14px 4px 6px;cursor:pointer;}
-.n-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+.n-av{width:26px;height:26px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
 .n-uname{font-size:13px;font-weight:500;color:rgba(255,255,255,0.88);}
 .wrap{max-width:1280px;margin:0 auto;padding:80px 32px 60px;display:grid;grid-template-columns:1fr 310px;gap:24px;align-items:start;}
 .card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px;}
@@ -285,11 +285,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
 <body>
 <nav>
   <a href="index.html" class="n-logo">
-    <div class="n-mark">G</div>
-    <span class="n-name">GEIST <em>Cruceros</em></span>
+    <img class="n-mark" src="https://www.geist.tur.ar/images/logoblanco.png" alt="Geist">
   </a>
   <div class="n-links">
-    <a href="index.html" class="on"><span aria-hidden="true">🚢</span> Cruceros</a>
+    <a href="index.html" class="on">Cruceros</a>
     <a href="#">Mis reservas</a>
     <a href="#">Mis presupuestos</a>
   </div>
@@ -346,8 +345,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     </div>
 
     <div class="bottom-bar" id="bottomBar" style="display:none;">
-      <button class="bb-add" onclick="addToBudget()"><span aria-hidden="true">📄</span> &nbsp;Agregar al presupuesto</button>
-      <button class="bb-confirm" onclick="showToast('✅ Reserva confirmada')"><span aria-hidden="true">✅</span> &nbsp;Confirmar y continuar</button>
+      <button class="bb-add" onclick="addToBudget()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/></svg> &nbsp;Agregar al presupuesto</button>
+      <button class="bb-confirm" onclick="showToast('Reserva confirmada')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> &nbsp;Confirmar y continuar</button>
     </div>
   </div>
 
@@ -359,7 +358,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       </div>
       <div id="shipBannerCard" style="padding:14px 18px;border-bottom:1px solid var(--border);"></div>
       <div class="itin-trigger" onclick="toggleItin()">
-        <div class="itin-trigger-label"><span aria-hidden="true">🗓</span> Ver itinerario completo</div>
+        <div class="itin-trigger-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Ver itinerario completo</div>
         <div class="itin-trigger-arrow" id="itinArr">▾</div>
       </div>
       <div class="itin-panel" id="itinPanel">
@@ -368,13 +367,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
         </div>
       </div>
       <div class="sum-meta">
-        <div class="sm-row"><span class="sm-lbl"><span aria-hidden="true">📅</span> Salida</span><span class="sm-val" id="metaSalida">—</span></div>
-        <div class="sm-row"><span class="sm-lbl"><span aria-hidden="true">🏁</span> Regreso</span><span class="sm-val" id="metaRegreso">—</span></div>
-        <div class="sm-row"><span class="sm-lbl"><span aria-hidden="true">🌙</span> Noches</span><span class="sm-val" id="metaNoches">—</span></div>
-        <div class="sm-row"><span class="sm-lbl"><span aria-hidden="true">📍</span> Sale de</span><span class="sm-val" id="metaSaleDe">—</span></div>
-        <div class="sm-row"><span class="sm-lbl"><span aria-hidden="true">📍</span> Llega a</span><span class="sm-val" id="metaLlegaA">—</span></div>
+        <div class="sm-row"><span class="sm-lbl"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Salida</span><span class="sm-val" id="metaSalida">—</span></div>
+        <div class="sm-row"><span class="sm-lbl"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Regreso</span><span class="sm-val" id="metaRegreso">—</span></div>
+        <div class="sm-row"><span class="sm-lbl"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg> Noches</span><span class="sm-val" id="metaNoches">—</span></div>
+        <div class="sm-row"><span class="sm-lbl"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Sale de</span><span class="sm-val" id="metaSaleDe">—</span></div>
+        <div class="sm-row"><span class="sm-lbl"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Llega a</span><span class="sm-val" id="metaLlegaA">—</span></div>
         <div class="sm-row">
-          <span class="sm-lbl"><span aria-hidden="true">👥</span> Pasajeros</span>
+          <span class="sm-lbl"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Pasajeros</span>
           <span class="sm-val" style="display:flex;align-items:center;gap:8px;">
             <span id="paxSumVal">— pasajeros</span>
             <button onclick="togglePaxEditor()" style="background:none;border:none;color:var(--blue);font-size:11.5px;font-weight:600;font-family:inherit;cursor:pointer;text-decoration:underline;">Editar</button>
@@ -420,12 +419,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
         <div class="st-price" id="stPrice">—</div>
       </div>
       <div class="sum-actions">
-        <button class="btn-confirm" onclick="showToast('✅ Reserva confirmada')"><span aria-hidden="true">✅</span> &nbsp;Confirmar y continuar</button>
-        <button class="btn-add" onclick="addToBudget()"><span aria-hidden="true">📄</span> &nbsp;Incluir en el presupuesto</button>
+        <button class="btn-confirm" onclick="showToast('Reserva confirmada')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> &nbsp;Confirmar y continuar</button>
+        <button class="btn-add" onclick="addToBudget()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/></svg> &nbsp;Incluir en el presupuesto</button>
       </div>
     </div>
     <div class="budget-pill" id="bPill">
-      <span class="bp-ic" aria-hidden="true">📁</span>
+      <span class="bp-ic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
       <span class="bp-txt" id="bPillTxt">1 crucero</span>
       <span class="bp-badge" id="bPillN">1</span>
       <button class="bp-link" onclick="openModal()">Ver y enviar →</button>
@@ -450,7 +449,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
 
       <!-- Disponibilidad -->
       <div class="cm-section">
-        <div id="cmAvail" class="cm-avail available">✅ Disponible</div>
+        <div id="cmAvail" class="cm-avail available">Disponible</div>
       </div>
 
       <!-- Descripción real del barco -->
@@ -495,7 +494,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
 <div class="ov" id="ov" onclick="if(event.target.id==='ov')closeModal()" role="dialog" aria-modal="true" aria-label="Mis presupuestos">
   <div class="modal">
     <div class="modal-hd">
-      <div class="modal-ht"><span aria-hidden="true">📁</span> Mis presupuestos</div>
+      <div class="modal-ht"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> Mis presupuestos</div>
       <button class="modal-x" onclick="closeModal()" aria-label="Cerrar">✕</button>
     </div>
     <div class="modal-bd">
@@ -503,7 +502,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       <div style="margin-top:16px;">
         <label class="email-lbl">Enviar por email a la agencia</label>
         <input class="email-in" type="email" id="emailIn" placeholder="agencia@ejemplo.com">
-        <button class="btn-send" onclick="sendBudgets()"><span aria-hidden="true">✉️</span> &nbsp;Enviar todos los presupuestos</button>
+        <button class="btn-send" onclick="sendBudgets()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> &nbsp;Enviar todos los presupuestos</button>
       </div>
     </div>
   </div>
@@ -607,7 +606,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       }
       populatePage(data.data, shipData, adults, children);
     } catch(e) {
-      document.getElementById('loadingState').innerHTML = `<div class="loading-card" style="color:var(--promo);">⚠️ Error cargando el crucero. <a href="index.html" style="color:var(--blue);margin-left:8px;">← Volver</a></div>`;
+      document.getElementById('loadingState').innerHTML = `<div class="loading-card" style="color:var(--promo);">Error cargando el crucero. <a href="index.html" style="color:var(--blue);margin-left:8px;">← Volver</a></div>`;
     }
   }
 
@@ -654,12 +653,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
         const isSea   = d.at_sea || !d.port_name;
         const dotCls  = isLast ? 'iday-dot end' : isSea ? 'iday-dot sea' : 'iday-dot';
         const fecha = startDate ? (() => { const dd = new Date(startDate); dd.setDate(dd.getDate() + d.day - 1); return dd.toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'short' }); })() : `Día ${d.day}`;
-        const horas = isSea ? '' : [d.arrival_time?'⬇️ '+d.arrival_time:'', d.departure_time?'⬆️ '+d.departure_time:''].filter(Boolean).join(' · ');
+        const horas = isSea ? '' : [d.arrival_time?'Llega '+d.arrival_time:'', d.departure_time?'Sale '+d.departure_time:''].filter(Boolean).join(' · ');
         return `<div class="iday">
           <div class="iday-left"><div class="${dotCls}"></div>${!isLast ? '<div class="iday-line"></div>' : ''}</div>
           <div class="iday-right">
             <div class="iday-n">${fecha}</div>
-            <div class="iday-p">${isSea ? '🌊 Disfrutando del mar' : (d.port_name||'—')}${i===0?'<span class="iday-badge emb">Embarque</span>':''}${isLast?'<span class="iday-badge des">Desembarque</span>':''}</div>
+            <div class="iday-p">${isSea ? 'Día en el mar' : (d.port_name||'—')}${i===0?'<span class="iday-badge emb">Embarque</span>':''}${isLast?'<span class="iday-badge des">Desembarque</span>':''}</div>
             ${horas?`<div class="iday-t">${horas}</div>`:''}
           </div>
         </div>`;
@@ -766,7 +765,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
           <td class="ct-img"><img src="${getCabinTypeImg(typeKey)}" alt="${typeLabel}" loading="lazy"></td>
           <td class="ct-info">
             <div class="ct-name">${typeLabel} Estándar</div>
-            <div class="ct-amenities"><span class="ct-am">📋 Consultar disponibilidad</span></div>
+            <div class="ct-amenities"><span class="ct-am">Consultar disponibilidad</span></div>
           </td>
           <td class="ct-price-col">
             ${basePrice>0?`<span class="ct-price">US$ ${basePrice.toLocaleString('es-AR')}</span><span class="ct-per">por huésped</span>`:'<span class="ct-price" style="font-size:14px;">Consultar</span>'}
@@ -790,12 +789,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       // Encabezado de promo si hay más de un fare o tiene nombre especial
       const isPromo = fareName !== 'Tarifa estándar';
       if (isPromo) {
-        html += `<tr style="background:var(--blue-soft);"><td colspan="3" style="padding:8px 16px;font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;">🏷️ ${fareName}</td></tr>`;
+        html += `<tr style="background:var(--blue-soft);"><td colspan="3" style="padding:8px 16px;font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;">${fareName}</td></tr>`;
       }
       fares.forEach((p, i) => {
         const price    = p.double_price_pp || 0;
         const total    = p.total_price || (price * S.adults);
-        const avail    = p.availability === 'available' ? '✅ Disponible' : p.availability === 'closed' ? '🔒 No disponible' : '📋 Consultar';
+        const avail    = p.availability === 'available' ? 'Disponible' : p.availability === 'closed' ? 'No disponible' : 'Consultar';
         const safeName = (p.grade_name||typeLabel).replace(/'/g,"\'");
         const cabinData = JSON.stringify(p).replace(/'/g,"&apos;");
         html += `
@@ -819,7 +818,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
                 data-typekey="${typeKey}"
                 data-triple="${p.triple_price_pp||0}"
                 data-credit="${p.onboard_credit||0}"
-                onclick="event.stopPropagation();openCabinModalFromBtn(this)">🔍 Ver detalles</button>
+                onclick="event.stopPropagation();openCabinModalFromBtn(this)">Ver detalles</button>
             </td>
             <td class="ct-price-col">
               <span class="ct-price">US$ ${price.toLocaleString('es-AR')}</span>
@@ -866,17 +865,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
   let _cmData = {}; // current cabin modal data
 
   // Iconos para facilidades de Widgety
-  const FAC_ICONS = {
-    'TV':'📺','Wi-Fi':'📶','Safe':'🔒','Hair Dryer':'💨','Telephone':'📞','Desk':'🪑',
-    'Air Conditioning':'❄️','Shower':'🚿','Bath':'🛁','Whirlpool Bath':'🛁','Toiletries Provided':'🧴',
-    'Room Service Available':'🍽️','Butler Service':'👔','Suite Benefits':'⭐','Lounge Area':'🛋️',
-    'Dining Area':'🍽️','Sofa Bed':'🛋️','King or Twin Configuration':'🛏','Queen or Twin Configuration':'🛏',
-    'Pullman Bed':'🛏','Pullman Bed x2':'🛏','Second Bedroom':'🚪','Vanity Area':'🪞',
-    'Coffee Machine':'☕','Balcony':'🪴',
-  };
-
   function facIcon(f) {
-    for (const [k,v] of Object.entries(FAC_ICONS)) { if (f.includes(k)) return v+' '+escapeHtml(f); }
     return '✓ '+escapeHtml(f);
   }
 
@@ -920,7 +909,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
           </div>
           ${accom?.floorplan ? `<button onclick="toggleFloorplan()" style="position:absolute;bottom:10px;left:12px;
             background:rgba(255,255,255,0.9);border:none;border-radius:6px;padding:4px 10px;
-            font-size:11px;font-weight:600;cursor:pointer;color:var(--navy);">📐 Plano</button>` : ''}
+            font-size:11px;font-weight:600;cursor:pointer;color:var(--navy);">Plano</button>` : ''}
         </div>
         ${accom?.floorplan ? `<div id="cmFloorplan" style="display:none;">
           <img src="${accom.floorplan}" alt="Plano de cabina"
@@ -930,7 +919,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     } else {
       imgWrap.innerHTML = realImg
         ? `<img class="cm-img" src="${realImg}" alt="${name}">`
-        : `<div class="cm-img-placeholder">🛏</div>`;
+        : `<div class="cm-img-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></div>`;
       window._cmImgs = []; window._cmImgIdx = 0;
     }
 
@@ -941,9 +930,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
 
     // ── DISPONIBILIDAD ──
     const availEl = document.getElementById('cmAvail');
-    if (availability === 'available') { availEl.className='cm-avail available'; availEl.textContent='✅ Disponible'; }
-    else if (availability === 'closed') { availEl.className='cm-avail closed'; availEl.textContent='🔒 No disponible'; }
-    else { availEl.className='cm-avail enquire'; availEl.textContent='📋 Consultar disponibilidad'; }
+    if (availability === 'available') { availEl.className='cm-avail available'; availEl.textContent='Disponible'; }
+    else if (availability === 'closed') { availEl.className='cm-avail closed'; availEl.textContent='No disponible'; }
+    else { availEl.className='cm-avail enquire'; availEl.textContent='Consultar disponibilidad'; }
 
     // ── DESCRIPCIÓN (si existe en accommodation) ──
     const descSection = document.getElementById('cmDescSection');
@@ -1012,7 +1001,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     const paxStr = `${S.adults} adulto${S.adults>1?'s':''}${S.kids>0?' + '+S.kids+' niño'+(S.kids>1?'s':''):''}`;
     const taxStr = taxes > 0 ? `<div style="font-size:11px;color:var(--muted);margin-top:4px;">+ US$ ${parseFloat(taxes).toLocaleString('es-AR')} tasas portuarias</div>` : '';
     const tripleStr = triplePrice > 0 ? `<div class="cm-price-card"><div class="cm-price-lbl">3° / 4° pasajero</div><div class="cm-price-val" style="font-size:18px;">US$ ${Number(triplePrice).toLocaleString('es-AR')}</div><div class="cm-price-sub">por huésped adicional</div></div>` : '';
-    const creditStr = onboardCredit > 0 ? `<div style="margin-top:10px;background:var(--green-bg);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--green);font-weight:600;">🎁 Crédito a bordo incluido: US$ ${Number(onboardCredit).toLocaleString('es-AR')}</div>` : '';
+    const creditStr = onboardCredit > 0 ? `<div style="margin-top:10px;background:var(--green-bg);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--green);font-weight:600;">Crédito a bordo incluido: US$ ${Number(onboardCredit).toLocaleString('es-AR')}</div>` : '';
     document.getElementById('cmPricing').innerHTML = `
       <div class="cm-price-card highlight">
         <div class="cm-price-lbl">Por huésped (base doble)</div>
@@ -1029,8 +1018,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
 
     // ── BOTÓN ──
     document.getElementById('cmSelBtn').textContent = availability === 'closed'
-      ? '📋 Consultar disponibilidad'
-      : '✓ Seleccionar esta cabina';
+      ? 'Consultar disponibilidad'
+      : 'Seleccionar esta cabina';
 
   }
 
@@ -1117,7 +1106,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       adults:   S.adults, kids: S.kids, price: S.price, total: S.price * S.adults,
     });
     updatePill();
-    showToast(`✅ "${S.cabinName}" agregada al presupuesto`);
+    showToast(`"${S.cabinName}" agregada al presupuesto`);
   }
 
   function updatePill() {
@@ -1154,7 +1143,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
     const e = document.getElementById('emailIn').value;
     if (!e) { showToast('Ingresá un email válido'); return; }
     if (!S.budgets.length) { showToast('No hay cruceros en el presupuesto'); return; }
-    showToast(`✉️ Enviado a ${e}`); closeModal();
+    showToast(`Enviado a ${e}`); closeModal();
   }
 
   let tt;
@@ -1171,6 +1160,93 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       document.querySelectorAll('.ov.open, #cabin-modal-ov.open').forEach(ov => ov.classList.remove('open'));
     }
   });
+</script>
+
+<!-- ═══ DEV PREVIEW (solo localhost) ═══ -->
+<script>
+(function(){
+  if (!location.hostname.match(/^(localhost|127\.0\.0\.1)$/)) return;
+
+  // Fake token para que no redirija
+  if (!localStorage.getItem('geist_token')) {
+    const header = btoa(JSON.stringify({alg:'HS256',typ:'JWT'}));
+    const payload = btoa(JSON.stringify({id:1,name:'Agencia Demo',role:'admin',agency_id:1}));
+    localStorage.setItem('geist_token', header+'.'+payload+'.devsig');
+  }
+
+  // Si no hay ?ref=, agregar uno mock
+  if (!new URLSearchParams(location.search).get('ref')) {
+    history.replaceState(null,'',location.pathname+'?ref=MOCK_PREVIEW&adults=2&children=0');
+  }
+
+  // Interceptar fetch para devolver datos mock
+  const _fetch = window.fetch;
+  window.fetch = function(url, opts) {
+    const u = typeof url === 'string' ? url : url.url;
+    if (u.includes('/cruises/') && !u.includes('/filters')) {
+      return Promise.resolve(new Response(JSON.stringify({
+        success: true,
+        data: {
+          name: 'Mediterráneo Occidental — 7 Noches',
+          operator_title: 'MSC Cruises',
+          ship_title: 'MSC Grandiosa',
+          cruise_nights: 7,
+          date_from: '2026-05-15',
+          date_to: '2026-05-22',
+          starts_at: { name: 'Barcelona' },
+          ends_at: { name: 'Barcelona' },
+          itinerary_days: [
+            { day:1, port_name:'Barcelona', at_sea:false, arrival_time:null, departure_time:'17:00' },
+            { day:2, port_name:null, at_sea:true },
+            { day:3, port_name:'Roma (Civitavecchia)', at_sea:false, arrival_time:'07:00', departure_time:'19:00' },
+            { day:4, port_name:'Nápoles', at_sea:false, arrival_time:'07:00', departure_time:'18:00' },
+            { day:5, port_name:'Palermo', at_sea:false, arrival_time:'08:00', departure_time:'17:00' },
+            { day:6, port_name:null, at_sea:true },
+            { day:7, port_name:'Marsella', at_sea:false, arrival_time:'08:00', departure_time:'18:00' },
+            { day:8, port_name:'Barcelona', at_sea:false, arrival_time:'07:00', departure_time:null }
+          ],
+          operating_seasons: [{
+            dates: [{
+              date_from:'2026-05-15', date_to:'2026-05-22',
+              ship:'https://www.widgety.co.uk/api/ships/msc-grandiosa.json',
+              ship_title:'MSC Grandiosa',
+              starts_at:{ name:'Barcelona' }, ends_at:{ name:'Barcelona' },
+              pricing: [
+                { cabin_type:'inside', grade_code:'I1', grade_name:'Interior Bella', room_type:'Inside', double_price_pp:649, total_price:1298, availability:'available', fare_name:'Tarifa estándar', taxes_fees:120 },
+                { cabin_type:'inside', grade_code:'I2', grade_name:'Interior Fantastica', room_type:'Inside', double_price_pp:749, total_price:1498, availability:'available', fare_name:'Tarifa estándar', taxes_fees:120 },
+                { cabin_type:'outside', grade_code:'O1', grade_name:'Exterior Bella', room_type:'Outside', double_price_pp:849, total_price:1698, availability:'available', fare_name:'Tarifa estándar', taxes_fees:120 },
+                { cabin_type:'balcony', grade_code:'B1', grade_name:'Balcón Bella', room_type:'Balcony', double_price_pp:1049, total_price:2098, availability:'available', fare_name:'Tarifa estándar', taxes_fees:120 },
+                { cabin_type:'balcony', grade_code:'B2', grade_name:'Balcón Fantastica', room_type:'Balcony', double_price_pp:1249, total_price:2498, availability:'available', fare_name:'Tarifa estándar', taxes_fees:120, onboard_credit:50 },
+                { cabin_type:'suite', grade_code:'S1', grade_name:'Suite Aurea', room_type:'Suite', double_price_pp:1899, total_price:3798, availability:'available', fare_name:'Tarifa estándar', taxes_fees:120, onboard_credit:150 },
+              ],
+              headline_prices:{ cruise:{ double:{ from_inside:'649', from_outside:'849', from_balcony:'1049', from_suite:'1899' }}}
+            }]
+          }]
+        }
+      }), { status:200, headers:{'Content-Type':'application/json'} }));
+    }
+    if (u.includes('/ships/')) {
+      return Promise.resolve(new Response(JSON.stringify({
+        success: true,
+        data: {
+          name:'MSC Grandiosa', ship_class:'Meraviglia-Plus',
+          year_built:2019, refit_year:null, passengers:6334, crew:1704, decks:18, tonnage:181541,
+          image:'https://images.unsplash.com/photo-1548574505-5e239809ee19?w=800&q=80',
+          description:'El MSC Grandiosa es uno de los buques más grandes e innovadores de MSC Cruises, con espectaculares paseos interiores, el primer asistente virtual a bordo y una amplia variedad de entretenimiento.',
+          accommodation: [
+            { room_type:'inside', grade_codes:['I1','I2'], image:'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&q=80', max_occupancy:3, min_size:150, max_size:172, facilities:['TV','Wi-Fi','Air Conditioning','Safe','Hair Dryer','Telephone'] },
+            { room_type:'outside', grade_codes:['O1'], image:'https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=400&q=80', max_occupancy:3, min_size:161, max_size:183, facilities:['TV','Wi-Fi','Air Conditioning','Safe','Hair Dryer','Telephone','Desk'] },
+            { room_type:'balcony', grade_codes:['B1','B2'], image:'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=400&q=80', max_occupancy:4, min_size:183, max_size:226, facilities:['TV','Wi-Fi','Air Conditioning','Safe','Hair Dryer','Balcony','Room Service Available'] },
+            { room_type:'suite', grade_codes:['S1'], image:'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&q=80', max_occupancy:4, min_size:301, max_size:430, facilities:['TV','Wi-Fi','Air Conditioning','Safe','Butler Service','Suite Benefits','Lounge Area','Whirlpool Bath','Coffee Machine'] },
+          ]
+        }
+      }), { status:200, headers:{'Content-Type':'application/json'} }));
+    }
+    return _fetch.apply(this, arguments);
+  };
+
+  console.log('%c🔧 DEV PREVIEW activo — datos mock cargados', 'color:#1e5eff;font-weight:bold;');
+})();
 </script>
 </body>
 </html>
