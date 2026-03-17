@@ -2988,15 +2988,21 @@
   }
   if (!TOKEN) TOKEN = localStorage.getItem('geist_token');
 
-  // Interceptar fetch para mockear /ai/status y /filters
+  // Interceptar fetch para mockear endpoints del backend
   const _origFetch = window.fetch;
   window.fetch = function(url, opts) {
     const u = typeof url === 'string' ? url : url.url;
     if (u.includes('/ai/status')) {
       return Promise.resolve(new Response(JSON.stringify({ ai: { configured: true } }), { status: 200, headers: {'Content-Type':'application/json'} }));
     }
+    if (u.includes('/ai/parse-search')) {
+      return Promise.resolve(new Response(JSON.stringify({ success: true, filters: { destination: 'Caribe', duration_min: 7, duration_max: 10 } }), { status: 200, headers: {'Content-Type':'application/json'} }));
+    }
     if (u.includes('/cruises/filters')) {
       return Promise.resolve(new Response(JSON.stringify({ success: true, data: { regions: ['Caribe','Mediterráneo','Sudamérica','Norte de Europa','Alaska'], operators: ['MSC Cruises','Royal Caribbean','Norwegian Cruise Line','Celebrity Cruises','Costa Cruises','Princess Cruises'], ports: ['Buenos Aires','Miami','Barcelona','Southampton','Seattle','Atenas'] } }), { status: 200, headers: {'Content-Type':'application/json'} }));
+    }
+    if (u.includes('/cruises')) {
+      return Promise.resolve(new Response(JSON.stringify({ success: true, data: { cruises: [], total: 0 } }), { status: 200, headers: {'Content-Type':'application/json'} }));
     }
     if (u.includes('/ships')) {
       return Promise.resolve(new Response(JSON.stringify({ success: true, data: [] }), { status: 200, headers: {'Content-Type':'application/json'} }));
