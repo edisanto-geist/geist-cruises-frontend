@@ -349,6 +349,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
       <div class="sb-item" onclick="goTo('destinos',this)"><span class="si">🌍</span> Destinos</div>
       <div class="sb-item" onclick="goTo('navieras',this)"><span class="si">⚓</span> Navieras</div>
       <div class="sb-item" onclick="goTo('offline',this)"><span class="si">⚓</span> Cruceros Offline</div>
+      <div class="sb-item" onclick="goTo('promos',this)"><span class="si">🏷️</span> Promociones</div>
 
       <div class="sb-section">Sistema</div>
       <div class="sb-item" onclick="goTo('agencias',this)"><span class="si">🏢</span> Agencias</div>
@@ -612,6 +613,35 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
         </div>
       </div>
 
+      <!-- ══ PROMOCIONES ══ -->
+      <div class="panel" id="panel-promos">
+        <div class="info-box">
+          ℹ️ <span>Las promociones aparecen como <strong>"Ofertas destacadas"</strong> en el buscador de las agencias. Solo se muestran las activas cuya vigencia incluya la fecha actual. Máximo 6 visibles a la vez.</span>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Promociones cargadas</div>
+            <div class="card-actions">
+              <button class="tb-btn" onclick="loadPromos()">🔄 Recargar</button>
+              <button class="tb-btn primary" onclick="openPromoModal()">+ Nueva promoción</button>
+            </div>
+          </div>
+          <div class="data-table-wrap">
+          <div id="promosTable">
+            <div class="loading-row"><div class="spinner"></div> Cargando promociones...</div>
+          </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <div class="card-head"><div class="card-title">👁 Vista previa</div></div>
+          <div id="promoPreviewGrid" style="padding:16px 20px;">
+            <div style="color:var(--muted);font-size:13px;">Las promociones activas se mostrarán aquí como las ven las agencias.</div>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /app -->
@@ -778,6 +808,111 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
   </div>
 </div>
 
+<!-- MODAL PROMOCIÓN -->
+<div class="ov" id="ov-promo" role="dialog" aria-modal="true" aria-label="Promoción" onclick="if(event.target.id==='ov-promo')closePromoModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-ht" id="promoModalTitle">Nueva promoción</div>
+      <button class="modal-x" aria-label="Cerrar" onclick="closePromoModal()">✕</button>
+    </div>
+    <div class="modal-bd">
+      <input type="hidden" id="editPromoId">
+
+      <div class="form-row">
+        <label>Título de la promoción</label>
+        <input type="text" id="editPromoTitle" placeholder="Ej: Mediterráneo Occidental">
+      </div>
+      <div class="form-row">
+        <label>Naviera / Operador</label>
+        <input type="text" id="editPromoNaviera" placeholder="Ej: MSC Cruises">
+      </div>
+      <div class="form-row">
+        <label>Imagen (URL)</label>
+        <input type="url" id="editPromoImg" placeholder="https://..." oninput="previewImg('editPromoImg','editPromoImgPreview')">
+        <div class="hint">Imagen horizontal, mínimo 400×180 px. Formatos: JPG, PNG, WebP.</div>
+        <img id="editPromoImgPreview" class="form-img-preview" alt="Preview">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-row">
+          <label>Noches</label>
+          <input type="number" id="editPromoNights" placeholder="Ej: 7" min="1" max="90">
+        </div>
+        <div class="form-row">
+          <label>Precio desde (US$)</label>
+          <input type="number" id="editPromoPrice" placeholder="Ej: 649" min="0" step="1">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-row">
+          <label>Puerto de salida</label>
+          <input type="text" id="editPromoPortFrom" placeholder="Ej: Barcelona">
+        </div>
+        <div class="form-row">
+          <label>Puerto de llegada</label>
+          <input type="text" id="editPromoPortTo" placeholder="Ej: Barcelona">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-row">
+          <label>Etiqueta / Badge</label>
+          <select id="editPromoBadge">
+            <option value="">Sin etiqueta</option>
+            <option value="PROMO">PROMO</option>
+            <option value="NUEVO">NUEVO</option>
+            <option value="ÚLTIMOS LUGARES">ÚLTIMOS LUGARES</option>
+            <option value="EXCLUSIVO">EXCLUSIVO</option>
+            <option value="custom">Personalizada...</option>
+          </select>
+        </div>
+        <div class="form-row" id="customBadgeRow" style="display:none;">
+          <label>Etiqueta personalizada</label>
+          <input type="text" id="editPromoBadgeCustom" placeholder="Ej: -15%" maxlength="20">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-row">
+          <label>Vigencia desde</label>
+          <input type="date" id="editPromoDateFrom">
+        </div>
+        <div class="form-row">
+          <label>Vigencia hasta</label>
+          <input type="date" id="editPromoDateTo">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-row">
+          <label>Orden (posición)</label>
+          <input type="number" id="editPromoOrder" placeholder="1" min="1" max="99" value="1">
+          <div class="hint">Menor número = aparece primero.</div>
+        </div>
+        <div class="form-row">
+          <label>Estado</label>
+          <select id="editPromoStatus">
+            <option value="active">Activa</option>
+            <option value="draft">Borrador</option>
+            <option value="inactive">Inactiva</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Link destino (opcional)</label>
+        <input type="text" id="editPromoLink" placeholder="Ej: holiday_ref o URL de crucero">
+        <div class="hint">Si se completa, al hacer click en la card se abre este crucero.</div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closePromoModal()">Cancelar</button>
+      <button class="btn-save" id="btnSavePromo" onclick="savePromo()">💾 Guardar promoción</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = 'https://geist-cruises-backend-production.up.railway.app/api';
 let TOKEN = localStorage.getItem('geist_token') || null;
@@ -909,7 +1044,9 @@ const PANEL_TITLES = {
   destinos:  ['🌍 Maestro de Destinos', 'Regiones habilitadas en el buscador'],
   navieras:  ['⚓ Navieras', 'Navieras integradas con Widgety'],
   agencias:  ['🏢 Agencias', 'Agencias con acceso al portal B2B'],
+  offline:   ['⚓ Cruceros Offline', 'Bloques y charters propios de Geist'],
   cache:     ['🗄️ Caché Redis', 'Gestión del caché del servidor'],
+  promos:    ['🏷️ Promociones', 'Ofertas destacadas para las agencias'],
 };
 
 function goTo(panel, el) {
@@ -927,6 +1064,7 @@ function goTo(panel, el) {
   if (panel === 'destinos') loadDestinos();
   if (panel === 'agencias') loadAgencias();
   if (panel === 'offline')  loadOfflineCruises();
+  if (panel === 'promos')   loadPromos();
 }
 
 // ════════════════════════════════════
@@ -1680,6 +1818,280 @@ async function saveOfflineCruise() {
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = '✅ Crear crucero'; }
   }
+}
+
+// ════════════════════════════════════
+// PROMOCIONES
+// ════════════════════════════════════
+
+const PROMO_STORAGE_KEY = 'geist_promos';
+
+function getPromos() {
+  try { return JSON.parse(localStorage.getItem(PROMO_STORAGE_KEY)) || []; }
+  catch(e) { return []; }
+}
+
+function savePromos(promos) {
+  localStorage.setItem(PROMO_STORAGE_KEY, JSON.stringify(promos));
+}
+
+function loadPromos() {
+  const promos = getPromos();
+  const container = document.getElementById('promosTable');
+
+  if (!promos.length) {
+    container.innerHTML = '<div class="empty-state"><div class="ei">🏷️</div><p>No hay promociones cargadas todavía.</p><p style="font-size:12px;color:var(--muted);">Usá el botón "+ Nueva promoción" para agregar la primera.</p></div>';
+    renderPromoPreview([]);
+    return;
+  }
+
+  const sorted = [...promos].sort((a,b) => (a.order||99) - (b.order||99));
+
+  const PROMO_STATUS = {
+    active:   { label: '✓ Activa',   cls: 'green' },
+    draft:    { label: '✎ Borrador', cls: 'muted' },
+    inactive: { label: '✕ Inactiva', cls: 'red'   },
+  };
+
+  container.innerHTML = `
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:54px;">Img</th>
+          <th>Título</th>
+          <th>Naviera</th>
+          <th>Ruta</th>
+          <th>Precio</th>
+          <th>Etiqueta</th>
+          <th>Vigencia</th>
+          <th>Orden</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sorted.map(p => {
+          const st = PROMO_STATUS[p.status] || { label: p.status, cls: 'muted' };
+          const badge = p.badge
+            ? `<span style="font-size:9px;font-weight:700;background:var(--amber-bg);color:var(--amber);padding:2px 7px;border-radius:3px;">${escapeHtml(p.badge)}</span>`
+            : '<span style="color:var(--muted);font-size:11px;">—</span>';
+          const vigencia = p.date_from && p.date_to
+            ? `${formatDateShort(p.date_from)} — ${formatDateShort(p.date_to)}`
+            : p.date_from ? `Desde ${formatDateShort(p.date_from)}` : p.date_to ? `Hasta ${formatDateShort(p.date_to)}` : 'Sin límite';
+          const isExpired = p.date_to && new Date(p.date_to) < new Date();
+          const notStarted = p.date_from && new Date(p.date_from) > new Date();
+          return `<tr${isExpired?' style="opacity:0.5;"':''}>
+            <td class="td-img">
+              ${p.image
+                ? `<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" onerror="this.style.display='none'">`
+                : `<div style="width:48px;height:34px;border-radius:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;">🏷️</div>`
+              }
+            </td>
+            <td>
+              <div class="td-main">${escapeHtml(p.title)}</div>
+              <div style="font-size:11px;color:var(--muted);">${escapeHtml(p.nights||'')}${p.nights ? ' noches' : ''}</div>
+            </td>
+            <td style="font-size:12.5px;">${escapeHtml(p.naviera || '—')}</td>
+            <td style="font-size:12px;color:var(--text2);">${escapeHtml(p.port_from||'—')} → ${escapeHtml(p.port_to||'—')}</td>
+            <td style="font-size:13px;font-weight:700;">US$ ${p.price ? Number(p.price).toLocaleString('es-AR') : '—'}</td>
+            <td>${badge}</td>
+            <td style="font-size:11.5px;color:var(--muted);">
+              ${escapeHtml(vigencia)}
+              ${isExpired ? '<div style="color:var(--red);font-weight:600;font-size:10px;">VENCIDA</div>' : ''}
+              ${notStarted ? '<div style="color:var(--amber);font-weight:600;font-size:10px;">PENDIENTE</div>' : ''}
+            </td>
+            <td style="text-align:center;font-weight:600;">${p.order || '—'}</td>
+            <td><span class="badge ${st.cls}">${st.label}</span></td>
+            <td>
+              <div class="row-actions">
+                <button class="ra-btn" onclick="editPromo('${escapeHtml(p.id)}')">✏️ Editar</button>
+                <button class="ra-btn danger" onclick="deletePromo('${escapeHtml(p.id)}')">🗑️</button>
+              </div>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+
+  renderPromoPreview(sorted.filter(p => p.status === 'active' && isPromoInVigencia(p)));
+}
+
+function formatDateShort(dateStr) {
+  if (!dateStr) return '—';
+  try { return new Date(dateStr + 'T00:00:00').toLocaleDateString('es-AR', {day:'2-digit', month:'short'}); }
+  catch(e) { return dateStr; }
+}
+
+function isPromoInVigencia(p) {
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  if (p.date_from && new Date(p.date_from + 'T00:00:00') > now) return false;
+  if (p.date_to) {
+    const end = new Date(p.date_to + 'T23:59:59');
+    if (end < now) return false;
+  }
+  return true;
+}
+
+function renderPromoPreview(activePromos) {
+  const container = document.getElementById('promoPreviewGrid');
+  if (!activePromos.length) {
+    container.innerHTML = '<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px;">No hay promociones activas en vigencia para mostrar.</div>';
+    return;
+  }
+
+  container.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+      ${activePromos.slice(0,6).map(p => `
+        <div style="background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);">
+          ${p.image ? `<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" style="width:100%;height:100px;object-fit:cover;display:block;" onerror="this.style.display='none'">` : '<div style="width:100%;height:100px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:28px;">🏷️</div>'}
+          <div style="padding:10px 12px;">
+            <div style="font-size:9px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">${escapeHtml(p.naviera || '')}</div>
+            <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:3px;">${escapeHtml(p.title)}</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">${p.nights ? escapeHtml(p.nights)+' noches · ' : ''}${escapeHtml(p.port_from||'')} → ${escapeHtml(p.port_to||'')}</div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;">
+              <div><span style="font-size:10px;color:var(--muted);">Desde </span><span style="font-size:14px;font-weight:800;color:var(--navy);">US$ ${p.price ? Number(p.price).toLocaleString('es-AR') : '—'}</span></div>
+              ${p.badge ? `<span style="font-size:8px;font-weight:700;background:#fff3ee;color:#e85d2a;padding:2px 6px;border-radius:3px;">${escapeHtml(p.badge)}</span>` : ''}
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// Badge select toggle custom field
+document.getElementById('editPromoBadge').addEventListener('change', function() {
+  document.getElementById('customBadgeRow').style.display = this.value === 'custom' ? '' : 'none';
+});
+
+function openPromoModal(id) {
+  document.getElementById('editPromoId').value        = id || '';
+  document.getElementById('editPromoTitle').value      = '';
+  document.getElementById('editPromoNaviera').value    = '';
+  document.getElementById('editPromoImg').value        = '';
+  document.getElementById('editPromoNights').value     = '';
+  document.getElementById('editPromoPrice').value      = '';
+  document.getElementById('editPromoPortFrom').value   = '';
+  document.getElementById('editPromoPortTo').value     = '';
+  document.getElementById('editPromoBadge').value      = '';
+  document.getElementById('editPromoBadgeCustom').value= '';
+  document.getElementById('editPromoDateFrom').value   = '';
+  document.getElementById('editPromoDateTo').value     = '';
+  document.getElementById('editPromoOrder').value      = '1';
+  document.getElementById('editPromoStatus').value     = 'active';
+  document.getElementById('editPromoLink').value       = '';
+  document.getElementById('editPromoImgPreview').style.display = 'none';
+  document.getElementById('customBadgeRow').style.display = 'none';
+  document.getElementById('promoModalTitle').textContent = 'Nueva promoción';
+  document.getElementById('btnSavePromo').textContent    = '💾 Guardar promoción';
+
+  if (id) {
+    const promo = getPromos().find(p => p.id === id);
+    if (promo) {
+      document.getElementById('promoModalTitle').textContent = `Editar: ${promo.title}`;
+      document.getElementById('editPromoTitle').value      = promo.title || '';
+      document.getElementById('editPromoNaviera').value    = promo.naviera || '';
+      document.getElementById('editPromoImg').value        = promo.image || '';
+      document.getElementById('editPromoNights').value     = promo.nights || '';
+      document.getElementById('editPromoPrice').value      = promo.price || '';
+      document.getElementById('editPromoPortFrom').value   = promo.port_from || '';
+      document.getElementById('editPromoPortTo').value     = promo.port_to || '';
+      document.getElementById('editPromoDateFrom').value   = promo.date_from || '';
+      document.getElementById('editPromoDateTo').value     = promo.date_to || '';
+      document.getElementById('editPromoOrder').value      = promo.order || '1';
+      document.getElementById('editPromoStatus').value     = promo.status || 'active';
+      document.getElementById('editPromoLink').value       = promo.link || '';
+
+      // Badge
+      const presets = ['PROMO','NUEVO','ÚLTIMOS LUGARES','EXCLUSIVO'];
+      if (promo.badge && presets.includes(promo.badge)) {
+        document.getElementById('editPromoBadge').value = promo.badge;
+      } else if (promo.badge) {
+        document.getElementById('editPromoBadge').value = 'custom';
+        document.getElementById('editPromoBadgeCustom').value = promo.badge;
+        document.getElementById('customBadgeRow').style.display = '';
+      }
+
+      previewImg('editPromoImg','editPromoImgPreview');
+    }
+  }
+
+  document.getElementById('ov-promo').classList.add('open');
+}
+
+function editPromo(id) { openPromoModal(id); }
+
+function closePromoModal() { document.getElementById('ov-promo').classList.remove('open'); }
+
+function savePromo() {
+  const id       = document.getElementById('editPromoId').value;
+  const title    = document.getElementById('editPromoTitle').value.trim();
+  const naviera  = document.getElementById('editPromoNaviera').value.trim();
+  const image    = document.getElementById('editPromoImg').value.trim();
+  const nights   = document.getElementById('editPromoNights').value;
+  const price    = document.getElementById('editPromoPrice').value;
+  const portFrom = document.getElementById('editPromoPortFrom').value.trim();
+  const portTo   = document.getElementById('editPromoPortTo').value.trim();
+  const badgeSel = document.getElementById('editPromoBadge').value;
+  const badgeCust= document.getElementById('editPromoBadgeCustom').value.trim();
+  const dateFrom = document.getElementById('editPromoDateFrom').value;
+  const dateTo   = document.getElementById('editPromoDateTo').value;
+  const order    = document.getElementById('editPromoOrder').value;
+  const status   = document.getElementById('editPromoStatus').value;
+  const link     = document.getElementById('editPromoLink').value.trim();
+
+  if (!title) { showToast('El título es obligatorio', 'error'); return; }
+  if (!naviera) { showToast('La naviera es obligatoria', 'error'); return; }
+  if (!price) { showToast('El precio es obligatorio', 'error'); return; }
+
+  if (dateFrom && dateTo && new Date(dateFrom) > new Date(dateTo)) {
+    showToast('La fecha "desde" no puede ser posterior a "hasta"', 'error');
+    return;
+  }
+
+  const badge = badgeSel === 'custom' ? badgeCust : badgeSel;
+
+  const promo = {
+    id: id || ('promo_' + Date.now() + '_' + Math.random().toString(36).substring(2,7)),
+    title,
+    naviera,
+    image,
+    nights: nights ? parseInt(nights) : null,
+    price: price ? parseFloat(price) : null,
+    port_from: portFrom,
+    port_to: portTo,
+    badge: badge || null,
+    date_from: dateFrom || null,
+    date_to: dateTo || null,
+    order: order ? parseInt(order) : 99,
+    status,
+    link: link || null,
+    updated_at: new Date().toISOString(),
+  };
+
+  const promos = getPromos();
+  const idx = promos.findIndex(p => p.id === id);
+  if (idx >= 0) {
+    promo.created_at = promos[idx].created_at;
+    promos[idx] = promo;
+  } else {
+    promo.created_at = new Date().toISOString();
+    promos.push(promo);
+  }
+
+  savePromos(promos);
+  showToast(idx >= 0 ? `✅ Promoción "${title}" actualizada` : `✅ Promoción "${title}" creada`, 'success');
+  closePromoModal();
+  loadPromos();
+}
+
+function deletePromo(id) {
+  const promos = getPromos();
+  const promo = promos.find(p => p.id === id);
+  if (!promo) return;
+  if (!confirm(`¿Eliminar la promoción "${promo.title}"?`)) return;
+  savePromos(promos.filter(p => p.id !== id));
+  showToast(`Promoción "${promo.title}" eliminada`, 'success');
+  loadPromos();
 }
 
 </script>
