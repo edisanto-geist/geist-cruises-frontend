@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Portal B2B de cruceros para agencias — Geist Cruceros">
 <meta name="theme-color" content="#0d1f3c">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚢</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a2f5e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='4' r='2.5'/><line x1='12' y1='6.5' x2='12' y2='22'/><line x1='7' y1='9' x2='17' y2='9'/><path d='M3 20l4 4c2-3 3.5-5 5-5s3 2 5 5l4-4'/></svg>">
 <title>Geist Cruceros — Portal B2B</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&display=swap&text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789áéíóúñÁÉÍÓÚÑ%20·—" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -113,7 +114,8 @@
   }
 
   .hero-cta {
-    font-size: 14.5px; font-weight: 400; color: rgba(255,255,255,0.55);
+    font-family: 'DM Sans', 'Outfit', sans-serif;
+    font-size: 14.5px; font-weight: 500; color: rgba(255,255,255,0.55);
     margin-bottom: 14px; letter-spacing: 0.01em;
   }
 
@@ -142,7 +144,7 @@
   .sb-field.sb-destination { flex: 1.4; }
   .sb-icon { font-size: 18px; flex-shrink: 0; }
   .sb-content { min-width: 0; }
-  .sb-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 1px; }
+  .sb-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text2); margin-bottom: 1px; }
   .sb-value { font-size: 13.5px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sb-btn {
     background: var(--blue); color: #fff;
@@ -286,6 +288,7 @@
   .fc-head {
     display: flex; align-items: center; justify-content: space-between;
     padding: 11px 15px;
+    font-family: 'DM Sans', 'Outfit', sans-serif;
     font-size: 11px; font-weight: 700; letter-spacing: 0.09em;
     text-transform: uppercase; color: var(--text);
     background: var(--bg2); border-bottom: 1px solid var(--border);
@@ -462,7 +465,7 @@
     padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
     display: flex; align-items: flex-start; justify-content: space-between;
   }
-  .itin-modal-title { font-size: 17px; font-weight: 700; color: var(--navy); }
+  .itin-modal-title { font-family: 'DM Sans', 'Outfit', sans-serif; font-size: 17px; font-weight: 700; color: var(--navy); }
   .itin-modal-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
   .itin-modal-body { flex: 1; overflow-y: auto; padding: 0; }
   .itin-modal-foot {
@@ -567,7 +570,7 @@
     padding: 20px 16px 14px;
     border-bottom: 1px solid var(--border);
   }
-  .m-cruise-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .m-cruise-name { font-family: 'DM Sans', 'Outfit', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
   .m-cruise-sub { font-size: 12px; color: var(--muted); }
   .m-nav { flex: 1; padding: 8px 0; }
   .mni {
@@ -624,6 +627,7 @@
     position: absolute; bottom: 0; left: 0; right: 0;
     padding: 24px 18px 14px;
     background: linear-gradient(0deg, rgba(8,18,40,0.88) 0%, transparent 100%);
+    font-family: 'DM Sans', 'Outfit', sans-serif;
     font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.3px;
   }
 
@@ -641,7 +645,7 @@
   .sc-l { font-size: 9.5px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.07em; }
 
   .m-desc { font-size: 13.5px; color: var(--text2); line-height: 1.75; }
-  .m-section-title { font-size: 19px; font-weight: 700; color: var(--navy); margin-bottom: 18px; }
+  .m-section-title { font-family: 'DM Sans', 'Outfit', sans-serif; font-size: 19px; font-weight: 700; color: var(--navy); margin-bottom: 18px; }
 
   .itin-list { display: flex; flex-direction: column; }
   .iday { display: grid; grid-template-columns: 50px 1fr; }
@@ -682,15 +686,16 @@
 
   /* footer */
   footer {
-    background: #fff; border-top: 1px solid var(--border);
-    padding: 20px 32px;
+    background: var(--navy); color: rgba(255,255,255,0.5);
+    padding: 28px 32px 22px;
     display: flex; align-items: center; justify-content: space-between;
+    position: relative;
   }
-  .ft-left { font-size: 12.5px; color: var(--muted); }
-  .ft-left strong { color: var(--text); }
+  .ft-left { font-size: 12.5px; }
+  .ft-left strong { color: rgba(255,255,255,0.85); }
   .ft-links { display: flex; gap: 20px; }
-  .ft-links a { font-size: 12px; color: var(--muted); text-decoration: none; }
-  .ft-links a:hover { color: var(--blue); }
+  .ft-links a { font-size: 12px; color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.15s; }
+  .ft-links a:hover { color: rgba(255,255,255,0.85); }
 
 
 
@@ -824,7 +829,7 @@
     .modal { border-radius: 12px 12px 0 0; }
     .price-summary { grid-template-columns: repeat(2,1fr); }
     .ship-stats { grid-template-columns: repeat(3,1fr); }
-    footer { flex-direction: column; gap: 12px; text-align: center; padding: 16px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 28px 16px 18px; }
     .ft-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
     .pax-modal-inner { width: 95vw !important; }
     .sb-drop, .sb-drop-wide, .sb-drop-sm { min-width: 0; width: calc(100vw - 24px); left: -14px; }
@@ -980,7 +985,7 @@
 
         <!-- PUERTO DE SALIDA -->
         <div class="sb-field" onclick="toggleDrop('drop-puerto', event)">
-          <div class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2.5"/><line x1="12" y1="6.5" x2="12" y2="22"/><line x1="7" y1="9" x2="17" y2="9"/><path d="M3 20l4 4c2-3 3.5-5 5-5s3 2 5 5l4-4"/></svg></div>
+          <div class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>
           <div class="sb-content">
             <div class="sb-label">Puerto de salida</div>
             <div class="sb-value" id="val-puerto">Cualquier puerto</div>
@@ -1031,8 +1036,81 @@
 
 <!-- ADS CONTAINER -->
 <div id="ads-container" style="display:none; max-width:1280px; margin:0 auto; padding:24px 32px;">
-  <div style="min-height:300px; border:2px dashed var(--border2); border-radius:14px; display:flex; align-items:center; justify-content:center;">
-    <span style="color:var(--muted); font-size:16px;">Publicidades</span>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div style="font-family:'DM Sans','Outfit',sans-serif;font-size:15px;font-weight:700;color:var(--navy);">Ofertas destacadas</div>
+    <span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Patrocinado</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow-md)'" onmouseleave="this.style.transform='';this.style.boxShadow='var(--shadow)'">
+      <img src="https://images.unsplash.com/photo-1548574505-5e239809ee19?w=400&h=180&fit=crop&q=80" alt="Mediterráneo" style="width:100%;height:140px;object-fit:cover;display:block;">
+      <div style="padding:12px 14px;">
+        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">MSC Cruises</div>
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">Mediterráneo Occidental</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">7 noches · Barcelona → Barcelona</div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;">
+          <div><span style="font-size:11px;color:var(--muted);">Desde </span><span style="font-size:16px;font-weight:800;color:var(--navy);">US$ 649</span></div>
+          <span style="font-size:9px;font-weight:700;background:var(--promo-bg);color:var(--promo);padding:2px 7px;border-radius:3px;">PROMO</span>
+        </div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow-md)'" onmouseleave="this.style.transform='';this.style.boxShadow='var(--shadow)'">
+      <img src="https://images.unsplash.com/photo-1559599746-8823b38544c6?w=400&h=180&fit=crop&q=80" alt="Caribe" style="width:100%;height:140px;object-fit:cover;display:block;">
+      <div style="padding:12px 14px;">
+        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Royal Caribbean</div>
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">Caribe Sur</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">10 noches · Miami → Miami</div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;">
+          <div><span style="font-size:11px;color:var(--muted);">Desde </span><span style="font-size:16px;font-weight:800;color:var(--navy);">US$ 1.221</span></div>
+          <span style="font-size:9px;font-weight:700;background:var(--promo-bg);color:var(--promo);padding:2px 7px;border-radius:3px;">-15%</span>
+        </div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow-md)'" onmouseleave="this.style.transform='';this.style.boxShadow='var(--shadow)'">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=180&fit=crop&q=80" alt="Islas Griegas" style="width:100%;height:140px;object-fit:cover;display:block;">
+      <div style="padding:12px 14px;">
+        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Norwegian Cruise Line</div>
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">Islas Griegas</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">7 noches · Atenas → Ravena</div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;">
+          <div><span style="font-size:11px;color:var(--muted);">Desde </span><span style="font-size:16px;font-weight:800;color:var(--navy);">US$ 1.089</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow-md)'" onmouseleave="this.style.transform='';this.style.boxShadow='var(--shadow)'">
+      <img src="https://images.unsplash.com/photo-1580541631950-7282082b53ce?w=400&h=180&fit=crop&q=80" alt="Fiordos" style="width:100%;height:140px;object-fit:cover;display:block;">
+      <div style="padding:12px 14px;">
+        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Celebrity Cruises</div>
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">Fiordos Noruegos</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">12 noches · Southampton → Southampton</div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;">
+          <div><span style="font-size:11px;color:var(--muted);">Desde </span><span style="font-size:16px;font-weight:800;color:var(--navy);">US$ 1.845</span></div>
+          <span style="font-size:9px;font-weight:700;background:var(--promo-bg);color:var(--promo);padding:2px 7px;border-radius:3px;">NUEVO</span>
+        </div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow-md)'" onmouseleave="this.style.transform='';this.style.boxShadow='var(--shadow)'">
+      <img src="https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=400&h=180&fit=crop&q=80" alt="Alaska" style="width:100%;height:140px;object-fit:cover;display:block;">
+      <div style="padding:12px 14px;">
+        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Princess Cruises</div>
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">Alaska Glaciares</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">7 noches · Seattle → Seattle</div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;">
+          <div><span style="font-size:11px;color:var(--muted);">Desde </span><span style="font-size:16px;font-weight:800;color:var(--navy);">US$ 1.399</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow-md)'" onmouseleave="this.style.transform='';this.style.boxShadow='var(--shadow)'">
+      <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=180&fit=crop&q=80" alt="Antártida" style="width:100%;height:140px;object-fit:cover;display:block;">
+      <div style="padding:12px 14px;">
+        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Costa Cruises</div>
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">Sudamérica desde Buenos Aires</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">14 noches · Buenos Aires → Buenos Aires</div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;">
+          <div><span style="font-size:11px;color:var(--muted);">Desde </span><span style="font-size:16px;font-weight:800;color:var(--navy);">US$ 2.150</span></div>
+          <span style="font-size:9px;font-weight:700;background:var(--promo-bg);color:var(--promo);padding:2px 7px;border-radius:3px;">PROMO</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1122,11 +1200,10 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="ft-left"><strong>Geist Turismo</strong> · Operador Mayorista · Legajo 12599 · IATA 55503943</div>
+  <div class="ft-left"><strong>Geist Turismo</strong> · Operador Mayorista · Legajo 12599 · IATA 55503943 · <a href="https://www.geist.tur.ar" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.55);text-decoration:underline;text-underline-offset:2px;">geist.tur.ar</a></div>
   <div class="ft-links">
-    <a href="#">Sobre Nosotros</a>
-    <a href="#">Info Administrativa</a>
-    <a href="#">Contacto</a>
+    <a href="https://www.geist.tur.ar" target="_blank" rel="noopener">Sitio principal</a>
+    <a href="mailto:cruceros@geist.tur.ar">Soporte</a>
     <a href="#">Política de Privacidad</a>
   </div>
 </footer>
@@ -1259,7 +1336,7 @@
     height: 36px; width: auto; object-fit: contain;
   }
   .login-logo-text { font-size: 20px; font-weight: 700; color: var(--navy); }
-  .login-title { font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .login-title { font-family: 'DM Sans', 'Outfit', sans-serif; font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
   .login-sub { font-size: 13.5px; color: var(--muted); margin-bottom: 26px; }
   .login-field { margin-bottom: 14px; }
   .login-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.08em; }
@@ -1322,8 +1399,8 @@
       <img src="https://www.geist.tur.ar/images/logochico.png" alt="Geist" style="height:36px;width:auto;">
       <span class="login-logo-text">Cruceros</span>
     </div>
-    <div class="login-title">Bienvenido</div>
-    <p class="login-sub">Ingresá con tu cuenta de agencia para acceder al portal B2B.</p>
+    <div class="login-title">Portal de Cruceros</div>
+    <p class="login-sub">Ingresá con tu cuenta de agencia para acceder al sistema de búsqueda y cotización.</p>
     <div class="login-error" id="loginError">Email o contraseña incorrectos.</div>
     <div class="login-field">
       <label for="loginEmail">Email</label>
@@ -2902,18 +2979,43 @@
 (function devPreview() {
   if (!location.hostname.match(/localhost|127\.0\.0\.1/)) return;
 
+  // Fake token para que todo funcione
+  if (!localStorage.getItem('geist_token')) {
+    const header = btoa(JSON.stringify({alg:'HS256',typ:'JWT'}));
+    const payload = btoa(JSON.stringify({id:1,name:'Agencia Demo',role:'admin',agency_id:1}));
+    localStorage.setItem('geist_token', header+'.'+payload+'.devsig');
+    TOKEN = localStorage.getItem('geist_token');
+  }
+  if (!TOKEN) TOKEN = localStorage.getItem('geist_token');
+
+  // Interceptar fetch para mockear /ai/status y /filters
+  const _origFetch = window.fetch;
+  window.fetch = function(url, opts) {
+    const u = typeof url === 'string' ? url : url.url;
+    if (u.includes('/ai/status')) {
+      return Promise.resolve(new Response(JSON.stringify({ ai: { configured: true } }), { status: 200, headers: {'Content-Type':'application/json'} }));
+    }
+    if (u.includes('/cruises/filters')) {
+      return Promise.resolve(new Response(JSON.stringify({ success: true, data: { regions: ['Caribe','Mediterráneo','Sudamérica','Norte de Europa','Alaska'], operators: ['MSC Cruises','Royal Caribbean','Norwegian Cruise Line','Celebrity Cruises','Costa Cruises','Princess Cruises'], ports: ['Buenos Aires','Miami','Barcelona','Southampton','Seattle','Atenas'] } }), { status: 200, headers: {'Content-Type':'application/json'} }));
+    }
+    if (u.includes('/ships')) {
+      return Promise.resolve(new Response(JSON.stringify({ success: true, data: [] }), { status: 200, headers: {'Content-Type':'application/json'} }));
+    }
+    return _origFetch.apply(this, arguments);
+  };
+
   // Bypass login
   document.getElementById('loginScreen').classList.add('hidden');
   document.querySelector('.n-av').textContent = 'AG';
   document.querySelector('.n-uname').textContent = 'Agencia Demo ▾';
 
-  // Show search area, hide ads
-  const sidebar = document.querySelector('.sidebar');
-  const results = document.querySelector('.results-area');
+  // Show ads on landing (before search)
   const ads = document.getElementById('ads-container');
-  if (sidebar) sidebar.style.display = '';
-  if (results) results.style.display = '';
-  if (ads) ads.style.display = 'none';
+  if (ads) ads.style.display = 'block';
+
+  // Trigger AI check and filter loading
+  if (typeof checkAIAvailability === 'function') checkAIAvailability();
+  if (typeof loadFilters === 'function') loadFilters();
 
   // Mock cruise data
   const mockCruises = [
