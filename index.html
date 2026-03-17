@@ -2193,6 +2193,7 @@
     });
  
     const escalaList = document.getElementById('drop-escala-list');
+    if (escalaList) {
     escalaList.innerHTML = '';
     const escalaDefault = document.createElement('div');
     escalaDefault.className = 'drop-item' + (!currentEscala ? ' on' : '');
@@ -2210,6 +2211,7 @@
       searchState.escala = '';
       document.getElementById('val-escala').textContent = 'Cualquier escala';
       escalaDefault.classList.add('on');
+    }
     }
   }
 
