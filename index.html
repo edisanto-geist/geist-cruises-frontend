@@ -2286,6 +2286,9 @@
       searchState.puerto = filters.departure_port;
       document.getElementById('val-puerto').textContent = filters.departure_port;
     }
+    if (filters.port_of_call) {
+      searchState.escala = filters.port_of_call;
+    }
     if (filters.cabin_preference) {
       searchState.cabina = filters.cabin_preference;
     }
@@ -2366,6 +2369,7 @@
       if (searchState.destino)  p.destination    = searchState.destino;
       if (searchState.puerto)   p.departure_port = searchState.puerto;
       if (searchState.naviera)  p.operator       = searchState.naviera;
+      if (searchState.escala)   p.port_of_call   = searchState.escala;
       if (searchState.dateFrom) p.date_from      = searchState.dateFrom;
       if (searchState.dateTo)   p.date_to        = searchState.dateTo;
       if (searchState.durMin)   p.duration_min   = searchState.durMin;
