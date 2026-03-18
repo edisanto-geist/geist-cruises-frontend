@@ -10,6 +10,7 @@
 <meta property="og:title" content="Geist Cruceros — Portal B2B">
 <meta property="og:description" content="Portal B2B de cruceros para agencias. Buscá, cotizá y reservá cruceros para tus clientes.">
 <meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
 <meta property="og:image" content="https://www.geist.tur.ar/images/logochico.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Geist Cruceros — Portal B2B">
@@ -36,6 +37,10 @@
     --text:      #0d1f3c;
     --text2:     #3d5074;
     --muted:     #7a8baa;
+    --red:       #e54b4b;
+    --blue-soft: #eef2ff;
+    --hover-bg:  #f5f8ff;
+    --subtle-bg: #f8fafc;
     --shadow:    0 2px 12px rgba(13,31,60,0.08);
     --shadow-md: 0 6px 28px rgba(13,31,60,0.13);
     --shadow-lg: 0 16px 56px rgba(13,31,60,0.18);
@@ -57,7 +62,7 @@
     background: var(--navy);
     display: flex; align-items: center; padding: 0 32px;
     gap: 0;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+    box-shadow: 0 2px 16px rgba(13,31,60,0.30);
   }
   .n-logo {
     display: flex; align-items: center; gap: 10px;
@@ -93,12 +98,10 @@
   .n-uname { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.88); }
   .n-dropdown {
     position: absolute; top: calc(100% + 8px); right: 0;
-    background: #1e2433; border: 1px solid rgba(255,255,255,0.12);
+    background: var(--navy2); border: 1px solid rgba(255,255,255,0.12);
     border-radius: 10px; padding: 6px; min-width: 160px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.35); z-index: 45;
-    display: none;
+    box-shadow: 0 8px 24px rgba(13,31,60,0.35); z-index: 45;
   }
-  .n-dropdown.open { display: block; }
   .n-dropdown-item {
     display: flex; align-items: center; gap: 8px;
     padding: 8px 12px; border-radius: 7px; cursor: pointer;
@@ -106,8 +109,8 @@
     transition: background 0.12s;
   }
   .n-dropdown-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
-  .n-dropdown-item.danger { color: #ff6b6b; }
-  .n-dropdown-item.danger:hover { background: rgba(255,107,107,0.12); }
+  .n-dropdown-item.danger { color: var(--red); }
+  .n-dropdown-item.danger:hover { background: rgba(229,75,75,0.12); }
   .n-user-wrap { position: relative; }
 
   /* ─────────── HERO / SEARCH ─────────── */
@@ -124,7 +127,7 @@
 
   .hero-cta {
     font-family: 'DM Sans', 'Outfit', sans-serif;
-    font-size: 14.5px; font-weight: 500; color: rgba(255,255,255,0.55);
+    font-size: 14.5px; font-weight: 500; color: rgba(255,255,255,0.72);
     margin-bottom: 14px; letter-spacing: 0.01em;
   }
 
@@ -137,7 +140,7 @@
     display: flex; align-items: stretch;
     background: #fff; border-radius: 100px;
     overflow: visible;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 12px rgba(13,31,60,0.15);
     margin-bottom: 14px; min-height: 54px;
     flex-wrap: wrap;
   }
@@ -149,7 +152,7 @@
     min-width: 0;
   }
   .sb-field:first-child { border-radius: 100px 0 0 100px; }
-  .sb-field:hover { background: #f5f8ff; }
+  .sb-field:hover { background: var(--hover-bg); }
   .sb-field.sb-destination { flex: 1.4; }
   .sb-icon { font-size: 18px; flex-shrink: 0; }
   .sb-content { min-width: 0; }
@@ -237,7 +240,7 @@
     font-size: 12px; font-weight: 500; white-space: nowrap;
     color: rgba(255,255,255,0.6); flex-shrink: 0;
   }
-  .ai-search-status.error { color: #ff6b6b; }
+  .ai-search-status.error { color: var(--red); }
   .ai-search-btn {
     background: linear-gradient(135deg, var(--cyan), #0090b0);
     color: #fff; border: none; font-family: inherit;
@@ -316,7 +319,7 @@
     content:''; position: absolute; width: 15px; height: 15px;
     border-radius: 50%; background: #fff;
     top: 2.5px; right: 2.5px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.18); transition: right 0.2s;
+    box-shadow: 0 1px 4px rgba(13,31,60,0.18); transition: right 0.2s;
   }
 
   .rad-row { display: flex; gap: 5px; }
@@ -326,7 +329,7 @@
     font-size: 12.5px; font-weight: 500; color: var(--text2);
     cursor: pointer; transition: all 0.15s;
   }
-  .rad.on { border-color: var(--blue); color: var(--blue); background: #eef2ff; }
+  .rad.on { border-color: var(--blue); color: var(--blue); background: var(--blue-soft); }
 
   .cb { display: flex; align-items: flex-start; gap: 9px; cursor: pointer; padding: 3px 0; }
   .cb-sq {
@@ -405,19 +408,17 @@
     cursor: pointer;
   }
   .rt-row:last-child { border-bottom: none; }
-  .rt-row:hover { background: #f5f8ff; }
+  .rt-row:hover { background: var(--hover-bg); }
   .rt-row:hover .rta-btn { opacity: 1; }
 
   .rta { padding: 13px 14px; }
 
   /* itinerario cell */
-  .rta-itin {}
   .rta-route { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 3px; display: flex; align-items: center; gap: 6px; }
   .rta-arr { color: var(--blue); font-size: 11px; }
   .rta-stops { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
 
   /* naviera cell */
-  .rta-line {}
   .line-chip {
     display: inline-flex; align-items: center;
     background: var(--navy); color: #fff;
@@ -459,11 +460,10 @@
 
   /* ── ITINERARIO MODAL ── */
   #itin-modal-ov {
-    display: none; position: fixed; inset: 0; z-index: 50;
+    position: fixed; inset: 0; z-index: 50;
     background: rgba(13,31,60,0.55); backdrop-filter: blur(3px);
-    align-items: center; justify-content: center;
+    display: flex; align-items: center; justify-content: center;
   }
-  #itin-modal-ov.open { display: flex; }
   .itin-modal {
     background: #fff; border-radius: 16px; width: 700px; max-width: 95vw;
     max-height: 85vh; display: flex; flex-direction: column;
@@ -485,17 +485,17 @@
   .itin-close:hover { color: var(--text); }
   .itin-table { width: 100%; border-collapse: collapse; }
   .itin-table th {
-    background: #f8fafc; font-size: 11px; font-weight: 700; color: var(--muted);
+    background: var(--subtle-bg); font-size: 11px; font-weight: 700; color: var(--muted);
     text-transform: uppercase; letter-spacing: 0.06em;
     padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--border);
     position: sticky; top: 0;
   }
   .itin-table td {
     padding: 11px 16px; font-size: 13px; color: var(--text);
-    border-bottom: 1px solid #f1f5f9; vertical-align: middle;
+    border-bottom: 1px solid var(--border); vertical-align: middle;
   }
   .itin-table tr:last-child td { border-bottom: none; }
-  .itin-table tr:hover td { background: #f8fafc; }
+  .itin-table tr:hover td { background: var(--subtle-bg); }
   .itin-day-num { font-weight: 700; color: var(--blue); font-size: 12px; }
   .itin-sea { color: var(--muted); font-style: italic; }
   .btn-copy {
@@ -519,7 +519,7 @@
     border: 1.5px solid var(--blue) !important;
     box-shadow: none !important;
   }
-  .rta-btn-info:hover { background: #eef2ff !important; }
+  .rta-btn-info:hover { background: var(--blue-soft) !important; }
   .rta-btn {
     background: var(--blue); color: #fff;
     border: none; border-radius: 8px;
@@ -550,11 +550,10 @@
 
   /* ─────────── MODAL ─────────── */
   .overlay {
-    display: none; position: fixed; inset: 0; z-index: 50;
+    position: fixed; inset: 0; z-index: 50;
     background: rgba(8,16,32,0.65); backdrop-filter: blur(4px);
-    align-items: center; justify-content: center; padding: 24px;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
   }
-  .overlay.open { display: flex; }
 
   .modal {
     background: #fff; border-radius: 18px;
@@ -563,7 +562,7 @@
     display: flex; box-shadow: var(--shadow-lg);
     border: 1px solid var(--border);
     position: relative;
-    animation: modalIn 0.22s ease;
+    animation: modalIn 0.22s var(--ease-out, cubic-bezier(0.25, 1, 0.5, 1));
   }
   @keyframes modalIn {
     from { opacity: 0; transform: scale(0.97) translateY(8px); }
@@ -588,8 +587,8 @@
     color: var(--text2); cursor: pointer;
     transition: all 0.15s; border-left: 2px solid transparent;
   }
-  .mni:hover { color: var(--text); background: rgba(30,94,255,0.05); }
-  .mni.on { color: var(--blue); background: #eef2ff; border-left-color: var(--blue); font-weight: 600; }
+  .mni:hover { color: var(--text); background: rgba(30,94,255,0.06); }
+  .mni.on { color: var(--blue); background: var(--blue-soft); border-left-color: var(--blue); font-weight: 600; }
   .mni-ic { width: 18px; text-align: center; font-size: 15px; }
 
   .m-actions {
@@ -721,12 +720,11 @@
   /* ── DROPDOWNS BARRA DE BÚSQUEDA ── */
   .sb-field { position: relative; cursor: pointer; user-select: none; }
   .sb-drop {
-    display: none; position: absolute; top: calc(100% + 12px); left: -12px; z-index: 45;
+    position: absolute; top: calc(100% + 12px); left: -12px; z-index: 45;
     background: #fff; border: 1px solid var(--border); border-radius: 14px;
     box-shadow: 0 8px 32px rgba(13,31,60,0.14);
     min-width: 240px;
   }
-  .sb-drop.open { display: block; }
   .sb-drop-wide { min-width: 380px; }
   .sb-drop-sm { min-width: 200px; }
   @keyframes dropIn {
@@ -746,8 +744,8 @@
     cursor: pointer; transition: background 0.12s;
     display: flex; align-items: center; gap: 8px;
   }
-  .drop-item:hover { background: #f0f4ff; color: var(--text); }
-  .drop-item.on { color: var(--blue); font-weight: 600; background: #eef2ff; }
+  .drop-item:hover { background: var(--hover-bg); color: var(--text); }
+  .drop-item.on { color: var(--blue); font-weight: 600; background: var(--blue-soft); }
   .drop-item.hidden { display: none; }
 
   /* Calendario */
@@ -769,14 +767,12 @@
     font-family: inherit; font-size: 11.5px; color: var(--text2);
     padding: 5px 10px; cursor: pointer; transition: all 0.12s;
   }
-  .cal-short:hover { border-color: var(--blue); color: var(--blue); background: #eef2ff; }
+  .cal-short:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-soft); }
 
-  /* Chip limpiar */
-  .sa-clear {
-    background: none; border: none; font-family: inherit; font-size: 12.5px;
-    color: var(--muted); cursor: pointer; padding: 0;
+  /* Chip limpiar (overrides hero-context sa-clear) */
+  .search-advanced .sa-clear {
+    font-size: 12.5px; padding: 0;
   }
-  .sa-clear:hover { color: var(--text); }
 
   /* Filter chips */
   .filter-chip {
@@ -878,6 +874,91 @@
     }
   }
 
+  /* ── FOCUS-VISIBLE ── */
+  :focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+  .sb-field:focus-visible { outline-offset: -2px; border-radius: 8px; }
+  .sb-btn:focus-visible { outline-offset: -2px; }
+  .rta-btn:focus-visible, .btn-login:focus-visible, .m-btn-pdf:focus-visible,
+  .m-btn-book:focus-visible, .btn-copy:focus-visible, .btn-copy-sec:focus-visible {
+    outline-offset: 2px;
+  }
+  .pg-btn:focus-visible { outline-offset: 1px; }
+  .cb:focus-visible { outline-offset: 0; border-radius: 4px; }
+  .n-user:focus-visible { outline-offset: 2px; }
+  .n-dropdown-item:focus-visible { outline-offset: -2px; }
+  .mni:focus-visible { outline-offset: -2px; }
+
+  /* ── EASING TOKENS ── */
+  :root {
+    --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-out-snappy: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ── BUTTON PRESS FEEDBACK ── */
+  .sb-btn:active, .rta-btn:active, .btn-login:active,
+  .m-btn-pdf:active, .m-btn-book:active, .btn-copy:active,
+  .pg-btn:active, .ai-search-btn:active, .btn-limpiar-sidebar:active,
+  .rta-btn-info:active {
+    transform: scale(0.97);
+  }
+
+  /* ── DROPDOWN SMOOTH OPEN ── */
+  .sb-drop {
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.15s var(--ease-out), transform 0.15s var(--ease-out);
+    pointer-events: none;
+  }
+  .sb-drop.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* ── USER DROPDOWN SMOOTH ── */
+  .n-dropdown {
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.12s var(--ease-out), transform 0.12s var(--ease-out);
+    pointer-events: none;
+  }
+  .n-dropdown.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* ── MODAL OVERLAY FADE ── */
+  .overlay {
+    opacity: 0;
+    transition: opacity 0.2s var(--ease-out);
+    pointer-events: none;
+  }
+  .overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ── ITINERARY MODAL OVERLAY ── */
+  #itin-modal-ov {
+    opacity: 0;
+    transition: opacity 0.2s var(--ease-out);
+    pointer-events: none;
+  }
+  #itin-modal-ov.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ── SIDEBAR COLLAPSE TRANSITION ── */
+  .fc-body {
+    overflow: hidden;
+    transition: max-height 0.2s var(--ease-out);
+  }
+
 </style>
 </head>
 <body>
@@ -889,11 +970,11 @@
   </a>
   <div class="n-links">
     <a href="#" class="on">Cruceros</a>
-    <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente">Mis reservas <span style="font-size:9px;font-weight:700;background:rgba(255,255,255,0.12);border-radius:3px;padding:1px 5px;letter-spacing:0.06em;vertical-align:middle;">PRONTO</span></a>
-    <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente">Mis presupuestos <span style="font-size:9px;font-weight:700;background:rgba(255,255,255,0.12);border-radius:3px;padding:1px 5px;letter-spacing:0.06em;vertical-align:middle;">PRONTO</span></a>
+    <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente" aria-disabled="true" tabindex="-1">Mis reservas <span style="font-size:9px;font-weight:700;background:rgba(255,255,255,0.12);border-radius:3px;padding:1px 5px;letter-spacing:0.06em;vertical-align:middle;">PRONTO</span></a>
+    <a href="javascript:void(0)" style="cursor:default;opacity:0.4;" title="Próximamente" aria-disabled="true" tabindex="-1">Mis presupuestos <span style="font-size:9px;font-weight:700;background:rgba(255,255,255,0.12);border-radius:3px;padding:1px 5px;letter-spacing:0.06em;vertical-align:middle;">PRONTO</span></a>
   </div>
   <div class="n-user-wrap">
-    <div class="n-user" onclick="toggleUserMenu()">
+    <div class="n-user" tabindex="0" role="button" aria-haspopup="menu" aria-label="Menú de usuario" onclick="toggleUserMenu()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleUserMenu();}">
       <div class="n-av">AG</div>
       <span class="n-uname">Agencia Demo &nbsp;▾</span>
     </div>
@@ -939,7 +1020,7 @@
       <div class="search-bar">
 
         <!-- DESTINO -->
-        <div class="sb-field sb-destination" onclick="toggleDrop('drop-destino', event)">
+        <div class="sb-field sb-destination" tabindex="0" role="button" aria-haspopup="listbox" onclick="toggleDrop('drop-destino', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDrop('drop-destino',event);}">
           <div class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></div>
           <div class="sb-content">
             <div class="sb-label">Destino</div>
@@ -959,7 +1040,7 @@
         <div class="sb-sep"></div>
 
         <!-- FECHAS -->
-        <div class="sb-field sb-dates" onclick="toggleDrop('drop-fechas', event)">
+        <div class="sb-field sb-dates" tabindex="0" role="button" aria-haspopup="dialog" onclick="toggleDrop('drop-fechas', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDrop('drop-fechas',event);}">
           <div class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
           <div class="sb-content">
             <div class="sb-label">Fechas</div>
@@ -993,7 +1074,7 @@
         <div class="sb-sep"></div>
 
         <!-- PUERTO DE SALIDA -->
-        <div class="sb-field" onclick="toggleDrop('drop-puerto', event)">
+        <div class="sb-field" tabindex="0" role="button" aria-haspopup="listbox" onclick="toggleDrop('drop-puerto', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDrop('drop-puerto',event);}">
           <div class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>
           <div class="sb-content">
             <div class="sb-label">Puerto de salida</div>
@@ -1010,7 +1091,7 @@
         </div>
 
         <!-- BARCO -->
-        <div class="sb-field" onclick="toggleDrop('drop-barco', event)">
+        <div class="sb-field" tabindex="0" role="button" aria-haspopup="listbox" onclick="toggleDrop('drop-barco', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDrop('drop-barco',event);}">
           <div class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.5 0 2.5 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/><path d="M12 1v4"/></svg></div>
           <div class="sb-content">
             <div class="sb-label">Barco</div>
@@ -1025,7 +1106,7 @@
           </div>
         </div>
 
-        <button class="sb-btn" onclick="handleBuscarClick()">
+        <button class="sb-btn" aria-label="Buscar cruceros" onclick="handleBuscarClick()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           Buscar
         </button>
@@ -1131,7 +1212,7 @@
 
     <!-- NAVIERA -->
     <div class="fc">
-      <div class="fc-head" onclick="toggleFc(this)">Naviera <span class="ic">▾</span></div>
+      <div class="fc-head" role="button" tabindex="0" aria-expanded="true" onclick="toggleFc(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFc(this);}">Naviera <span class="ic">▾</span></div>
       <div class="fc-body" id="sidebar-navieras">
         <div class="cb on" onclick="sidebarNaviera('','Todas',this)">
           <div class="cb-sq on">✓</div>
@@ -1142,7 +1223,7 @@
 
     <!-- DURACIÓN -->
     <div class="fc">
-      <div class="fc-head" onclick="toggleFc(this)">Duración <span class="ic">▾</span></div>
+      <div class="fc-head" role="button" tabindex="0" aria-expanded="true" onclick="toggleFc(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFc(this);}">Duración <span class="ic">▾</span></div>
       <div class="fc-body">
         <div class="cb on" onclick="sidebarDuracion('','','Cualquier duración',this)"><div class="cb-sq on">✓</div><span class="cb-lbl">Cualquier duración</span></div>
         <div class="cb" onclick="sidebarDuracion('1','4','1 a 4 noches',this)"><div class="cb-sq"></div><span class="cb-lbl">1 a 4 noches</span></div>
@@ -1155,7 +1236,7 @@
 
     <!-- PUERTO DE ESCALA (sidebar) -->
     <div class="fc">
-      <div class="fc-head" onclick="toggleFc(this)">Puerto de Escala <span class="ic">▾</span></div>
+      <div class="fc-head" role="button" tabindex="0" aria-expanded="true" onclick="toggleFc(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFc(this);}">Puerto de Escala <span class="ic">▾</span></div>
       <div class="fc-body" id="sidebar-escalas" style="max-height:220px;overflow-y:auto;scrollbar-width:thin;">
       </div>
     </div>
@@ -1355,7 +1436,7 @@
     color: var(--text); outline: none; transition: border-color 0.15s;
   }
   .login-field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,94,255,0.1); }
-  .login-error { background: #fff0f0; border: 1px solid #ffc0c0; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #c0392b; margin-bottom: 14px; display: none; }
+  .login-error { background: #fef2f2; border: 1px solid rgba(229,75,75,0.3); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--red); margin-bottom: 14px; display: none; }
   .login-error.show { display: block; }
   .btn-login {
     width: 100%; background: var(--blue); color: #fff;
@@ -1413,11 +1494,11 @@
     <div class="login-error" id="loginError">Email o contraseña incorrectos.</div>
     <div class="login-field">
       <label for="loginEmail">Email</label>
-      <input type="email" id="loginEmail" placeholder="agencia@ejemplo.com" autocomplete="email">
+      <input type="email" id="loginEmail" placeholder="agencia@ejemplo.com" autocomplete="email" aria-required="true" required>
     </div>
     <div class="login-field">
       <label for="loginPass">Contraseña</label>
-      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" aria-required="true" required>
     </div>
     <button class="btn-login" id="btnLogin" onclick="doLogin()">Ingresar al portal</button>
     <div class="login-footer">Portal exclusivo para agencias · Geist Turismo</div>
@@ -1446,6 +1527,9 @@
       document.getElementById('ads-container').style.display = 'block';
     }
     // Enter en login
+    document.getElementById('loginEmail').addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); document.getElementById('loginPass').focus(); }
+    });
     document.getElementById('loginPass').addEventListener('keydown', e => {
       if (e.key === 'Enter') doLogin();
     });
@@ -1846,8 +1930,9 @@
   function toggleFc(head) {
     const body = head.nextElementSibling;
     const open = body.style.display !== 'none';
-    body.style.display = open ? 'none' : 'block';
+    body.style.display = open ? 'none' : '';
     head.querySelector('.ic').textContent = open ? '▸' : '▾';
+    head.setAttribute('aria-expanded', !open);
   }
 
   function sidebarNaviera(val, label, el) {
@@ -2597,6 +2682,7 @@
   // ─────────────────────────────────────────
   async function openCruiseDetail(ref) {
     document.getElementById('ov').classList.add('open');
+    document.body.style.overflow = 'hidden';
     document.getElementById('tab-barco').innerHTML = `
       <div class="loading-row"><div class="spinner"><span></span><span></span><span></span><span></span><span></span></div>Cargando información...</div>`;
 
@@ -2840,6 +2926,7 @@
 
   function closeItinModal() {
     document.getElementById('itin-modal-ov').classList.remove('open');
+    document.body.style.overflow = '';
   }
 
   function copyItinerario() {
@@ -2868,10 +2955,12 @@
     document.getElementById('pm-children').textContent = '0';
     document.getElementById('pm-nombre').textContent = nombre || 'este crucero';
     const pmEl = document.getElementById('pax-modal-ov'); pmEl.style.display='flex'; pmEl.classList.add('open');
+    document.body.style.overflow = 'hidden';
   }
 
   function closePaxModal() {
     const pmEl2 = document.getElementById('pax-modal-ov'); pmEl2.style.display='none'; pmEl2.classList.remove('open');
+    document.body.style.overflow = '';
   }
 
   function changePaxModal(type, delta) {
@@ -2896,9 +2985,13 @@
 
   function openModal() {
     document.getElementById('ov').classList.add('open');
+    document.body.style.overflow = 'hidden';
     renderExampleModal();
   }
-  function closeModal() { document.getElementById('ov').classList.remove('open'); }
+  function closeModal() {
+    document.getElementById('ov').classList.remove('open');
+    document.body.style.overflow = '';
+  }
   function handleOv(e) { if(e.target.id==='ov') closeModal(); }
 
   function setTab(t, el) {
