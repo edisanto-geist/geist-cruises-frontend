@@ -2783,35 +2783,33 @@
 
     document.getElementById('tab-itin').innerHTML = fullDaysItin.length ? `
       <div class="m-section-title">Itinerario — ${noches} noches</div>
-      <div class="itin-list">
-        ${fullDaysItin.map((dayGroup, i) => {
-          const isLast  = i === fullDaysItin.length - 1;
-          const isSea   = dayGroup.at_sea || !dayGroup.ports.length;
-          const fecha   = startDateItin ? (() => { const dd = new Date(startDateItin); dd.setDate(dd.getDate() + dayGroup.day - 1); return dd.toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'short' }); })() : '';
-          const dotCls  = isLast ? 'end' : isSea ? 'sea' : '';
-          const portsHtml = isSea
-            ? `<div class="iday-p iday-sea">Navegación — Disfrutando del mar</div>`
-            : dayGroup.ports.map((p, pi) => `
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:${pi<dayGroup.ports.length-1?'6px':'0'};">
-                  ${p.image ? `<img src="${p.image}" alt="${p.port_name}" loading="lazy" style="width:52px;height:38px;object-fit:cover;border-radius:6px;flex-shrink:0;">` : ''}
-                  <div>
-                    <div class="iday-p" style="margin:0;">${p.port_name || '—'}</div>
-                    <div class="iday-meta">
-                      ${p.arrival_time ? `<span>Llega ${p.arrival_time}</span>` : ''}
-                      ${p.departure_time ? `<span>Sale ${p.departure_time}</span>` : ''}
-                    </div>
-                  </div>
-                </div>`).join('');
-          return `
-            <div class="iday">
-              <div class="iday-left">
-                <div class="iday-num">Día ${dayGroup.day}${fecha ? ' · '+fecha : ''}</div>
-                <div class="iday-dot ${dotCls}"></div>
-                ${!isLast ? '<div class="iday-line"></div>' : ''}
-              </div>
-              <div class="iday-right">${portsHtml}</div>
-            </div>`;
-        }).join('')}
+      <div style="overflow-x:auto;">
+        <table class="itin-table">
+          <thead><tr>
+            <th>Día</th><th>Fecha</th><th>Puerto</th><th>Llega</th><th>Sale</th>
+          </tr></thead>
+          <tbody>
+            ${fullDaysItin.flatMap(dayGroup => {
+              const fecha = startDateItin ? (() => { const dd = new Date(startDateItin); dd.setDate(dd.getDate() + dayGroup.day - 1); return dd.toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'short' }); })() : '—';
+              const isSea = dayGroup.at_sea || !dayGroup.ports.length;
+              if (isSea) {
+                return [`<tr>
+                  <td><span class="itin-day-num">${dayGroup.day}</span></td>
+                  <td>${fecha}</td>
+                  <td class="itin-sea">Navegación — Día en el mar</td>
+                  <td>—</td><td>—</td>
+                </tr>`];
+              }
+              return dayGroup.ports.map((p, pi) => `<tr>
+                <td>${pi === 0 ? `<span class="itin-day-num">${dayGroup.day}</span>` : ''}</td>
+                <td>${pi === 0 ? fecha : ''}</td>
+                <td>${p.port_name || '—'}</td>
+                <td>${p.arrival_time || '—'}</td>
+                <td>${p.departure_time || '—'}</td>
+              </tr>`);
+            }).join('')}
+          </tbody>
+        </table>
       </div>` : `
       <div style="text-align:center;padding:40px 0;color:var(--muted);">
         <div style="margin-bottom:12px;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg></div>
