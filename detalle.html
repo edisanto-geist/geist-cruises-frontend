@@ -360,6 +360,21 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       transition-duration: 0.01ms !important;
     }
   }
+
+  /* ── ASSISTANCE WIDGET ── */
+  .assist-widget{margin-bottom:14px;}
+  .assist-widget-head{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--navy);padding:14px 20px;border-bottom:1px solid var(--border);}
+  .assist-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;padding:16px 20px;}
+  .assist-plan{border:1.5px solid var(--border);border-radius:10px;padding:14px;transition:border-color 0.15s;}
+  .assist-plan:hover{border-color:var(--blue);}
+  .assist-plan-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
+  .assist-plan-prov{font-size:10px;font-weight:700;display:inline-block;padding:2px 7px;border-radius:100px;margin-bottom:8px;}
+  .assist-plan-prov.tw{background:var(--blue-soft);color:var(--blue);}
+  .assist-plan-prov.ac{background:var(--red-bg,#fef2f2);color:var(--red);}
+  .assist-plan-covs{list-style:none;margin-bottom:10px;}
+  .assist-plan-covs li{font-size:11.5px;color:var(--text2);padding:2px 0;display:flex;align-items:center;gap:5px;}
+  .assist-plan-link{display:inline-block;font-size:12px;font-weight:600;color:var(--blue);text-decoration:none;}
+  .assist-plan-link:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -369,6 +384,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
   </a>
   <div class="n-links">
     <a href="index.html" class="on">Cruceros</a>
+    <a href="asistencia.html">Asistencia</a>
     <a href="#">Mis reservas</a>
     <a href="#">Mis presupuestos</a>
   </div>
@@ -422,6 +438,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
       <div class="card-body" style="padding:0;">
         <table class="cabin-table"><tbody id="cabinRows"></tbody></table>
       </div>
+    </div>
+
+    <!-- Widget asistencia al viajero -->
+    <div class="card assist-widget" id="assistWidget" style="display:none;">
+      <div class="assist-widget-head">🛡️ Asistencia al viajero recomendada para este destino</div>
+      <div class="assist-cards" id="assistCards"></div>
     </div>
 
     <div class="bottom-bar" id="bottomBar" style="display:none;">
@@ -685,6 +707,29 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(-
         } catch(e) {}
       }
       populatePage(data.data, shipData, adults, children);
+
+      // Widget de asistencia — cross-selling
+      try {
+        const region = data.data.regions?.[0] || data.data.destination || '';
+        const nights = data.data.duration || data.data.nights || '';
+        if (region) {
+          const ar = await fetch(`${API}/asistencia/sugerir?destino_codigo=${encodeURIComponent(region)}${nights ? '&duracion_dias='+nights : ''}`);
+          const aj = await ar.json();
+          if (aj.success && aj.data?.length) {
+            const provClass = { TERRAWIND: 'tw', ASSISTCARD: 'ac' };
+            document.getElementById('assistCards').innerHTML = aj.data.slice(0,3).map(p => `
+              <div class="assist-plan">
+                <div class="assist-plan-name">${p.nombre}</div>
+                <span class="assist-plan-prov ${provClass[p.proveedor_codigo]||''}">${p.proveedor_nombre}</span>
+                <ul class="assist-plan-covs">
+                  ${(p.coberturas_destacadas||[]).slice(0,3).map(c => `<li>${c.icono||'•'} ${c.nombre}${c.valor?' — '+c.valor:''}</li>`).join('')}
+                </ul>
+                <a href="asistencia.html?destino=${encodeURIComponent(region)}&dias=${nights}" class="assist-plan-link">Ver planes completos →</a>
+              </div>`).join('');
+            document.getElementById('assistWidget').style.display = '';
+          }
+        }
+      } catch(e) { /* silently skip widget on error */ }
     } catch(e) {
       document.getElementById('loadingState').innerHTML = `<div class="loading-card" style="color:var(--promo);">Error cargando el crucero. <a href="index.html" style="color:var(--blue);margin-left:8px;">← Volver</a></div>`;
     }

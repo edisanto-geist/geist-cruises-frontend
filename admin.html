@@ -351,6 +351,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
       <div class="sb-item" onclick="goTo('offline',this)"><span class="si">⚓</span> Cruceros Offline</div>
       <div class="sb-item" onclick="goTo('promos',this)"><span class="si">🏷️</span> Promociones</div>
 
+      <div class="sb-section">Asistencia</div>
+      <div class="sb-item" onclick="goTo('asistencia-proveedores',this)"><span class="si">🏢</span> Proveedores</div>
+      <div class="sb-item" onclick="goTo('asistencia-productos',this)"><span class="si">🛡️</span> Planes <span class="sb-badge" id="badge-asistencia">—</span></div>
+      <div class="sb-item" onclick="goTo('asistencia-vouchers',this)"><span class="si">📄</span> Vouchers</div>
+
       <div class="sb-section">Sistema</div>
       <div class="sb-item" onclick="goTo('agencias',this)"><span class="si">🏢</span> Agencias</div>
       <div class="sb-item" onclick="goTo('cache',this)"><span class="si">🗄️</span> Caché Redis</div>
@@ -642,6 +647,60 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
         </div>
       </div>
 
+      <!-- ══ ASISTENCIA: PROVEEDORES ══ -->
+      <div class="panel" id="panel-asistencia-proveedores">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Proveedores de asistencia integrados</div>
+            <div class="card-actions">
+              <button class="tb-btn" onclick="loadAsistenciaProveedores()">🔄 Recargar</button>
+            </div>
+          </div>
+          <div id="asistProvTable">
+            <div class="loading-row"><div class="spinner"></div> Cargando proveedores...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ASISTENCIA: PRODUCTOS ══ -->
+      <div class="panel" id="panel-asistencia-productos">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Catálogo de planes</div>
+            <div class="card-actions">
+              <button class="tb-btn" onclick="loadAsistenciaProductos()">🔄 Recargar</button>
+              <button class="tb-btn primary" onclick="openAsistProductoModal()">+ Nuevo plan</button>
+            </div>
+          </div>
+          <div class="filter-bar" id="asistProdFilters">
+            <select class="filter-sel" id="filtAsistProv" onchange="loadAsistenciaProductos()">
+              <option value="">Todos los proveedores</option>
+            </select>
+            <select class="filter-sel" id="filtAsistActivo" onchange="loadAsistenciaProductos()">
+              <option value="">Todos los estados</option>
+              <option value="true">Activos</option>
+              <option value="false">Inactivos</option>
+            </select>
+          </div>
+          <div id="asistProdTable">
+            <div class="loading-row"><div class="spinner"></div> Cargando planes...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ASISTENCIA: VOUCHERS ══ -->
+      <div class="panel" id="panel-asistencia-vouchers">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Vouchers emitidos</div>
+          </div>
+          <div class="empty-state">
+            <div class="ei">📄</div>
+            <p>Próximamente: listado de vouchers emitidos.<br>Los vouchers generados desde el buscador de asistencia aparecerán aquí.</p>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /app -->
@@ -913,6 +972,141 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
   </div>
 </div>
 
+<!-- MODAL PRODUCTO ASISTENCIA -->
+<div class="ov" id="ov-asist-prod" role="dialog" aria-modal="true" aria-label="Plan de asistencia" onclick="if(event.target.id==='ov-asist-prod')closeAsistProductoModal()">
+  <div class="modal" style="width:640px;">
+    <div class="modal-hd">
+      <div class="modal-ht" id="asistProdModalTitle">Nuevo plan de asistencia</div>
+      <button class="modal-x" aria-label="Cerrar" onclick="closeAsistProductoModal()">✕</button>
+    </div>
+    <div class="modal-bd">
+      <input type="hidden" id="editAsistProdId">
+
+      <div class="form-row">
+        <label>Nombre del plan *</label>
+        <input type="text" id="editAsistNombre" placeholder="Ej: TerraWind Multi-Trip 60">
+      </div>
+      <div class="form-row">
+        <label>Descripción</label>
+        <textarea id="editAsistDesc" placeholder="Descripción del plan de asistencia..."></textarea>
+      </div>
+      <div class="form-row">
+        <label>Proveedor *</label>
+        <select id="editAsistProv"></select>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-row">
+          <label>Tipo</label>
+          <select id="editAsistTipo">
+            <option value="">—</option>
+            <option value="INDIVIDUAL">Individual</option>
+            <option value="FAMILIAR">Familiar</option>
+            <option value="MULTIVIAJE">Multiviaje</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Modalidad</label>
+          <select id="editAsistModalidad">
+            <option value="">—</option>
+            <option value="DIARIO">Diario</option>
+            <option value="ANUAL">Anual</option>
+            <option value="MULTIVIAJE_30D">Multiviaje 30D</option>
+            <option value="MULTIVIAJE_60D">Multiviaje 60D</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div class="form-row">
+          <label>Edad máxima</label>
+          <input type="number" id="editAsistEdadMax" placeholder="85" min="0" max="120">
+        </div>
+        <div class="form-row">
+          <label>Días mínimos</label>
+          <input type="number" id="editAsistDiasMin" placeholder="1" min="1" value="1">
+        </div>
+        <div class="form-row">
+          <label>Días máximos</label>
+          <input type="number" id="editAsistDiasMax" placeholder="365" min="1" value="365">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div class="form-row" style="display:flex;align-items:center;gap:8px;padding-top:20px;">
+          <input type="checkbox" id="editAsistFamiliar" style="width:auto;">
+          <label style="margin:0;text-transform:none;letter-spacing:0;font-size:13px;">Plan familiar</label>
+        </div>
+        <div class="form-row" style="display:flex;align-items:center;gap:8px;padding-top:20px;">
+          <input type="checkbox" id="editAsistDestacado" style="width:auto;">
+          <label style="margin:0;text-transform:none;letter-spacing:0;font-size:13px;">Destacado</label>
+        </div>
+        <div class="form-row" style="display:flex;align-items:center;gap:8px;padding-top:20px;">
+          <input type="checkbox" id="editAsistActivo" checked style="width:auto;">
+          <label style="margin:0;text-transform:none;letter-spacing:0;font-size:13px;">Activo</label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Orden de display</label>
+        <input type="number" id="editAsistOrden" placeholder="0" min="0" value="0">
+      </div>
+
+      <!-- Datos técnicos colapsable -->
+      <details style="margin-top:12px;border:1px solid var(--border);border-radius:9px;padding:0;">
+        <summary style="padding:12px 16px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;">Datos técnicos del proveedor</summary>
+        <div style="padding:4px 16px 16px;">
+          <div class="form-row">
+            <label>Código externo</label>
+            <input type="text" id="editAsistCodExt" placeholder="Código en el sistema del proveedor">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-row">
+              <label>Código producto externo</label>
+              <input type="text" id="editAsistCodProdExt" placeholder="product_id">
+            </div>
+            <div class="form-row">
+              <label>Código tarifa externo</label>
+              <input type="text" id="editAsistCodTarifaExt" placeholder="rate_id">
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Sub-secciones: destinos y coberturas (solo en edición) -->
+      <div id="asistProdSubSections" style="display:none;margin-top:20px;">
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-bottom:16px;">
+          <div style="font-size:12px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Destinos del plan</div>
+          <div id="asistDestinosTable"></div>
+          <div style="display:flex;gap:8px;align-items:flex-end;margin-top:8px;">
+            <input type="text" id="newDestCodigo" placeholder="Código (ej: 02)" style="width:100px;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;">
+            <input type="text" id="newDestNombre" placeholder="Nombre destino" style="flex:1;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;">
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);white-space:nowrap;"><input type="checkbox" id="newDestCruceros" style="width:auto;"> Cruceros</label>
+            <button class="ra-btn" onclick="addAsistDestino()" style="white-space:nowrap;">+ Agregar</button>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border);padding-top:16px;">
+          <div style="font-size:12px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Coberturas del plan</div>
+          <div id="asistCoberturasTable"></div>
+          <div style="display:flex;gap:8px;align-items:flex-end;margin-top:8px;">
+            <input type="text" id="newCobNombre" placeholder="Nombre cobertura *" style="flex:1;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;">
+            <input type="text" id="newCobValor" placeholder="USD 100.000" style="width:120px;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;">
+            <input type="text" id="newCobIcono" placeholder="🏥" style="width:50px;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;text-align:center;">
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);white-space:nowrap;"><input type="checkbox" id="newCobDestacada" style="width:auto;"> Destacada</label>
+            <input type="number" id="newCobOrden" placeholder="0" style="width:50px;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;" value="0">
+            <button class="ra-btn" onclick="addAsistCobertura()" style="white-space:nowrap;">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeAsistProductoModal()">Cancelar</button>
+      <button class="btn-save" id="btnSaveAsistProd" onclick="saveAsistProducto()">💾 Guardar plan</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = 'https://geist-cruises-backend-production.up.railway.app/api';
 let TOKEN = localStorage.getItem('geist_token') || null;
@@ -1047,6 +1241,9 @@ const PANEL_TITLES = {
   offline:   ['⚓ Cruceros Offline', 'Bloques y charters propios de Geist'],
   cache:     ['🗄️ Caché Redis', 'Gestión del caché del servidor'],
   promos:    ['🏷️ Promociones', 'Ofertas destacadas para las agencias'],
+  'asistencia-proveedores': ['🏢 Proveedores de Asistencia', 'Gestión de integraciones'],
+  'asistencia-productos':   ['🛡️ Planes de Asistencia', 'Catálogo de productos'],
+  'asistencia-vouchers':    ['📄 Vouchers Emitidos', 'Historial de asistencias vendidas'],
 };
 
 function goTo(panel, el) {
@@ -1065,6 +1262,8 @@ function goTo(panel, el) {
   if (panel === 'agencias') loadAgencias();
   if (panel === 'offline')  loadOfflineCruises();
   if (panel === 'promos')   loadPromos();
+  if (panel === 'asistencia-proveedores') loadAsistenciaProveedores();
+  if (panel === 'asistencia-productos')   loadAsistenciaProductos();
 }
 
 // ════════════════════════════════════
@@ -2092,6 +2291,323 @@ function deletePromo(id) {
   savePromos(promos.filter(p => p.id !== id));
   showToast(`Promoción "${promo.title}" eliminada`, 'success');
   loadPromos();
+}
+
+// ════════════════════════════════════
+// ASISTENCIA: PROVEEDORES
+// ════════════════════════════════════
+let _asistProveedores = [];
+
+async function loadAsistenciaProveedores() {
+  document.getElementById('asistProvTable').innerHTML = '<div class="loading-row"><div class="spinner"></div> Cargando proveedores...</div>';
+  try {
+    const res = await api('/admin/asistencia/proveedores');
+    _asistProveedores = res?.data || [];
+    document.getElementById('asistProvTable').innerHTML = _asistProveedores.length ? `
+      <table class="data-table">
+        <thead><tr><th>Nombre</th><th>Tipo API</th><th>Endpoint producción</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <tbody>${_asistProveedores.map(p => `<tr>
+          <td class="td-main">${escapeHtml(p.nombre)}</td>
+          <td><span class="badge ${p.tipo_api==='REST'?'blue':'muted'}">${escapeHtml(p.tipo_api||'—')}</span></td>
+          <td class="td-mono" style="max-width:260px;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.endpoint_prod||'—')}</td>
+          <td><span class="badge ${p.activo?'green':'red'}">${p.activo?'✓ Activo':'Inactivo'}</span></td>
+          <td><div class="row-actions">
+            <button class="ra-btn ${p.activo?'danger':''}" onclick="toggleAsistProveedor(${p.id},${!p.activo},'${escapeHtml(p.nombre)}')">${p.activo?'⛔ Desactivar':'✅ Activar'}</button>
+          </div></td>
+        </tr>`).join('')}</tbody>
+      </table>` :
+      '<div class="empty-state"><div class="ei">🏢</div><p>No hay proveedores de asistencia configurados.</p></div>';
+  } catch(e) {
+    document.getElementById('asistProvTable').innerHTML = '<div class="empty-state"><div class="ei">⚠️</div><p>Error cargando proveedores de asistencia.</p></div>';
+  }
+}
+
+async function toggleAsistProveedor(id, activo, nombre) {
+  if (!confirm(`¿${activo?'Activar':'Desactivar'} el proveedor "${nombre}"?`)) return;
+  try {
+    await api(`/admin/asistencia/proveedores/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ activo }),
+    });
+    showToast(`Proveedor ${activo?'activado':'desactivado'}`, 'success');
+    loadAsistenciaProveedores();
+  } catch(e) {
+    showToast('Error actualizando proveedor', 'error');
+  }
+}
+
+// ════════════════════════════════════
+// ASISTENCIA: PRODUCTOS
+// ════════════════════════════════════
+let _asistProductos = [];
+let _editingAsistProdId = null;
+
+async function loadAsistenciaProductos() {
+  document.getElementById('asistProdTable').innerHTML = '<div class="loading-row"><div class="spinner"></div> Cargando planes...</div>';
+  // Populate proveedor filter
+  if (_asistProveedores.length === 0) {
+    try { const r = await api('/admin/asistencia/proveedores'); _asistProveedores = r?.data || []; } catch(e){}
+  }
+  const sel = document.getElementById('filtAsistProv');
+  if (sel.options.length <= 1) {
+    _asistProveedores.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.id; o.textContent = p.nombre;
+      sel.appendChild(o);
+    });
+  }
+
+  const provId = document.getElementById('filtAsistProv').value;
+  const activo = document.getElementById('filtAsistActivo').value;
+  let qs = '';
+  if (provId) qs += `?proveedor_id=${provId}`;
+  if (activo) qs += `${qs?'&':'?'}activo=${activo}`;
+
+  try {
+    const res = await api(`/admin/asistencia/productos${qs}`);
+    _asistProductos = res?.data || [];
+    document.getElementById('badge-asistencia').textContent = _asistProductos.filter(p=>p.activo).length || '—';
+
+    const provColors = { TERRAWIND: 'blue', ASSISTCARD: 'red' };
+
+    document.getElementById('asistProdTable').innerHTML = _asistProductos.length ? `
+      <table class="data-table">
+        <thead><tr><th>Nombre</th><th>Proveedor</th><th>Tipo</th><th>Modalidad</th><th>Edad máx.</th><th>Dest.</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <tbody>${_asistProductos.map(p => `<tr>
+          <td class="td-main">${escapeHtml(p.nombre)}${p.destacado?' ⭐':''}</td>
+          <td><span class="badge ${provColors[p.proveedor_codigo]||'muted'}">${escapeHtml(p.proveedor_nombre||'—')}</span></td>
+          <td style="font-size:12px;">${escapeHtml(p.tipo||'—')}</td>
+          <td style="font-size:12px;">${escapeHtml(p.modalidad||'—')}</td>
+          <td style="font-size:12px;">${p.edad_maxima||'—'}</td>
+          <td style="font-size:12px;">${p.destacado?'⭐':'—'}</td>
+          <td><span class="badge ${p.activo?'green':'red'}">${p.activo?'Activo':'Inactivo'}</span></td>
+          <td><div class="row-actions">
+            <button class="ra-btn" onclick="openAsistProductoModal(${p.id})">✏️ Editar</button>
+            <button class="ra-btn ${p.activo?'danger':''}" onclick="toggleAsistProducto(${p.id},${!p.activo})">${p.activo?'🔄 Desactivar':'🔄 Activar'}</button>
+            ${p.activo?`<button class="ra-btn danger" onclick="deleteAsistProducto(${p.id},'${escapeHtml(p.nombre)}')">🗑️</button>`:''}
+          </div></td>
+        </tr>`).join('')}</tbody>
+      </table>` :
+      '<div class="empty-state"><div class="ei">🛡️</div><p>No hay planes de asistencia cargados. Creá el primero con el botón "+ Nuevo plan".</p></div>';
+  } catch(e) {
+    document.getElementById('asistProdTable').innerHTML = '<div class="empty-state"><div class="ei">⚠️</div><p>Error cargando planes de asistencia.</p></div>';
+  }
+}
+
+async function toggleAsistProducto(id, activo) {
+  try {
+    await api(`/admin/asistencia/productos/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ activo }),
+    });
+    showToast(`Plan ${activo?'activado':'desactivado'}`, 'success');
+    loadAsistenciaProductos();
+  } catch(e) { showToast('Error actualizando plan', 'error'); }
+}
+
+async function deleteAsistProducto(id, nombre) {
+  if (!confirm(`¿Eliminar el plan "${nombre}"? Se marcará como inactivo.`)) return;
+  try {
+    await api(`/admin/asistencia/productos/${id}`, { method: 'DELETE' });
+    showToast(`Plan "${nombre}" eliminado`, 'success');
+    loadAsistenciaProductos();
+  } catch(e) { showToast('Error eliminando plan', 'error'); }
+}
+
+async function openAsistProductoModal(id) {
+  _editingAsistProdId = id || null;
+  // Reset
+  document.getElementById('editAsistProdId').value = id || '';
+  document.getElementById('editAsistNombre').value = '';
+  document.getElementById('editAsistDesc').value = '';
+  document.getElementById('editAsistTipo').value = '';
+  document.getElementById('editAsistModalidad').value = '';
+  document.getElementById('editAsistEdadMax').value = '';
+  document.getElementById('editAsistDiasMin').value = '1';
+  document.getElementById('editAsistDiasMax').value = '365';
+  document.getElementById('editAsistFamiliar').checked = false;
+  document.getElementById('editAsistDestacado').checked = false;
+  document.getElementById('editAsistActivo').checked = true;
+  document.getElementById('editAsistOrden').value = '0';
+  document.getElementById('editAsistCodExt').value = '';
+  document.getElementById('editAsistCodProdExt').value = '';
+  document.getElementById('editAsistCodTarifaExt').value = '';
+
+  // Populate proveedor select
+  if (_asistProveedores.length === 0) {
+    try { const r = await api('/admin/asistencia/proveedores'); _asistProveedores = r?.data || []; } catch(e){}
+  }
+  const sel = document.getElementById('editAsistProv');
+  sel.innerHTML = '<option value="">— Seleccionar —</option>' +
+    _asistProveedores.filter(p=>p.activo).map(p => `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`).join('');
+
+  document.getElementById('asistProdModalTitle').textContent = id ? 'Editar plan de asistencia' : 'Nuevo plan de asistencia';
+  document.getElementById('btnSaveAsistProd').textContent = id ? '💾 Guardar cambios' : '💾 Crear plan';
+  document.getElementById('asistProdSubSections').style.display = id ? 'block' : 'none';
+
+  if (id) {
+    try {
+      const res = await api(`/admin/asistencia/productos/${id}`);
+      const p = res?.data;
+      if (p) {
+        document.getElementById('editAsistNombre').value = p.nombre || '';
+        document.getElementById('editAsistDesc').value = p.descripcion || '';
+        document.getElementById('editAsistProv').value = p.proveedor_id || '';
+        document.getElementById('editAsistTipo').value = p.tipo || '';
+        document.getElementById('editAsistModalidad').value = p.modalidad || '';
+        document.getElementById('editAsistEdadMax').value = p.edad_maxima || '';
+        document.getElementById('editAsistDiasMin').value = p.dias_minimos || 1;
+        document.getElementById('editAsistDiasMax').value = p.dias_maximos || 365;
+        document.getElementById('editAsistFamiliar').checked = !!p.plan_familiar;
+        document.getElementById('editAsistDestacado').checked = !!p.destacado;
+        document.getElementById('editAsistActivo').checked = p.activo !== false;
+        document.getElementById('editAsistOrden').value = p.orden_display || 0;
+        document.getElementById('editAsistCodExt').value = p.codigo_externo || '';
+        document.getElementById('editAsistCodProdExt').value = p.codigo_producto_externo || '';
+        document.getElementById('editAsistCodTarifaExt').value = p.codigo_tarifa_externo || '';
+        renderAsistDestinos(p.destinos || []);
+        renderAsistCoberturas(p.coberturas || []);
+      }
+    } catch(e) { showToast('Error cargando detalle del plan', 'error'); }
+  }
+
+  document.getElementById('ov-asist-prod').classList.add('open');
+}
+
+function closeAsistProductoModal() {
+  document.getElementById('ov-asist-prod').classList.remove('open');
+  _editingAsistProdId = null;
+}
+
+async function saveAsistProducto() {
+  const nombre = document.getElementById('editAsistNombre').value.trim();
+  if (!nombre) { showToast('El nombre es obligatorio', 'error'); return; }
+  const provId = document.getElementById('editAsistProv').value;
+  if (!provId) { showToast('Seleccioná un proveedor', 'error'); return; }
+
+  const body = {
+    nombre,
+    descripcion: document.getElementById('editAsistDesc').value.trim() || null,
+    proveedor_id: parseInt(provId),
+    tipo: document.getElementById('editAsistTipo').value || null,
+    modalidad: document.getElementById('editAsistModalidad').value || null,
+    edad_maxima: parseInt(document.getElementById('editAsistEdadMax').value) || null,
+    dias_minimos: parseInt(document.getElementById('editAsistDiasMin').value) || 1,
+    dias_maximos: parseInt(document.getElementById('editAsistDiasMax').value) || 365,
+    plan_familiar: document.getElementById('editAsistFamiliar').checked,
+    destacado: document.getElementById('editAsistDestacado').checked,
+    activo: document.getElementById('editAsistActivo').checked,
+    orden_display: parseInt(document.getElementById('editAsistOrden').value) || 0,
+    codigo_externo: document.getElementById('editAsistCodExt').value.trim() || null,
+    codigo_producto_externo: document.getElementById('editAsistCodProdExt').value.trim() || null,
+    codigo_tarifa_externo: document.getElementById('editAsistCodTarifaExt').value.trim() || null,
+  };
+
+  const id = _editingAsistProdId;
+  try {
+    if (id) {
+      await api(`/admin/asistencia/productos/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+      showToast('Plan actualizado', 'success');
+    } else {
+      await api('/admin/asistencia/productos', { method: 'POST', body: JSON.stringify(body) });
+      showToast('Plan creado', 'success');
+    }
+    closeAsistProductoModal();
+    loadAsistenciaProductos();
+  } catch(e) { showToast('Error guardando plan', 'error'); }
+}
+
+// ── Destinos sub-section ──
+function renderAsistDestinos(destinos) {
+  document.getElementById('asistDestinosTable').innerHTML = destinos.length ? `
+    <table class="data-table" style="font-size:12px;">
+      <thead><tr><th>Código</th><th>Nombre</th><th>Cruceros</th><th></th></tr></thead>
+      <tbody>${destinos.map(d => `<tr>
+        <td class="td-mono">${escapeHtml(d.codigo_destino)}</td>
+        <td>${escapeHtml(d.nombre_destino)}</td>
+        <td>${d.aplica_cruceros?'✓':'—'}</td>
+        <td><button class="ra-btn danger" onclick="deleteAsistDestino(${_editingAsistProdId},${d.id})" style="font-size:11px;padding:3px 8px;">🗑️</button></td>
+      </tr>`).join('')}</tbody>
+    </table>` : '<div style="font-size:12px;color:var(--muted);padding:8px 0;">Sin destinos asignados.</div>';
+}
+
+async function addAsistDestino() {
+  const codigo = document.getElementById('newDestCodigo').value.trim();
+  const nombre = document.getElementById('newDestNombre').value.trim();
+  const cruceros = document.getElementById('newDestCruceros').checked;
+  if (!codigo || !nombre) { showToast('Código y nombre del destino son obligatorios', 'error'); return; }
+  try {
+    await api(`/admin/asistencia/productos/${_editingAsistProdId}/destinos`, {
+      method: 'POST', body: JSON.stringify({ codigo_destino: codigo, nombre_destino: nombre, aplica_cruceros: cruceros }),
+    });
+    document.getElementById('newDestCodigo').value = '';
+    document.getElementById('newDestNombre').value = '';
+    document.getElementById('newDestCruceros').checked = false;
+    const res = await api(`/admin/asistencia/productos/${_editingAsistProdId}`);
+    renderAsistDestinos(res?.data?.destinos || []);
+    showToast('Destino agregado', 'success');
+  } catch(e) { showToast('Error agregando destino', 'error'); }
+}
+
+async function deleteAsistDestino(prodId, destId) {
+  try {
+    await api(`/admin/asistencia/productos/${prodId}/destinos/${destId}`, { method: 'DELETE' });
+    const res = await api(`/admin/asistencia/productos/${prodId}`);
+    renderAsistDestinos(res?.data?.destinos || []);
+    showToast('Destino eliminado', 'success');
+  } catch(e) { showToast('Error eliminando destino', 'error'); }
+}
+
+// ── Coberturas sub-section ──
+function renderAsistCoberturas(coberturas) {
+  document.getElementById('asistCoberturasTable').innerHTML = coberturas.length ? `
+    <table class="data-table" style="font-size:12px;">
+      <thead><tr><th>Icono</th><th>Nombre</th><th>Valor</th><th>Dest.</th><th>Orden</th><th></th></tr></thead>
+      <tbody>${coberturas.map(c => `<tr>
+        <td>${escapeHtml(c.icono||'—')}</td>
+        <td>${escapeHtml(c.nombre)}</td>
+        <td class="td-mono">${escapeHtml(c.valor||'—')}</td>
+        <td>${c.destacada?'⭐':'—'}</td>
+        <td>${c.orden||0}</td>
+        <td><div class="row-actions">
+          <button class="ra-btn danger" onclick="deleteAsistCobertura(${_editingAsistProdId},${c.id})" style="font-size:11px;padding:3px 8px;">🗑️</button>
+        </div></td>
+      </tr>`).join('')}</tbody>
+    </table>` : '<div style="font-size:12px;color:var(--muted);padding:8px 0;">Sin coberturas cargadas.</div>';
+}
+
+async function addAsistCobertura() {
+  const nombre = document.getElementById('newCobNombre').value.trim();
+  if (!nombre) { showToast('El nombre de la cobertura es obligatorio', 'error'); return; }
+  const body = {
+    nombre,
+    valor: document.getElementById('newCobValor').value.trim() || null,
+    icono: document.getElementById('newCobIcono').value.trim() || null,
+    destacada: document.getElementById('newCobDestacada').checked,
+    orden: parseInt(document.getElementById('newCobOrden').value) || 0,
+  };
+  try {
+    await api(`/admin/asistencia/productos/${_editingAsistProdId}/coberturas`, {
+      method: 'POST', body: JSON.stringify(body),
+    });
+    document.getElementById('newCobNombre').value = '';
+    document.getElementById('newCobValor').value = '';
+    document.getElementById('newCobIcono').value = '';
+    document.getElementById('newCobDestacada').checked = false;
+    document.getElementById('newCobOrden').value = '0';
+    const res = await api(`/admin/asistencia/productos/${_editingAsistProdId}`);
+    renderAsistCoberturas(res?.data?.coberturas || []);
+    showToast('Cobertura agregada', 'success');
+  } catch(e) { showToast('Error agregando cobertura', 'error'); }
+}
+
+async function deleteAsistCobertura(prodId, cobId) {
+  try {
+    await api(`/admin/asistencia/productos/${prodId}/coberturas/${cobId}`, { method: 'DELETE' });
+    const res = await api(`/admin/asistencia/productos/${prodId}`);
+    renderAsistCoberturas(res?.data?.coberturas || []);
+    showToast('Cobertura eliminada', 'success');
+  } catch(e) { showToast('Error eliminando cobertura', 'error'); }
 }
 
 </script>

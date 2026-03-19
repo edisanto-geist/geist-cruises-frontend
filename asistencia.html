@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Asistencia al viajero — Geist Cruceros. Cotizá y emití vouchers de asistencia para tus clientes.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0d1f3c">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a2f5e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='4' r='2.5'/><line x1='12' y1='6.5' x2='12' y2='22'/><line x1='7' y1='9' x2='17' y2='9'/><path d='M3 20l4 4c2-3 3.5-5 5-5s3 2 5 5l4-4'/></svg>">
+<meta property="og:title" content="Asistencia al Viajero — Geist Cruceros">
+<meta property="og:description" content="Cotizá y emití vouchers de asistencia para tus clientes.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:image" content="https://www.geist.tur.ar/images/logochico.png">
+<title>Asistencia al Viajero — Geist Cruceros</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&display=swap&text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789áéíóúñÁÉÍÓÚÑ%20·—" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0d1f3c;--navy2:#162d52;--blue:#1e5eff;--blue-h:#1448d4;
+  --blue-soft:#eef2ff;--cyan:#00b4d8;--green:#0ab47a;--green-bg:#edfaf4;
+  --red:#e54b4b;--red-bg:#fef2f2;--bg:#f4f6fb;--bg2:#eef1f8;
+  --border:#dde3ef;--border2:#c8d0e4;--text:#0d1f3c;--text2:#3d5074;
+  --muted:#7a8baa;--white:#ffffff;--amber:#f59e0b;--amber-bg:#fffbeb;
+  --shadow:0 2px 12px rgba(13,31,60,0.07);
+  --shadow-md:0 6px 28px rgba(13,31,60,0.12);
+  --shadow-lg:0 16px 56px rgba(13,31,60,0.18);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ─── NAV ─── */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;height:58px;background:var(--navy);display:flex;align-items:center;padding:0 32px;box-shadow:0 2px 16px rgba(13,31,60,0.30);}
+.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:28px;}
+.n-mark{height:28px;width:auto;object-fit:contain;}
+.n-name{font-size:15px;font-weight:600;color:rgba(255,255,255,0.7);letter-spacing:0.03em;}
+.n-links{display:flex;flex:1;}
+.n-links a{color:rgba(255,255,255,0.55);text-decoration:none;font-size:13.5px;font-weight:500;padding:6px 14px;border-radius:6px;transition:all 0.15s;}
+.n-links a:hover{color:#fff;background:rgba(255,255,255,0.08);}
+.n-links a.on{color:#fff;background:rgba(30,94,255,0.28);}
+.n-user{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.14);border-radius:100px;padding:4px 14px 4px 6px;cursor:pointer;}
+.n-av{width:26px;height:26px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+.n-uname{font-size:13px;font-weight:500;color:rgba(255,255,255,0.88);}
+
+/* ─── LAYOUT ─── */
+.wrap{max-width:1100px;margin:0 auto;padding:80px 24px 60px;}
+
+/* ─── SEARCH CARD ─── */
+.search-card{background:var(--white);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:20px 24px;margin-bottom:24px;}
+.search-card h2{font-family:'DM Sans','Outfit',sans-serif;font-size:16px;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.search-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:10.5px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;}
+.fg select,.fg input{border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:inherit;color:var(--text);outline:none;transition:border-color 0.15s;background:#fff;}
+.fg select:focus,.fg input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,94,255,0.08);}
+.btn-search{background:var(--blue);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;padding:11px 28px;cursor:pointer;transition:background 0.15s;box-shadow:0 3px 10px rgba(30,94,255,0.25);white-space:nowrap;height:42px;}
+.btn-search:hover{background:var(--blue-h);}
+.btn-search:disabled{opacity:0.6;cursor:not-allowed;}
+
+.pax-ages{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+.pax-age{display:flex;flex-direction:column;gap:4px;}
+.pax-age label{font-size:10.5px;font-weight:600;color:var(--text2);}
+.pax-age input{width:72px;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--text);outline:none;}
+.pax-age input:focus{border-color:var(--blue);}
+
+/* ─── RESULTS ─── */
+.results-area{min-height:200px;}
+.loading-state{display:flex;align-items:center;justify-content:center;padding:60px 20px;gap:12px;color:var(--muted);font-size:13px;}
+.spinner{width:22px;height:22px;border:2.5px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-state .ei{font-size:40px;margin-bottom:14px;}
+.empty-state p{font-size:14px;line-height:1.6;}
+
+/* ─── PLAN CARD ─── */
+.plan-card{background:var(--white);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px;transition:border-color 0.15s;}
+.plan-card:hover{border-color:var(--border2);}
+.plan-head{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.plan-name{font-size:15px;font-weight:700;color:var(--navy);}
+.plan-badges{display:flex;gap:6px;align-items:center;}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:100px;letter-spacing:0.04em;}
+.badge.blue{background:var(--blue-soft);color:var(--blue);}
+.badge.red{background:var(--red-bg);color:var(--red);}
+.badge.green{background:var(--green-bg);color:var(--green);}
+.badge.amber{background:var(--amber-bg);color:var(--amber);}
+.badge.muted{background:var(--bg2);color:var(--muted);}
+.plan-body{padding:16px 20px;display:flex;gap:24px;align-items:flex-start;}
+.plan-price-block{min-width:160px;}
+.plan-price{font-size:24px;font-weight:800;color:var(--navy);}
+.plan-price-sub{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.plan-covs{flex:1;display:flex;flex-wrap:wrap;gap:6px 16px;}
+.plan-cov{font-size:12.5px;color:var(--text2);display:flex;align-items:center;gap:5px;}
+.plan-foot{padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg);}
+.btn-toggle-covs{background:none;border:none;font-family:inherit;font-size:12px;font-weight:600;color:var(--blue);cursor:pointer;padding:4px 0;}
+.btn-toggle-covs:hover{text-decoration:underline;}
+.btn-select-plan{background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;padding:9px 20px;cursor:pointer;transition:background 0.15s;box-shadow:0 3px 10px rgba(30,94,255,0.25);}
+.btn-select-plan:hover{background:var(--blue-h);}
+.plan-covs-full{display:none;padding:0 20px 16px;border-top:1px solid var(--border);}
+.plan-covs-full.open{display:block;}
+.plan-covs-full ul{list-style:none;columns:2;gap:6px;padding-top:12px;}
+.plan-covs-full li{font-size:12px;color:var(--text2);padding:3px 0;break-inside:avoid;display:flex;align-items:center;gap:5px;}
+
+/* ─── DRAWER (emission panel) ─── */
+.drawer-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(8,16,32,0.6);backdrop-filter:blur(4px);}
+.drawer-overlay.open{display:flex;justify-content:flex-end;}
+.drawer{width:520px;max-width:100%;background:#fff;height:100vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:dIn 0.2s ease;}
+@keyframes dIn{from{transform:translateX(40px);opacity:0}to{transform:translateX(0);opacity:1}}
+.drawer-hd{position:sticky;top:0;background:#fff;padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;z-index:1;}
+.drawer-ht{font-size:16px;font-weight:700;color:var(--navy);}
+.drawer-x{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;padding:4px;}
+.drawer-bd{padding:22px 24px;}
+.drawer-ft{padding:16px 24px;background:var(--bg);border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;position:sticky;bottom:0;}
+.form-row{margin-bottom:14px;}
+.form-row label{display:block;font-size:10.5px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:5px;}
+.form-row input,.form-row select{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:13px;font-family:inherit;color:var(--text);outline:none;transition:border-color 0.15s;background:#fff;}
+.form-row input:focus,.form-row select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,94,255,0.08);}
+.pax-section{border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;}
+.pax-section-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.btn-emit{background:var(--green);color:#fff;border:none;border-radius:9px;font-family:inherit;font-size:14px;font-weight:700;padding:12px 24px;cursor:pointer;transition:background 0.15s;box-shadow:0 3px 10px rgba(10,180,122,0.3);}
+.btn-emit:hover{background:#099a69;}
+.btn-emit:disabled{opacity:0.6;cursor:not-allowed;}
+.btn-cancel{background:#fff;color:var(--text2);border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13px;font-weight:600;padding:10px 20px;cursor:pointer;}
+
+/* ─── SUCCESS STATE ─── */
+.success-card{background:var(--green-bg);border:1px solid rgba(10,180,122,0.3);border-radius:14px;padding:24px;text-align:center;margin-bottom:20px;}
+.success-card .ei{font-size:40px;margin-bottom:10px;}
+.success-card h3{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.success-card p{font-size:13px;color:var(--text2);margin-bottom:4px;}
+.btn-pdf{display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;border:none;border-radius:9px;font-family:inherit;font-size:13px;font-weight:700;padding:10px 20px;cursor:pointer;margin-top:14px;text-decoration:none;transition:background 0.15s;}
+.btn-pdf:hover{background:var(--blue-h);}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:22px;right:22px;z-index:9999;background:var(--navy);color:#fff;padding:12px 18px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);transform:translateY(80px);opacity:0;transition:all 0.3s ease;pointer-events:none;max-width:340px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.error{background:var(--red);}
+
+.auth-msg{background:var(--amber-bg);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:14px 18px;font-size:13px;color:#92400e;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.auth-msg a{color:var(--blue);font-weight:600;}
+
+@media(max-width:768px){
+  .search-grid{grid-template-columns:1fr 1fr;}
+  .plan-body{flex-direction:column;gap:12px;}
+  .plan-covs-full ul{columns:1;}
+  .drawer{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="n-logo">
+    <img class="n-mark" src="https://www.geist.tur.ar/images/logoblanco.png" alt="Geist">
+  </a>
+  <div class="n-links">
+    <a href="index.html">Cruceros</a>
+    <a href="asistencia.html" class="on">Asistencia</a>
+  </div>
+  <div class="n-user" id="navUser" style="display:none;">
+    <div class="n-av" id="navAv">AG</div>
+    <span class="n-uname" id="navName">Agencia</span>
+  </div>
+</nav>
+
+<div class="wrap">
+  <!-- SEARCH -->
+  <div class="search-card">
+    <h2>🛡️ Cotizar asistencia al viajero</h2>
+    <div class="search-grid">
+      <div class="fg">
+        <label>Destino</label>
+        <select id="sDestino">
+          <option value="">— Seleccionar destino —</option>
+          <option value="01">América del Norte</option>
+          <option value="02">Europa / Medio Oriente</option>
+          <option value="03">América Central y Caribe</option>
+          <option value="04">América del Sur</option>
+          <option value="05">África</option>
+          <option value="06">Asia</option>
+          <option value="07">Oceanía</option>
+          <option value="MULTI">Múltiples destinos</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Fecha de salida</label>
+        <input type="date" id="sFechaDesde">
+      </div>
+      <div class="fg">
+        <label>Fecha de regreso</label>
+        <input type="date" id="sFechaHasta">
+      </div>
+      <div class="fg">
+        <label>Pasajeros</label>
+        <select id="sPax" onchange="renderPaxAges()">
+          <option value="1">1 pasajero</option>
+          <option value="2" selected>2 pasajeros</option>
+          <option value="3">3 pasajeros</option>
+          <option value="4">4 pasajeros</option>
+          <option value="5">5 pasajeros</option>
+          <option value="6">6 pasajeros</option>
+        </select>
+      </div>
+    </div>
+    <div class="pax-ages" id="paxAges"></div>
+    <div style="margin-top:14px;text-align:right;">
+      <button class="btn-search" id="btnSearch" onclick="buscarPlanes()">Buscar planes</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-area" id="resultsArea"></div>
+</div>
+
+<!-- DRAWER: Emisión -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="if(event.target.id==='drawerOverlay')closeDrawer()">
+  <div class="drawer">
+    <div class="drawer-hd">
+      <div class="drawer-ht" id="drawerTitle">Emitir voucher</div>
+      <button class="drawer-x" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-bd" id="drawerBody"></div>
+    <div class="drawer-ft">
+      <button class="btn-cancel" onclick="closeDrawer()">Cancelar</button>
+      <button class="btn-emit" id="btnEmit" onclick="emitirVoucher()">🛡️ Emitir voucher</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://geist-cruises-backend-production.up.railway.app/api';
+let TOKEN = localStorage.getItem('geist_token') || null;
+let _selectedPlan = null;
+let _cotizacionResults = [];
+
+// ── Init ──
+(function init() {
+  // Pre-fill from URL params
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('destino')) document.getElementById('sDestino').value = p.get('destino');
+  if (p.get('dias')) {
+    const dias = parseInt(p.get('dias'));
+    if (dias > 0) {
+      const today = new Date();
+      const end = new Date(today);
+      end.setDate(end.getDate() + dias);
+      document.getElementById('sFechaDesde').value = today.toISOString().slice(0,10);
+      document.getElementById('sFechaHasta').value = end.toISOString().slice(0,10);
+    }
+  }
+
+  renderPaxAges();
+
+  // Show user in nav if logged in
+  if (TOKEN) {
+    try {
+      const payload = JSON.parse(atob(TOKEN.split('.')[1]));
+      const initials = (payload.name||payload.email||'AG').split(/[\s@]/)[0].substring(0,2).toUpperCase();
+      document.getElementById('navAv').textContent = initials;
+      document.getElementById('navName').textContent = payload.name || payload.email || 'Agencia';
+      document.getElementById('navUser').style.display = '';
+    } catch(e){}
+  }
+})();
+
+function renderPaxAges() {
+  const n = parseInt(document.getElementById('sPax').value) || 2;
+  const container = document.getElementById('paxAges');
+  container.innerHTML = '';
+  for (let i = 1; i <= n; i++) {
+    container.innerHTML += `<div class="pax-age">
+      <label>Pasajero ${i}</label>
+      <input type="number" id="paxAge${i}" min="0" max="99" placeholder="Edad" value="30">
+    </div>`;
+  }
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type === 'error' ? ' error' : '');
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s || '';
+  return d.innerHTML;
+}
+
+// ── Search ──
+async function buscarPlanes() {
+  const destino = document.getElementById('sDestino').value;
+  const fechaDesde = document.getElementById('sFechaDesde').value;
+  const fechaHasta = document.getElementById('sFechaHasta').value;
+  const nPax = parseInt(document.getElementById('sPax').value) || 2;
+
+  if (!destino) { showToast('Seleccioná un destino', 'error'); return; }
+  if (!fechaDesde || !fechaHasta) { showToast('Completá las fechas de viaje', 'error'); return; }
+  if (new Date(fechaHasta) <= new Date(fechaDesde)) { showToast('La fecha de regreso debe ser posterior a la de salida', 'error'); return; }
+
+  const pasajeros = [];
+  for (let i = 1; i <= nPax; i++) {
+    const edad = parseInt(document.getElementById(`paxAge${i}`).value);
+    if (isNaN(edad) || edad < 0 || edad > 99) { showToast(`Edad inválida para pasajero ${i}`, 'error'); return; }
+    pasajeros.push({ edad });
+  }
+
+  document.getElementById('resultsArea').innerHTML = '<div class="loading-state"><div class="spinner"></div> Consultando planes disponibles...</div>';
+  document.getElementById('btnSearch').disabled = true;
+
+  try {
+    const res = await fetch(`${API}/asistencia/cotizar`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ destino_codigo: destino, fecha_desde: fechaDesde, fecha_hasta: fechaHasta, pasajeros }),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Error en la cotización');
+
+    _cotizacionResults = data.data || [];
+    renderResults(_cotizacionResults, pasajeros.length);
+  } catch(e) {
+    document.getElementById('resultsArea').innerHTML = `<div class="empty-state"><div class="ei">⚠️</div><p>${escapeHtml(e.message)}</p></div>`;
+  } finally {
+    document.getElementById('btnSearch').disabled = false;
+  }
+}
+
+function renderResults(plans, nPax) {
+  if (!plans.length) {
+    document.getElementById('resultsArea').innerHTML = '<div class="empty-state"><div class="ei">🛡️</div><p>No encontramos planes para los parámetros seleccionados.<br>Probá con otro destino o fechas.</p></div>';
+    return;
+  }
+
+  const provColor = { TERRAWIND: 'blue', ASSISTCARD: 'red' };
+
+  document.getElementById('resultsArea').innerHTML = plans
+    .sort((a,b) => (a.precio_usd||Infinity) - (b.precio_usd||Infinity))
+    .map((p, idx) => {
+      const pricePerPax = p.precio_usd ? `USD ${Number(p.precio_usd).toFixed(0)}` : 'Consultar';
+      const totalPrice = p.precio_usd ? `USD ${(p.precio_usd * nPax).toFixed(0)}` : '—';
+      const covs = (p.coberturas_destacadas || []).slice(0,4);
+      return `<div class="plan-card" id="plan-${idx}">
+        <div class="plan-head">
+          <div class="plan-name">${escapeHtml(p.nombre)}</div>
+          <div class="plan-badges">
+            <span class="badge ${provColor[p.proveedor_codigo]||'muted'}">${escapeHtml(p.proveedor)}</span>
+            ${p.tipo ? `<span class="badge muted">${escapeHtml(p.tipo)}</span>` : ''}
+          </div>
+        </div>
+        <div class="plan-body">
+          <div class="plan-price-block">
+            <div class="plan-price">${pricePerPax}</div>
+            <div class="plan-price-sub">por pasajero · ${p.dias} días</div>
+            ${nPax > 1 ? `<div class="plan-price-sub" style="font-weight:600;color:var(--navy);margin-top:4px;">Total ${totalPrice} para ${nPax} pasajeros</div>` : ''}
+          </div>
+          <div class="plan-covs">
+            ${covs.map(c => `<div class="plan-cov">${c.icono||'•'} ${escapeHtml(c.nombre)}${c.valor?' — '+escapeHtml(c.valor):''}</div>`).join('')}
+          </div>
+        </div>
+        <div class="plan-foot">
+          <button class="btn-toggle-covs" onclick="toggleCovs(${idx})">Ver coberturas completas ▾</button>
+          <button class="btn-select-plan" onclick="selectPlan(${idx})">Seleccionar plan</button>
+        </div>
+        <div class="plan-covs-full" id="covs-full-${idx}">
+          <ul>
+            ${covs.map(c => `<li>${c.icono||'•'} ${escapeHtml(c.nombre)}${c.valor?' — '+escapeHtml(c.valor):''}</li>`).join('')}
+          </ul>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+function toggleCovs(idx) {
+  const el = document.getElementById(`covs-full-${idx}`);
+  el.classList.toggle('open');
+}
+
+// ── Emission ──
+function selectPlan(idx) {
+  if (!TOKEN) {
+    showToast('Iniciá sesión para emitir vouchers', 'error');
+    return;
+  }
+  _selectedPlan = _cotizacionResults[idx];
+  if (!_selectedPlan) return;
+
+  const nPax = parseInt(document.getElementById('sPax').value) || 2;
+  const totalPrice = _selectedPlan.precio_usd ? `USD ${(_selectedPlan.precio_usd * nPax).toFixed(0)}` : 'Consultar';
+
+  document.getElementById('drawerTitle').textContent = `Emitir: ${_selectedPlan.nombre}`;
+
+  let html = `<div style="background:var(--bg2);border-radius:10px;padding:12px 16px;margin-bottom:16px;">
+    <div style="font-size:14px;font-weight:700;color:var(--navy);">${escapeHtml(_selectedPlan.nombre)}</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:2px;">Precio total: <strong style="color:var(--navy);">${totalPrice}</strong></div>
+  </div>`;
+
+  for (let i = 1; i <= nPax; i++) {
+    html += `<div class="pax-section">
+      <div class="pax-section-title">Pasajero ${i}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-row"><label>Nombre *</label><input type="text" id="emitNombre${i}" placeholder="Nombre"></div>
+        <div class="form-row"><label>Apellido *</label><input type="text" id="emitApellido${i}" placeholder="Apellido"></div>
+      </div>
+      <div class="form-row"><label>Fecha de nacimiento *</label><input type="date" id="emitNacimiento${i}"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-row"><label>Tipo documento</label><select id="emitTipoDoc${i}"><option value="DNI">DNI</option><option value="PASSPORT">Pasaporte</option><option value="CI">CI</option></select></div>
+        <div class="form-row"><label>Nro. documento *</label><input type="text" id="emitDoc${i}" placeholder="Nro. documento"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-row"><label>Email *</label><input type="email" id="emitEmail${i}" placeholder="email@ejemplo.com"></div>
+        <div class="form-row"><label>Teléfono</label><input type="tel" id="emitTel${i}" placeholder="+54 11 ..."></div>
+      </div>
+    </div>`;
+  }
+
+  html += `<div class="pax-section">
+    <div class="pax-section-title">Contacto de emergencia</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="form-row"><label>Nombre *</label><input type="text" id="emitEmergNombre" placeholder="Nombre del contacto"></div>
+      <div class="form-row"><label>Teléfono *</label><input type="tel" id="emitEmergTel" placeholder="+54 11 ..."></div>
+    </div>
+  </div>`;
+
+  document.getElementById('drawerBody').innerHTML = html;
+  document.getElementById('drawerOverlay').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawerOverlay').classList.remove('open');
+  _selectedPlan = null;
+}
+
+async function emitirVoucher() {
+  if (!TOKEN) { showToast('Iniciá sesión para emitir vouchers', 'error'); return; }
+  if (!_selectedPlan) return;
+
+  const nPax = parseInt(document.getElementById('sPax').value) || 2;
+  const pasajeros = [];
+
+  for (let i = 1; i <= nPax; i++) {
+    const nombre = document.getElementById(`emitNombre${i}`).value.trim();
+    const apellido = document.getElementById(`emitApellido${i}`).value.trim();
+    const nacimiento = document.getElementById(`emitNacimiento${i}`).value;
+    const doc = document.getElementById(`emitDoc${i}`).value.trim();
+    const email = document.getElementById(`emitEmail${i}`).value.trim();
+
+    if (!nombre || !apellido || !nacimiento || !doc || !email) {
+      showToast(`Completá todos los campos obligatorios del pasajero ${i}`, 'error');
+      return;
+    }
+
+    pasajeros.push({
+      nombre, apellido,
+      fechaNacimiento: nacimiento,
+      tipoDocumento: document.getElementById(`emitTipoDoc${i}`).value,
+      numeroDocumento: doc,
+      email,
+      telefono: document.getElementById(`emitTel${i}`).value.trim() || '',
+    });
+  }
+
+  const emergNombre = document.getElementById('emitEmergNombre').value.trim();
+  const emergTel = document.getElementById('emitEmergTel').value.trim();
+  if (!emergNombre || !emergTel) { showToast('Completá el contacto de emergencia', 'error'); return; }
+
+  document.getElementById('btnEmit').disabled = true;
+  document.getElementById('btnEmit').textContent = 'Emitiendo...';
+
+  try {
+    const res = await fetch(`${API}/asistencia/emitir`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        producto_id: _selectedPlan.producto_id,
+        fecha_desde: document.getElementById('sFechaDesde').value,
+        fecha_hasta: document.getElementById('sFechaHasta').value,
+        pasajeros,
+      }),
+    });
+
+    if (res.status === 401) { showToast('Sesión expirada. Iniciá sesión nuevamente.', 'error'); return; }
+
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Error al emitir voucher');
+
+    closeDrawer();
+
+    const v = data.data;
+    document.getElementById('resultsArea').innerHTML = `
+      <div class="success-card">
+        <div class="ei">✅</div>
+        <h3>Voucher emitido correctamente</h3>
+        <p><strong>Número:</strong> ${escapeHtml(v.voucher_number || v.codigo_completo || '—')}</p>
+        <p><strong>Plan:</strong> ${escapeHtml(_selectedPlan.nombre)}</p>
+        <p><strong>Vigencia:</strong> ${escapeHtml(v.fecha_inicio)} al ${escapeHtml(v.fecha_fin)}</p>
+        ${v.pdf_url ? `<a href="${escapeHtml(v.pdf_url)}" target="_blank" class="btn-pdf">📄 Descargar voucher PDF</a>` : ''}
+      </div>
+      <div style="text-align:center;"><button class="btn-search" onclick="location.reload()">Realizar otra cotización</button></div>`;
+  } catch(e) {
+    showToast(e.message, 'error');
+  } finally {
+    document.getElementById('btnEmit').disabled = false;
+    document.getElementById('btnEmit').textContent = '🛡️ Emitir voucher';
+  }
+}
+</script>
+</body>
+</html>
