@@ -669,6 +669,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
             <div class="card-title">Catálogo de planes</div>
             <div class="card-actions">
               <button class="tb-btn" onclick="loadAsistenciaProductos()">🔄 Recargar</button>
+              <button class="tb-btn" onclick="openDiscoverModal()">🔍 Descubrir planes</button>
               <button class="tb-btn primary" onclick="openAsistProductoModal()">+ Nuevo plan</button>
             </div>
           </div>
@@ -1103,6 +1104,21 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
     <div class="modal-ft">
       <button class="btn-cancel" onclick="closeAsistProductoModal()">Cancelar</button>
       <button class="btn-save" id="btnSaveAsistProd" onclick="saveAsistProducto()">💾 Guardar plan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DISCOVER TERRAWIND -->
+<div class="ov" id="ov-discover" role="dialog" aria-modal="true" aria-label="Descubrir planes" onclick="if(event.target.id==='ov-discover')closeDiscoverModal()">
+  <div class="modal" style="width:680px;">
+    <div class="modal-hd">
+      <div class="modal-ht">🔍 Planes disponibles en Terrawind</div>
+      <button class="modal-x" aria-label="Cerrar" onclick="closeDiscoverModal()">✕</button>
+    </div>
+    <div class="modal-bd" style="padding:0;">
+      <div id="discoverTable">
+        <div class="loading-row"><div class="spinner"></div> Consultando catálogo de Terrawind...</div>
+      </div>
     </div>
   </div>
 </div>
@@ -2608,6 +2624,98 @@ async function deleteAsistCobertura(prodId, cobId) {
     renderAsistCoberturas(res?.data?.coberturas || []);
     showToast('Cobertura eliminada', 'success');
   } catch(e) { showToast('Error eliminando cobertura', 'error'); }
+}
+
+// ════════════════════════════════════
+// DISCOVER TERRAWIND
+// ════════════════════════════════════
+let _discoverPlans = [];
+
+function openDiscoverModal() {
+  document.getElementById('ov-discover').classList.add('open');
+  loadDiscoverPlans();
+}
+
+function closeDiscoverModal() {
+  document.getElementById('ov-discover').classList.remove('open');
+}
+
+async function loadDiscoverPlans() {
+  document.getElementById('discoverTable').innerHTML = '<div class="loading-row"><div class="spinner"></div> Consultando catálogo de Terrawind...</div>';
+  try {
+    const res = await api('/admin/asistencia/discover/terrawind');
+    _discoverPlans = res?.data || [];
+    renderDiscoverTable();
+  } catch(e) {
+    document.getElementById('discoverTable').innerHTML = '<div class="empty-state"><div class="ei">⚠️</div><p>Error consultando Terrawind. Verificá que las credenciales TW_USER / TW_PASSWORD estén configuradas.</p></div>';
+  }
+}
+
+function renderDiscoverTable() {
+  if (!_discoverPlans.length) {
+    document.getElementById('discoverTable').innerHTML = '<div class="empty-state"><div class="ei">🔍</div><p>No se encontraron planes en Terrawind.</p></div>';
+    return;
+  }
+
+  const badgeMap = {
+    nuevo:         '<span class="badge amber">Nuevo — no habilitado</span>',
+    habilitado:    '<span class="badge green">✓ Habilitado</span>',
+    deshabilitado: '<span class="badge muted">Deshabilitado</span>',
+  };
+
+  document.getElementById('discoverTable').innerHTML = `
+    <table class="data-table">
+      <thead><tr><th>Nombre</th><th>Tipo</th><th>Edad máx.</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody>${_discoverPlans.map((p, idx) => `<tr id="disc-row-${idx}">
+        <td class="td-main">${escapeHtml(p.product_name)}</td>
+        <td style="font-size:12px;">${p.product_type === 1 ? 'Familiar' : 'Individual'}</td>
+        <td style="font-size:12px;">${p.product_max_age || '—'}</td>
+        <td id="disc-badge-${idx}">${badgeMap[p.estado] || p.estado}</td>
+        <td id="disc-action-${idx}"><div class="row-actions">
+          ${p.estado === 'habilitado'
+            ? `<button class="ra-btn danger" onclick="discoverDisable(${idx})">Deshabilitar</button>`
+            : `<button class="ra-btn" onclick="discoverEnable(${idx})">✅ Habilitar</button>`
+          }
+        </div></td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+}
+
+async function discoverEnable(idx) {
+  const p = _discoverPlans[idx];
+  try {
+    if (p.registro_id && p.estado === 'deshabilitado') {
+      await api(`/admin/asistencia/productos/${p.registro_id}/enable`, { method: 'POST' });
+    } else {
+      await api('/admin/asistencia/productos/enable', {
+        method: 'POST',
+        body: JSON.stringify({
+          proveedor_codigo: 'TERRAWIND',
+          codigo_externo: String(p.product_id),
+          datos_plan: p,
+        }),
+      });
+    }
+    p.estado = 'habilitado';
+    document.getElementById(`disc-badge-${idx}`).innerHTML = '<span class="badge green">✓ Habilitado</span>';
+    document.getElementById(`disc-action-${idx}`).innerHTML = '<div class="row-actions"><button class="ra-btn danger" onclick="discoverDisable('+idx+')">Deshabilitar</button></div>';
+    showToast(`"${p.product_name}" habilitado`, 'success');
+  } catch(e) { showToast('Error habilitando plan', 'error'); }
+}
+
+async function discoverDisable(idx) {
+  const p = _discoverPlans[idx];
+  if (!p.registro_id) return;
+  try {
+    await api(`/admin/asistencia/productos/${p.registro_id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ activo: false }),
+    });
+    p.estado = 'deshabilitado';
+    document.getElementById(`disc-badge-${idx}`).innerHTML = '<span class="badge muted">Deshabilitado</span>';
+    document.getElementById(`disc-action-${idx}`).innerHTML = '<div class="row-actions"><button class="ra-btn" onclick="discoverEnable('+idx+')">✅ Habilitar</button></div>';
+    showToast(`"${p.product_name}" deshabilitado`, 'success');
+  } catch(e) { showToast('Error deshabilitando plan', 'error'); }
 }
 
 </script>
